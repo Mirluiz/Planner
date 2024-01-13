@@ -78,10 +78,9 @@ class Scene {
     this.scene.add(hLight);
 
     // this.cameraMode = this.localStorage.camera?.mode ?? "3D";
-    this.cameraMode = "3D";
+    this.cameraMode = "2D";
 
     this.initCamera();
-
     this.setCamera(this.cameraMode);
 
     this.renderer.domElement.setAttribute("tabindex", "0");

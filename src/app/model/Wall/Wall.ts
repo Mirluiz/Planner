@@ -10,6 +10,7 @@ import {
 } from "../../system";
 import * as THREE from "three";
 import { Vector3 } from "three";
+import {TextGeometry} from "three/examples/jsm/geometries/TextGeometry";
 
 class Wall implements Object3D, Geometry.Line {
   isWall = true;
@@ -55,6 +56,15 @@ class Wall implements Object3D, Geometry.Line {
 
     if (!threeMesh) return;
 
+    let textMesh = threeMesh.children[0]
+
+    if(textMesh instanceof THREE.Mesh){
+      textMesh.geometry.dispose()
+      textMesh.material.dispose()
+      textMesh.removeFromParent()
+    }
+
+
     threeMesh.geometry.dispose(); // Dispose of the old geometry to free up memory
     threeMesh.geometry = geometry;
     threeMesh.material = Storage.materials[this.uuid]?.clone();
@@ -74,6 +84,11 @@ class Wall implements Object3D, Geometry.Line {
 
     threeMesh.lookAt(this.end);
     threeMesh.rotateY(Math.PI / 2);
+
+    let txtMesh = this.getText();
+    if (txtMesh){
+      threeMesh.add(txtMesh);
+    }
 
     this.mesh?.render(threeMesh);
 
@@ -115,6 +130,12 @@ class Wall implements Object3D, Geometry.Line {
     mesh.name = "Wall";
 
     mesh.userData.object = this;
+
+    let textMesh = this.getText();
+
+    if (textMesh){
+      mesh.add(textMesh);
+    }
 
     this.mesh?.render(mesh);
 
@@ -241,6 +262,46 @@ class Wall implements Object3D, Geometry.Line {
   private getEndAngle() {
     return 0;
   }
+
+  private angle(start: Vector3, end: Vector3) {
+    const dx = end.x - start.x
+    const dy = end.z - start.z;
+
+    let theta = Math.atan2(dy, dx);
+    theta *= 180 / Math.PI;
+
+    return theta;
+  }
+
+  private getText() {
+    let textMesh: null | THREE.Mesh = null
+
+    if (Storage.font) {
+      let polarAngle = this.angle(this.start, this.end)
+
+      const scale = 800;
+      const textGeometry = new TextGeometry(this.uuid.slice(0, 3), {
+        font: Storage.font,
+        size: 120 / scale,
+        height: 1 / scale,
+        bevelThickness: 1 / scale,
+      });
+
+      const material = new THREE.MeshBasicMaterial({ color: 0x00 });
+      textMesh = new THREE.Mesh(textGeometry, material);
+
+      if (Math.abs(polarAngle) < 90) {
+        textMesh.rotateOnAxis(new Vector3(0, 1, 0), -Math.PI);
+      }
+
+      textMesh.rotateOnAxis(new Vector3(1, 0, 0), -Math.PI/2);
+      textMesh.position.copy(new Vector3(0, 1.7, 0));
+
+    }
+
+    return textMesh
+  }
+
 
   static fromJson(schema: Object3DSchema) {
     if (!schema.start || !schema.end) return;

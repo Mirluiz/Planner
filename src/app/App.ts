@@ -7,7 +7,7 @@ import {
   Database,
   Object3D,
   Object3DProps,
-  Helpers,
+  Helpers, Storage,
 } from "./system";
 import { Room } from "./model/Room";
 import { randomUUID } from "node:crypto";
@@ -39,11 +39,13 @@ class App {
   run() {
     this.database.init(() => {
       this.database.get((res) => {
-        // this.sceneController.loadFromSchemas(res.objects);
 
-        this.sceneController.model.objects;
-        this.event.emit("scene_update");
-        this.sceneController.view.animate();
+        Storage.init().then(() => {
+          this.sceneController.model.objects;
+          this.event.emit("scene_update");
+          this.sceneController.view.animate();
+        })
+
       });
     });
 
