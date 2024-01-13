@@ -8,6 +8,7 @@ import { BottomBar } from "./Menus/BottomBar";
 import { Right } from "./Menus/Right";
 import { Canvas } from "./Canvas";
 import { Top } from "./Menus/Top";
+import { Room } from "../Demo/Room";
 
 const App = () => {
   const canvasRef = useRef<HTMLDivElement | null>(null);
@@ -22,6 +23,10 @@ const App = () => {
   useEffect(() => {
     if (app) {
       app.run();
+
+      const demo = new Room({ app });
+      demo.run();
+      app.sceneController.event.emit("scene_update");
 
       // @ts-ignore
       window.app = app;

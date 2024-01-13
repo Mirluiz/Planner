@@ -53,13 +53,10 @@ class Room implements Object3D {
 
   render() {
     this.mesh?.destroy();
-    console.log("");
-    console.log("ROOM RENDER");
-    console.log("");
 
     let geometry = this.getGeometry();
 
-    const material = new THREE.MeshPhongMaterial({ color: 0xff0000 });
+    const material = new THREE.MeshPhongMaterial({ color: 0x009dc4 });
     const mesh = new THREE.Mesh(geometry, material);
 
     material.transparent = true;
@@ -72,35 +69,22 @@ class Room implements Object3D {
 
   private getGeometry() {
     let firstCorner = this.corners[0];
-    const vertices: THREE.Vector3[] = [];
+    let shape = new THREE.Shape();
+
+    shape.moveTo(firstCorner.position.x, firstCorner.position.z);
 
     this.corners.map((corner, index, array) => {
-      if (index === 0 || index === array.length - 1) return;
+      if (index === 0) return;
 
-      let nextCorner = array[index + 1];
-
-      if (!nextCorner) return;
-
-      let a = new THREE.Vector3(
-        firstCorner.position.x,
-        firstCorner.position.y,
-        firstCorner.position.z
-      );
-      let b = new THREE.Vector3(
-        corner.position.x,
-        corner.position.y,
-        corner.position.z
-      );
-      let c = new THREE.Vector3(
-        nextCorner.position.x,
-        nextCorner.position.y,
-        nextCorner.position.z
-      );
-
-      vertices.push(a, b, c);
+      shape.lineTo(corner.position.x, corner.position.z);
     });
 
-    return new THREE.PolyhedronGeometry().setFromPoints(vertices);
+    const extrudeSettings = {};
+
+    let extrude = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    extrude.rotateX(Math.PI / 2);
+
+    return extrude;
   }
 
   toJson() {
