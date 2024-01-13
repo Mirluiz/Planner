@@ -1,11 +1,12 @@
 import { Helpers } from "./../utils/Helpers";
 import { Object3D } from "../interfaces/Object3D";
 
-type SceneEvents = "scene_update" | "scene_update_element";
+type SceneEvents = "scene_update" | "scene_update_element" | "objects_updated";
 
 type SceneData = {
   scene_update: undefined;
   scene_update_element: Object3D;
+  objects_updated: undefined;
 };
 
 class EventSystem {

@@ -1,10 +1,11 @@
 import { Pipe } from "./";
-import { Object3D, Geometry } from "../system";
+import { Object3D, Geometry, EventSystem } from "../system";
 import { Fitting } from "./Fitting";
 import { Vector3 } from "three";
 
 class Scene {
   drawMode: "wall" | "pipe" | "object" | null = null;
+  event: EventSystem = new EventSystem();
 
   intersects: Array<{
     position: Vector3;
@@ -16,6 +17,8 @@ class Scene {
 
   addObject(object: Object3D) {
     this.objects.push(object);
+
+    this.event.emit("objects_updated");
   }
 
   removeObject(uuid: string) {

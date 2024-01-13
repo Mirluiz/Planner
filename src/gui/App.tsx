@@ -25,7 +25,7 @@ const App = () => {
       app.run();
 
       const demo = new Room({ app });
-      demo.run();
+      // demo.run();
       app.sceneController.event.emit("scene_update");
 
       // @ts-ignore
