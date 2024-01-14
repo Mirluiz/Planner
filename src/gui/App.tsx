@@ -9,6 +9,7 @@ import { Right } from "./Menus/Right";
 import { Canvas } from "./Canvas";
 import { Top } from "./Menus/Top";
 import { Room } from "../Demo/Room";
+import { Corner } from "../Demo/Corner";
 
 const App = () => {
   const canvasRef = useRef<HTMLDivElement | null>(null);
@@ -25,7 +26,9 @@ const App = () => {
       app.run();
 
       const demo = new Room({ app });
+      const corner = new Corner({ app });
       // demo.run();
+      corner.run();
       app.sceneController.event.emit("scene_update");
 
       // @ts-ignore

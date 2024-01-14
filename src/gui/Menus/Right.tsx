@@ -20,18 +20,18 @@ const Right = () => {
   const [corners, setCorners] = useState<Corner[]>([]);
 
   useEffect(() => {
-    app?.sceneController.model.event.subscribe("objects_updated", () => {
-      let _corners: Corner[] = [];
-
-      app?.sceneController.model.objects.map((child) => {
-        if (child instanceof Corner) {
-          _corners.push(child);
-          return;
-        }
-      });
-
-      setCorners(_corners);
-    });
+    // app?.sceneController.model.event.subscribe("objects_updated", () => {
+    //   let _corners: Corner[] = [];
+    //
+    //   app?.sceneController.model.objects.map((child) => {
+    //     if (child instanceof Corner) {
+    //       _corners.push(child);
+    //       return;
+    //     }
+    //   });
+    //
+    //   setCorners(_corners);
+    // });
   }, [app]);
 
   return (

@@ -261,7 +261,7 @@ class Scene {
 
     const planeIntersect = Math2D.NetAlgorithms.planeIntersection(
       new Vector3(0, 0, 0),
-      this.raycaster.ray
+      this.raycaster.ray.clone()
     ).clone();
 
     this.groundInters = {
@@ -272,6 +272,10 @@ class Scene {
 
     this.groundIntersNet.x = +(this.groundInters.x / 10).toFixed(1) * 10;
     this.groundIntersNet.z = +(this.groundInters.z / 10).toFixed(1) * 10;
+
+    // console.log("IntersNet", this.groundIntersNet);
+    // console.log("Inters", this.groundInters);
+    // console.log("");
 
     this.snapHighLight?.run();
 

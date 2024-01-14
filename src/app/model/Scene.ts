@@ -25,6 +25,8 @@ class Scene {
     let objIndex = this.objects.findIndex((object) => object.uuid === uuid);
 
     this.objects.splice(objIndex, 1);
+
+    this.event.emit("objects_updated");
   }
 }
 

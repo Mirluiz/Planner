@@ -198,7 +198,24 @@ class Wall implements Drawing {
   }
 
   clearTempCorner() {
-    console.log("not implemented");
+    let corner = this.scene.model.objects.find(
+      (obj): obj is Corner =>
+        obj instanceof Corner &&
+        obj.walls.some((w) => w.uuid === this.active?.uuid)
+    );
+
+    if (corner) {
+      const index = corner.walls.findIndex((w) => this.active?.uuid === w.uuid);
+
+      if (index > -1) {
+        corner.walls.splice(index, 1);
+      }
+
+      if (corner.walls.length < 2) {
+        this.scene.model.removeObject(corner.uuid);
+        corner.destroy();
+      }
+    }
   }
 
   private addObject(object: WallModel | Corner) {

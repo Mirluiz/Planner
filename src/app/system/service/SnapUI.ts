@@ -48,26 +48,26 @@ class SnapHighlight {
 
     let snapsByDistance: Array<{ distance: number; position: Vector3 }> = [];
 
-    pipes.map((pipe) => {
-      // if (!this.sceneView.app.pipeController.active) return;
-
-      if (pipe.uuid === this.app.pipeController.active?.uuid) return;
-      if (pipe instanceof PipeModel) {
-        let projection = Math2D.Line.vectorLineIntersectionPosition(
-          new Vector3(
-            this.sceneView.groundInters.x,
-            this.sceneView.groundInters.y,
-            this.sceneView.groundInters.z
-          ),
-          {
-            start: pipe.start,
-            end: pipe.end,
-          }
-        );
-
-        if (projection) snapsByDistance.push(projection);
-      }
-    });
+    // pipes.map((pipe) => {
+    //   // if (!this.sceneView.app.pipeController.active) return;
+    //
+    //   if (pipe.uuid === this.app.pipeController.active?.uuid) return;
+    //   if (pipe instanceof PipeModel) {
+    //     let projection = Math2D.Line.vectorLineIntersectionPosition(
+    //       new Vector3(
+    //         this.sceneView.groundInters.x,
+    //         this.sceneView.groundInters.y,
+    //         this.sceneView.groundInters.z
+    //       ),
+    //       {
+    //         start: pipe.start,
+    //         end: pipe.end,
+    //       }
+    //     );
+    //
+    //     if (projection) snapsByDistance.push(projection);
+    //   }
+    // });
 
     snapsByDistance.sort((a, b) => {
       if (a.distance < b.distance) return -1;

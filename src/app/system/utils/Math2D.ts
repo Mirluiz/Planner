@@ -151,14 +151,18 @@ namespace Math2D {
 
     static planeIntersection(height: THREE.Vector3, ray: THREE.Ray) {
       const { direction } = ray;
+
       let mag = direction.clone().length();
       let dot = direction.clone().dot(new Vector3(0, -1, 0)) / mag;
       let res = Math.acos(dot);
       // console.log('Math.cos(res)', Math.cos(res))
       let ln = ray.origin.clone().sub(height).y / Math.cos(res);
 
-      const intersection = direction.clone().multiplyScalar(ln).add(ray.origin);
-      // console.log('intersection', intersection)
+      const intersection = direction
+        .clone()
+        .multiplyScalar(ln)
+        .add(ray.origin.clone());
+
       return new Vector3(
         intersection.x,
         Math.round(intersection.y),
