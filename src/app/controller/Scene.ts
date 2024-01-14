@@ -29,7 +29,7 @@ class Scene {
   private initListeners() {
     this.view.htmlElement?.addEventListener("click", (event) => {
       if (this.model.drawMode) {
-        this.activeController?.startDraw(this.view.groundIntersNet);
+        this.activeController?.startDraw({ ...this.view.groundIntersNet });
       }
 
       this.event.emit("scene_update");

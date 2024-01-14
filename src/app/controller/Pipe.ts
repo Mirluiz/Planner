@@ -102,7 +102,7 @@ class Pipe implements Drawing {
     position: Vector3;
     object: PipeModel;
   } | null {
-    let snapsByDistance = Math2D.Line.sortDistance(this.pipes, pipeEnd);
+    let snapsByDistance = Math2D.Line.seekSnap(this.pipes, pipeEnd);
 
     let excludeItself = snapsByDistance.filter(
       (snap) => snap.object.uuid !== this.active?.uuid

@@ -161,13 +161,10 @@ class Graph {
       cycles.map((cycle) => {
         if (
           !duplicatedRemove.find(
-            (c) => c.sort().join("") === cycle.sort().join("")
+            (c) => [...c].sort().join("") === [...cycle].sort().join("")
           )
         ) {
-          console.log("cycle", cycle);
           let order = this.restoreOrder(cycle);
-          console.log("order", order);
-          console.log("");
           if (order) {
             duplicatedRemove.push(order);
           }
@@ -195,7 +192,6 @@ class Graph {
           getNext(neighbor.val);
           break;
         } else if (start === neighbor.val) {
-          ret.push(neighbor.val);
           break;
         }
       }
