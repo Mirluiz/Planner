@@ -259,6 +259,46 @@ namespace Math2D {
 
       return Math.abs(area1 + area2 + area3 - areaOriginal) < 1e-6; // Use an epsilon to handle floating-point errors
     }
+
+    private static calculateCrossProduct(
+      v1: Vector3,
+      v2: Vector3,
+      v3: Vector3
+    ): number {
+      const crossProduct =
+        (v2.x - v1.x) * (v3.z - v1.z) - (v3.x - v1.x) * (v2.z - v1.z);
+      return crossProduct;
+    }
+
+    static isCycleCounterclockwise(vertices: Vector3[]): boolean {
+      const n = vertices.length;
+
+      // Ensure there are at least three vertices
+      if (n < 3) {
+        console.error("A cycle must have at least three vertices.");
+        return false;
+      }
+
+      let positiveCount = 0;
+      let negativeCount = 0;
+
+      for (let i = 0; i < n; i++) {
+        const v1 = vertices[i];
+        const v2 = vertices[(i + 1) % n];
+        const v3 = vertices[(i + 2) % n];
+
+        const crossProduct = this.calculateCrossProduct(v1, v2, v3);
+
+        if (crossProduct > 0) {
+          positiveCount++;
+        } else if (crossProduct < 0) {
+          negativeCount++;
+        }
+      }
+
+      // If the majority of cross products are positive, the cycle is counterclockwise
+      return positiveCount > negativeCount;
+    }
   }
 }
 

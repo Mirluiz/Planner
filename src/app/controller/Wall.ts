@@ -322,15 +322,24 @@ class Wall implements Drawing {
 
     cycles.map((cycle) => {
       let _corners: Array<Corner> = [];
+      let vectors: Array<Vector3> = [];
 
       cycle.map((uuid) => {
         let corner: Corner | undefined = corners.find(
           (obj): obj is Corner => obj.uuid === uuid
         );
 
-        if (corner) _corners.push(corner);
+        if (corner) {
+          _corners.push(corner);
+          vectors.push(
+            new Vector3(corner.position.x, corner.position.y, corner.position.z)
+          );
+        }
       });
 
+      if (!Math2D.Polygon.isCycleCounterclockwise(vectors)) {
+        _corners.reverse();
+      }
       roomCorners.push(_corners);
     });
 

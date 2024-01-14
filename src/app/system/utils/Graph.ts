@@ -1,3 +1,5 @@
+import { Math2D } from "./Math2D";
+
 type Vertex = { val: string; pos: { x: number; y: number } };
 
 class Graph {
@@ -164,7 +166,6 @@ class Graph {
             (c) => [...c].sort().join("") === [...cycle].sort().join("")
           )
         ) {
-          console.log("cycle", cycle);
           let order = this.restoreOrder(cycle);
           if (order) {
             duplicatedRemove.push(order);
