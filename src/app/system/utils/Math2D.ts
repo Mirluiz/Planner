@@ -14,13 +14,12 @@ namespace Math2D {
       }> = [];
 
       lines.map((line) => {
-        let projection = this.vectorLineIntersectionPosition(
-          new Vector3(vec.x, vec.y, vec.z),
-          {
-            start: line.start,
-            end: line.end,
-          }
-        );
+        let pos = new Vector3(vec.x, vec.y, vec.z);
+
+        let projection = this.vectorLineIntersectionPosition(pos, {
+          start: line.start,
+          end: line.end,
+        });
 
         if (projection) {
           let intersect = {
@@ -29,6 +28,21 @@ namespace Math2D {
           };
 
           snapsByDistance.push(intersect);
+        } else {
+          let end = this.isEnd(line, new Vector3(vec.x, vec.y, vec.z));
+
+          if (end) {
+            let intersect = {
+              distance:
+                end === "start"
+                  ? line.start.distanceTo(pos)
+                  : line.end.distanceTo(pos),
+              position: end === "start" ? line.start.clone() : line.end.clone(),
+              object: line,
+            };
+
+            snapsByDistance.push(intersect);
+          }
         }
       });
 
@@ -38,6 +52,38 @@ namespace Math2D {
       });
 
       return snapsByDistance ?? null;
+    }
+
+    static getSnap<T extends Geometry.Line>(
+      vec: Geometry.Vector3,
+      line: Geometry.Line
+    ): { distance: number; position: Vector3 } | null {
+      let ret = null;
+
+      let projection = this.vectorLineIntersectionPosition(vec, {
+        start: line.start,
+        end: line.end,
+      });
+
+      if (projection) {
+        ret = {
+          ...projection,
+        };
+      } else {
+        let end = this.isEnd(line, new Vector3(vec.x, vec.y, vec.z));
+
+        if (end) {
+          ret = {
+            distance:
+              end === "start"
+                ? line.start.distanceTo(vec)
+                : line.end.distanceTo(vec),
+            position: end === "start" ? line.start.clone() : line.end.clone(),
+          };
+        }
+      }
+
+      return ret ?? null;
     }
 
     static getEnd<T extends Geometry.Line>(
@@ -60,9 +106,9 @@ namespace Math2D {
     }
 
     static isEnd(line: Geometry.Line, pos: Vector3): "start" | "end" | null {
-      return line.end.distanceTo(pos) < 0.5
+      return line.end.distanceTo(pos) < 1
         ? "end"
-        : line.start.distanceTo(pos) < 0.5
+        : line.start.distanceTo(pos) < 1
         ? "start"
         : null;
     }
@@ -92,7 +138,7 @@ namespace Math2D {
         vOrigin.clone().dot(lnOrigin) / (lnOrigin.length() * vOrigin.length()) <
         0;
 
-      let isLonger = pos.length() - 1 > lnOrigin.length();
+      let isLonger = pos.length() > lnOrigin.length();
 
       if (isObtuse || isLonger) {
         return null;

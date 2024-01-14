@@ -161,14 +161,13 @@ class Graph {
       cycles.map((cycle) => {
         if (
           !duplicatedRemove.find(
-            (c) => [...c].sort().join("") === [...cycle].sort().join("")
+            (c) => c.sort().join("") === cycle.sort().join("")
           )
         ) {
           let order = this.restoreOrder(cycle);
           if (order) {
             duplicatedRemove.push(order);
           }
-          // duplicatedRemove.push(this.restoreOrder(cycle));
         }
       });
 
@@ -187,7 +186,7 @@ class Graph {
       ret.push(vertex);
 
       for (let neighbor of adj) {
-        if (!ret.includes(neighbor.val)) {
+        if (!ret.includes(neighbor.val) && cycle.includes(neighbor.val)) {
           getNext(neighbor.val);
         }
       }

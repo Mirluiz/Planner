@@ -10,7 +10,7 @@ import {
 } from "../../system";
 import * as THREE from "three";
 import { Vector3 } from "three";
-import {TextGeometry} from "three/examples/jsm/geometries/TextGeometry";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 
 class Wall implements Object3D, Geometry.Line {
   isWall = true;
@@ -56,24 +56,24 @@ class Wall implements Object3D, Geometry.Line {
 
     if (!threeMesh) return;
 
-    let textMesh = threeMesh.children[0]
+    let textMesh = threeMesh.children[0];
 
-    if(textMesh instanceof THREE.Mesh){
-      textMesh.geometry.dispose()
-      textMesh.material.dispose()
-      textMesh.removeFromParent()
+    if (textMesh instanceof THREE.Mesh) {
+      textMesh.geometry.dispose();
+      textMesh.material.dispose();
+      textMesh.removeFromParent();
     }
-
 
     threeMesh.geometry.dispose(); // Dispose of the old geometry to free up memory
     threeMesh.geometry = geometry;
-    threeMesh.material = Storage.materials[this.uuid]?.clone();
+    // threeMesh.material = Storage.materials[this.uuid]?.clone();
+    threeMesh.material = new THREE.MeshStandardMaterial({ color: 0xefd0b5 });
 
-    if (threeMesh.material) {
-      threeMesh.material.map.wrapS = threeMesh.material.map.wrapT =
-        THREE.RepeatWrapping;
-      threeMesh.material.map.repeat.set(ln * 0.365, 1);
-    }
+    // if (threeMesh.material) {
+    //   threeMesh.material.map.wrapS = threeMesh.material.map.wrapT =
+    //     THREE.RepeatWrapping;
+    //   threeMesh.material.map.repeat.set(ln * 0.365, 1);
+    // }
 
     threeMesh.geometry.needsUpdate = true;
 
@@ -86,7 +86,7 @@ class Wall implements Object3D, Geometry.Line {
     threeMesh.rotateY(Math.PI / 2);
 
     let txtMesh = this.getText();
-    if (txtMesh){
+    if (txtMesh) {
       threeMesh.add(txtMesh);
     }
 
@@ -102,21 +102,22 @@ class Wall implements Object3D, Geometry.Line {
 
     let ln = this.start.distanceTo(this.end);
 
-    if (!Storage.materials[this.uuid]) {
-      const texture = new THREE.TextureLoader().load(
-        "/assets/wall.jpg",
-        (newText) => {
-          newText.wrapS = newText.wrapT = THREE.RepeatWrapping;
-          newText.repeat.set(ln * 0.365, 1);
+    // if (!Storage.materials[this.uuid]) {
+    //   const texture = new THREE.TextureLoader().load(
+    //     "/assets/wall.jpg",
+    //     (newText) => {
+    //       newText.wrapS = newText.wrapT = THREE.RepeatWrapping;
+    //       newText.repeat.set(ln * 0.365, 1);
+    //
+    //       Storage.materials[this.uuid] = new THREE.MeshBasicMaterial({
+    //         map: newText,
+    //       });
+    //     }
+    //   );
+    // }
 
-          Storage.materials[this.uuid] = new THREE.MeshBasicMaterial({
-            map: newText,
-          });
-        }
-      );
-    }
-
-    const material = Storage.materials[this.uuid];
+    // const material = Storage.materials[this.uuid];
+    const material = new THREE.MeshStandardMaterial({ color: 0xefd0b5 });
     const mesh = new THREE.Mesh(geometry, material);
 
     const midPoint = new THREE.Vector3();
@@ -133,7 +134,7 @@ class Wall implements Object3D, Geometry.Line {
 
     let textMesh = this.getText();
 
-    if (textMesh){
+    if (textMesh) {
       mesh.add(textMesh);
     }
 
@@ -264,7 +265,7 @@ class Wall implements Object3D, Geometry.Line {
   }
 
   private angle(start: Vector3, end: Vector3) {
-    const dx = end.x - start.x
+    const dx = end.x - start.x;
     const dy = end.z - start.z;
 
     let theta = Math.atan2(dy, dx);
@@ -274,10 +275,10 @@ class Wall implements Object3D, Geometry.Line {
   }
 
   private getText() {
-    let textMesh: null | THREE.Mesh = null
+    let textMesh: null | THREE.Mesh = null;
 
     if (Storage.font) {
-      let polarAngle = this.angle(this.start, this.end)
+      let polarAngle = this.angle(this.start, this.end);
 
       const scale = 800;
       const textGeometry = new TextGeometry(this.uuid.slice(0, 3), {
@@ -294,14 +295,12 @@ class Wall implements Object3D, Geometry.Line {
         textMesh.rotateOnAxis(new Vector3(0, 1, 0), -Math.PI);
       }
 
-      textMesh.rotateOnAxis(new Vector3(1, 0, 0), -Math.PI/2);
+      textMesh.rotateOnAxis(new Vector3(1, 0, 0), -Math.PI / 2);
       textMesh.position.copy(new Vector3(0, 1.7, 0));
-
     }
 
-    return textMesh
+    return textMesh;
   }
-
 
   static fromJson(schema: Object3DSchema) {
     if (!schema.start || !schema.end) return;
