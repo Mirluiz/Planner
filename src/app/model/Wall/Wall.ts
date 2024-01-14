@@ -25,6 +25,11 @@ class Wall implements Object3D, Geometry.Line {
   start;
   end;
 
+  connections: {
+    start: Object | null;
+    end: Object | null;
+  } = { start: null, end: null };
+
   constructor(
     props: {
       start: Geometry.Vector3;

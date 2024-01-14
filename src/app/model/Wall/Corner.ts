@@ -36,7 +36,7 @@ class Corner implements Object3D {
 
     if (!threeMesh) return;
 
-    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 32);
+    const geometry = new THREE.CylinderGeometry(0.3, 0.3, 1, 32);
 
     threeMesh.geometry.dispose(); // Dispose of the old geometry to free up memory
     threeMesh.geometry = geometry;
@@ -66,7 +66,7 @@ class Corner implements Object3D {
     this.mesh?.destroy();
 
     const geometry = new THREE.CylinderGeometry(
-      this.dimension.width,
+      this.dimension.width + 0.3,
       this.dimension.width,
       this.dimension.height,
       32

@@ -26,6 +26,12 @@ class Wall implements Drawing {
     });
   }
 
+  get corners() {
+    return this.scene.model.objects.filter((obj): obj is Corner => {
+      return obj instanceof Corner;
+    });
+  }
+
   start(pos: { x: number; y: number; z: number }) {
     const newWall = new WallModel({
       start: new Vector3(pos.x, pos.y, pos.z),
@@ -37,6 +43,7 @@ class Wall implements Drawing {
 
     if (corner) {
       corner.walls.push(newWall);
+      newWall.connections.start = corner;
     } else if (closest && closest?.distance <= 1) {
       this.connect(newWall, closest.object);
     }
@@ -56,13 +63,13 @@ class Wall implements Drawing {
     if (this.active) {
       if (corner) {
         corner.walls.push(this.active);
+        this.active.connections.end = corner;
       } else if (closest && closest?.distance < 1.5) {
         this.connect(this.active, closest.object);
       }
     }
 
     this.active = null;
-    this.checkForRoom();
   }
 
   private getClosestObject(coord: Vector3) {
@@ -134,8 +141,8 @@ class Wall implements Drawing {
     return ret;
   }
 
-  private connect(wall: WallModel, dividedWall: WallModel) {
-    const intersection = this.getWallsIntersectionSnap(wall, dividedWall);
+  private connect(wall: WallModel, wallToConnect: WallModel) {
+    const intersection = this.getWallsIntersectionSnap(wall, wallToConnect);
 
     if (!intersection || intersection.distance > 1) return;
 
@@ -145,7 +152,7 @@ class Wall implements Drawing {
       new Vector3(snapPos.x, snapPos.y, snapPos.z)
     );
 
-    let end = this.isItWallEnd(dividedWall, snapPos);
+    let end = this.isItWallEnd(wallToConnect, snapPos);
 
     if (end) {
       let corner = new Corner({
@@ -153,7 +160,11 @@ class Wall implements Drawing {
       });
 
       corner.walls.push(wall);
-      corner.walls.push(dividedWall);
+      corner.walls.push(wallToConnect);
+
+      wall.connections.end = corner;
+      wallToConnect.connections[end] = corner;
+
       this.addObject(corner);
     } else {
       let corner = new Corner({
@@ -169,31 +180,54 @@ class Wall implements Drawing {
        *                                this is active wall
        */
       let dividedWallFromPrevCorner = new WallModel({
-        start: new Vector3(snapPosNet.x, snapPosNet.y, snapPosNet.z),
+        start: wallToConnect.start.clone(),
         end: new Vector3(snapPosNet.x, snapPosNet.y, snapPosNet.z),
       });
-      dividedWallFromPrevCorner.start = dividedWall.start;
-      dividedWallFromPrevCorner.end.set(
-        snapPosNet.x,
-        snapPosNet.y,
-        snapPosNet.z
-      );
+      dividedWallFromPrevCorner.connections.start = wallToConnect.start;
+      dividedWallFromPrevCorner.connections.end = corner;
 
       let dividedWallToNextCorner = new WallModel({
-        start: new Vector3(),
-        end: new Vector3(
-          dividedWall.end.x,
-          dividedWall.end.y,
-          dividedWall.end.z
-        ),
+        start: new Vector3(snapPosNet.x, snapPosNet.y, snapPosNet.z),
+        end: wallToConnect.end.clone(),
       });
+      dividedWallToNextCorner.connections.start = corner;
+      dividedWallToNextCorner.connections.end = wallToConnect.end;
+
+      corner.walls.push(dividedWallFromPrevCorner);
+      corner.walls.push(dividedWallToNextCorner);
+      corner.walls.push(wall);
 
       this.addObject(dividedWallFromPrevCorner);
       this.addObject(dividedWallToNextCorner);
       this.addObject(corner);
 
-      this.scene.model.removeObject(dividedWall.uuid);
-      dividedWall.destroy();
+      if (wallToConnect.connections.start instanceof Corner) {
+        let wallIndex = wallToConnect.connections.start.walls.findIndex(
+          (wall) => wall.uuid === wallToConnect.uuid
+        );
+
+        if (wallIndex !== -1) {
+          wallToConnect.connections.start.walls =
+            wallToConnect.connections.start.walls.slice(wallIndex, 1);
+        }
+
+        wallToConnect.connections.start.walls.push(dividedWallFromPrevCorner);
+      }
+
+      if (wallToConnect.connections.end instanceof Corner) {
+        let wallIndex = wallToConnect.connections.end.walls.findIndex(
+          (wall) => wall.uuid === wallToConnect.uuid
+        );
+
+        if (wallIndex !== -1) {
+          wallToConnect.connections.end.walls.splice(wallIndex, 1);
+        }
+
+        wallToConnect.connections.end.walls.push(dividedWallToNextCorner);
+      }
+
+      this.scene.model.removeObject(wallToConnect.uuid);
+      wallToConnect.destroy();
 
       this.active?.end.set(snapPosNet.x, snapPosNet.y, snapPosNet.z);
     }
@@ -245,6 +279,8 @@ class Wall implements Drawing {
     } else {
       this.start({ ...props });
     }
+
+    this.checkForRoom();
   }
 
   draw(props: { x: number; y: number; z: number }) {
@@ -283,6 +319,7 @@ class Wall implements Drawing {
 
     let cycles = graph.getCycles();
     let roomCorners: Array<Array<Corner>> = [];
+    console.log("cycles", cycles, corners);
 
     cycles.map((cycle) => {
       let _corners: Array<Corner> = [];
