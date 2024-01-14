@@ -34,16 +34,10 @@ class Wall implements Drawing {
 
     const corner = newWall?.start ? this.getClosestObject(newWall.start) : null;
     const closest = newWall?.start ? this.getClosestWall(newWall.start) : null;
-    console.log("");
-    console.log("closest", corner, closest);
-    console.log("");
 
     if (corner) {
       corner.walls.push(newWall);
     } else if (closest && closest?.distance < 1.5) {
-      console.log("");
-      console.log("===== we are inside");
-      console.log("");
       this.connect(newWall, closest.object);
     }
 
@@ -99,7 +93,7 @@ class Wall implements Drawing {
     position: Vector3;
     object: WallModel;
   } | null {
-    let snapsByDistance = Math2D.Line.sortDistance(this.walls, coord);
+    let snapsByDistance = Math2D.Line.seekSnap(this.walls, coord);
 
     let excludeItself = snapsByDistance.filter(
       (snap) => snap.object.uuid !== this.active?.uuid

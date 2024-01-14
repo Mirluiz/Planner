@@ -3,61 +3,45 @@ import { Vector3 } from "three";
 
 namespace Math2D {
   export class Line {
-    static sortDistance<T extends Geometry.Line>(
+    static seekSnap<T extends Geometry.Line>(
       lines: Array<T>,
       vec: Geometry.Vector3
     ) {
-      let snapsByDistance: Array<{
-        distance: number;
+      let snaps: Array<{
         position: Geometry.Vector3;
+        distance: number;
+        isEnd: boolean;
+        end: "start" | "end" | null;
         object: T;
       }> = [];
 
       lines.map((line) => {
         let pos = new Vector3(vec.x, vec.y, vec.z);
+        let snap = this.getSnap(pos, line);
 
-        let projection = this.vectorLineIntersectionPosition(pos, {
-          start: line.start,
-          end: line.end,
-        });
-
-        if (projection) {
-          let intersect = {
-            ...projection,
-            object: line,
-          };
-
-          snapsByDistance.push(intersect);
-        } else {
-          let end = this.isEnd(line, new Vector3(vec.x, vec.y, vec.z));
-
-          if (end) {
-            let intersect = {
-              distance:
-                end === "start"
-                  ? line.start.distanceTo(pos)
-                  : line.end.distanceTo(pos),
-              position: end === "start" ? line.start.clone() : line.end.clone(),
-              object: line,
-            };
-
-            snapsByDistance.push(intersect);
-          }
+        if (snap) {
+          let res = { ...snap, object: line };
+          snaps.push(res);
         }
       });
 
-      snapsByDistance.sort((a, b) => {
+      snaps.sort((a, b) => {
         if (a.distance < b.distance) return -1;
         return 0;
       });
 
-      return snapsByDistance ?? null;
+      return snaps ?? null;
     }
 
     static getSnap<T extends Geometry.Line>(
       vec: Geometry.Vector3,
       line: Geometry.Line
-    ): { distance: number; position: Vector3 } | null {
+    ): {
+      distance: number;
+      position: Vector3;
+      isEnd: boolean;
+      end: "start" | "end" | null;
+    } | null {
       let ret = null;
 
       let projection = this.vectorLineIntersectionPosition(vec, {
@@ -68,6 +52,8 @@ namespace Math2D {
       if (projection) {
         ret = {
           ...projection,
+          isEnd: false,
+          end: null,
         };
       } else {
         let end = this.isEnd(line, new Vector3(vec.x, vec.y, vec.z));
@@ -79,6 +65,8 @@ namespace Math2D {
                 ? line.start.distanceTo(vec)
                 : line.end.distanceTo(vec),
             position: end === "start" ? line.start.clone() : line.end.clone(),
+            isEnd: true,
+            end: end,
           };
         }
       }
@@ -86,7 +74,7 @@ namespace Math2D {
       return ret ?? null;
     }
 
-    static getEnd<T extends Geometry.Line>(
+    private static getEnd<T extends Geometry.Line>(
       lines: Array<T>,
       end: Vector3
     ): { object: T; end: "start" | "end" } | null {
@@ -117,7 +105,7 @@ namespace Math2D {
       return obj && "start" in obj;
     }
 
-    static vectorLineIntersectionPosition(
+    private static vectorLineIntersectionPosition(
       v: Geometry.Vector3,
       ln: Geometry.Line
     ): {
