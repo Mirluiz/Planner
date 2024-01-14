@@ -29,7 +29,7 @@ const App = () => {
         const demo = new Room({ app });
         // const corner = new Corner({ app });
         // const wall = new Wall({ app });
-        demo.run();
+        // demo.run();
 
         app.sceneController.event.emit("scene_update");
       });

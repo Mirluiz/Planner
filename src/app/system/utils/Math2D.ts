@@ -1,5 +1,6 @@
 import { Geometry } from "./../";
 import { Vector3 } from "three";
+import { Corner } from "../../model";
 
 namespace Math2D {
   export class Line {
@@ -168,6 +169,95 @@ namespace Math2D {
         Math.round(intersection.y),
         intersection.z
       );
+    }
+  }
+
+  export class Polygon {
+    static earClipping(corners: Corner[]) {
+      const n = corners.length;
+      if (n < 3) {
+        return;
+      }
+
+      const result: Geometry.Vector3[] = [];
+
+      // Copy the vertices to avoid modifying the original array
+      const remainingVertices = [
+        ...corners.map(
+          (corner) =>
+            new Vector3(corner.position.x, corner.position.y, corner.position.z)
+        ),
+      ];
+
+      while (remainingVertices.length > 2) {
+        for (let i = 0; i < remainingVertices.length; i++) {
+          const v0 = remainingVertices[i];
+          const v1 = remainingVertices[(i + 1) % n];
+          const v2 = remainingVertices[(i + 2) % n];
+
+          if (this.isEar(v0, v1, v2, remainingVertices)) {
+            // Found an ear, add triangle and remove ear vertex
+            result.push(v0, v1, v2);
+            remainingVertices.splice((i + 1) % n, 1);
+            break; // Restart the loop
+          }
+        }
+      }
+
+      // Add the last triangle
+      result.push(...remainingVertices);
+      return result;
+    }
+
+    static isEar(
+      v0: Vector3,
+      v1: Vector3,
+      v2: Vector3,
+      vertices: Geometry.Vector3[]
+    ): boolean {
+      if (!v2) return false;
+      // Check if the angle at v1 is concave
+      const crossProduct =
+        (v2.x - v1.x) * (v0.z - v1.z) - (v2.z - v1.z) * (v0.x - v1.x);
+      if (crossProduct >= 0) {
+        return false; // Convex angle, not an ear
+      }
+
+      // Check if any other vertex is inside the triangle v0-v1-v2
+      for (const vertex of vertices) {
+        if (
+          vertex !== v0 &&
+          vertex !== v1 &&
+          vertex !== v2 &&
+          this.pointInTriangle(v0, v1, v2, vertex)
+        ) {
+          return false; // Found a vertex inside the triangle, not an ear
+        }
+      }
+
+      return true; // It's an ear
+    }
+
+    static pointInTriangle(
+      v0: Vector3,
+      v1: Vector3,
+      v2: Vector3,
+      p: Vector3
+    ): boolean {
+      const areaOriginal = Math.abs(
+        (v1.x - v0.x) * (v2.z - v0.z) - (v2.x - v0.x) * (v1.z - v0.z)
+      );
+      const area1 = Math.abs(
+        (p.x - v0.x) * (v1.z - v0.z) - (v1.x - v0.x) * (p.z - v0.z)
+      );
+      const area2 = Math.abs(
+        (p.x - v1.x) * (v2.z - v1.z) - (v2.x - v1.x) * (p.z - v1.z)
+      );
+      const area3 = Math.abs(
+        (p.x - v2.x) * (v0.z - v2.z) - (v0.x - v2.x) * (p.z - v2.z)
+      );
+
+      return Math.abs(area1 + area2 + area3 - areaOriginal) < 1e-6; // Use an epsilon to handle floating-point errors
     }
   }
 }

@@ -6,6 +6,7 @@ import {
   Engine,
   Helpers,
   Storage,
+  Math2D,
 } from "../system";
 import * as THREE from "three";
 import { Corner } from "./Wall/Corner";
@@ -36,7 +37,9 @@ class Room implements Object3D {
     const threeMesh = this.mesh.returnTHREE();
 
     const geometry = this.getGeometry();
-    const material = new THREE.MeshPhongMaterial({ color: 0xff0000 });
+    const material = new THREE.MeshBasicMaterial({
+      color: 0x009dc4,
+    });
 
     if (!threeMesh) return;
 
@@ -70,24 +73,15 @@ class Room implements Object3D {
 
     let geometry = this.getGeometry();
 
-    const material = new THREE.MeshPhongMaterial({ color: 0x009dc4 });
+    const material = new THREE.MeshBasicMaterial({
+      color: 0x009dc4,
+    });
     const mesh = new THREE.Mesh(geometry, material);
 
     material.transparent = true;
     material.opacity = 0.5;
 
-    console.log(
-      "==",
-      Math.abs(
-        ShapeUtils.area(
-          this.corners.map(
-            (corner) => new THREE.Vector2(corner.position.x, corner.position.z)
-          )
-        )
-      )
-    );
-
-    let txtMesh = this.getText();
+    let txtMesh = this.getText(this.getArea().toString());
     if (txtMesh) {
       mesh.add(txtMesh);
     }
@@ -98,23 +92,54 @@ class Room implements Object3D {
   }
 
   private getGeometry() {
-    let firstCorner = this.corners[0];
-    let shape = new THREE.Shape();
+    let vertices: Vector3[] = [];
+    let geometry = new THREE.BufferGeometry();
 
-    shape.moveTo(firstCorner.position.x, firstCorner.position.z);
+    let res = Math2D.Polygon.earClipping([...this.corners].reverse());
 
-    this.corners.map((corner, index, array) => {
-      if (index === 0) return;
+    if (res) {
+      vertices = res;
+    }
 
-      shape.lineTo(corner.position.x, corner.position.z);
+    let verNumbers: number[] = [];
+
+    vertices.map((v) => {
+      verNumbers.push(v.x, v.y, v.z);
     });
 
-    const extrudeSettings = {};
+    let vert = new Float32Array(verNumbers);
 
-    let extrude = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-    extrude.rotateX(Math.PI / 2);
+    geometry.setAttribute("position", new THREE.BufferAttribute(vert, 3));
 
-    return extrude;
+    return geometry;
+  }
+
+  private getArea() {
+    let vertices: Vector3[] = [];
+
+    let res = Math2D.Polygon.earClipping([...this.corners].reverse());
+    let area = 0;
+
+    if (res) {
+      vertices = res;
+    }
+
+    let _i = 0;
+    const n = vertices.length;
+    while (_i < vertices.length) {
+      const v0 = vertices[_i];
+      const v1 = vertices[(_i + 1) % n];
+      const v2 = vertices[(_i + 2) % n];
+
+      area +=
+        Math.abs(
+          v0.x * (v1.z - v2.z) + v1.x * (v2.z - v0.z) + v2.x * (v0.z - v1.z)
+        ) / 2;
+
+      _i += 3;
+    }
+
+    return area;
   }
 
   private getText(info?: string) {
@@ -124,12 +149,15 @@ class Room implements Object3D {
 
     if (Storage.font) {
       const scale = 800;
-      const textGeometry = new TextGeometry(this.uuid.slice(0, 3) + info, {
-        font: Storage.font,
-        size: 120 / scale,
-        height: 1 / scale,
-        bevelThickness: 1 / scale,
-      });
+      const textGeometry = new TextGeometry(
+        `${this.uuid.slice(0, 3)} / ${info}`,
+        {
+          font: Storage.font,
+          size: 120 / scale,
+          height: 1 / scale,
+          bevelThickness: 1 / scale,
+        }
+      );
 
       let center = new Vector3();
 
@@ -145,7 +173,6 @@ class Room implements Object3D {
       const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
       textMesh = new THREE.Mesh(textGeometry, material);
 
-      console.log("center", center);
       textMesh.rotateOnAxis(new Vector3(1, 0, 0), -Math.PI / 2);
       textMesh.position.copy(new Vector3(0, 1, 0));
     }

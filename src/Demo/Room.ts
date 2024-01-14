@@ -68,9 +68,11 @@ class Room {
 
     let roomCorners: Array<Corner> = [];
 
-    this.examples[0].corners.map((cornerData) => {
+    this.examples[3].corners.map((cornerData) => {
       let corner = new Corner({
-        ...cornerProps,
+        rotation: { w: 0, x: 0, y: 0, z: 0 },
+        uuid: Helpers.uuid(),
+        dimension: { width: 0.1, depth: 1, height: 1 },
         position: {
           x: cornerData.pos.x,
           y: cornerData.pos.y,

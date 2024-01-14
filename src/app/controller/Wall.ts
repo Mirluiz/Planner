@@ -319,7 +319,6 @@ class Wall implements Drawing {
 
     let cycles = graph.getCycles();
     let roomCorners: Array<Array<Corner>> = [];
-    console.log("cycles", cycles, corners);
 
     cycles.map((cycle) => {
       let _corners: Array<Corner> = [];

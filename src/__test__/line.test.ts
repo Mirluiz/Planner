@@ -12,7 +12,7 @@ describe("Line algorithms", () => {
     // const point = new THREE.Vector3(-4.2, 0, 4.2);
     const point = new THREE.Vector3(-5, 0, 5);
 
-    let res = Math2D.Line.vectorLineIntersectionPosition(point, line);
-    console.log("res", res);
+    // let res = Math2D.Line.vectorLineIntersectionPosition(point, line);
+    // console.log("res", res);
   });
 });
