@@ -6,6 +6,16 @@ class Room {
   readonly app: App;
   examples = [
     {
+      name: "Simple Room, 5 corners",
+      corners: [
+        { pos: { x: -2, y: 0, z: -2 } },
+        { pos: { x: -2, y: 0, z: 2 } },
+        { pos: { x: 0, y: 0, z: 0 } },
+        { pos: { x: 2, y: 0, z: 2 } },
+        { pos: { x: 2, y: 0, z: -2 } },
+      ],
+    },
+    {
       name: "Simple Room, 4 corners",
       corners: [
         { pos: { x: -2, y: 0, z: -2 } },
@@ -58,7 +68,7 @@ class Room {
 
     let roomCorners: Array<Corner> = [];
 
-    this.examples[2].corners.map((cornerData) => {
+    this.examples[0].corners.map((cornerData) => {
       let corner = new Corner({
         ...cornerProps,
         position: {

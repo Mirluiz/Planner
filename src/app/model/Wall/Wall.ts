@@ -280,6 +280,8 @@ class Wall implements Object3D, Geometry.Line {
   }
 
   private getText() {
+    if (!Storage.debug) return null;
+
     let textMesh: null | THREE.Mesh = null;
 
     if (Storage.font) {

@@ -24,15 +24,15 @@ const App = () => {
 
   useEffect(() => {
     if (app) {
-      app.run();
+      app.init().then(() => {
+        app.run();
+        const demo = new Room({ app });
+        // const corner = new Corner({ app });
+        // const wall = new Wall({ app });
+        demo.run();
 
-      const demo = new Room({ app });
-      const corner = new Corner({ app });
-      const wall = new Wall({ app });
-      // demo.run();
-      // corner.run();
-      // wall.run();
-      app.sceneController.event.emit("scene_update");
+        app.sceneController.event.emit("scene_update");
+      });
 
       // @ts-ignore
       window.app = app;

@@ -9,6 +9,8 @@ import {
 } from "../system";
 import * as THREE from "three";
 import { Corner } from "./Wall/Corner";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { Vector3, ShapeUtils } from "three";
 
 class Room implements Object3D {
   mesh: Engine.Mesh | null = null;
@@ -38,9 +40,21 @@ class Room implements Object3D {
 
     if (!threeMesh) return;
 
+    let textMesh = threeMesh.children[0];
+    if (textMesh instanceof THREE.Mesh) {
+      textMesh.geometry.dispose();
+      textMesh.material.dispose();
+      textMesh.removeFromParent();
+    }
+
     threeMesh.geometry.dispose();
     threeMesh.geometry = geometry;
     threeMesh.material = material;
+
+    let txtMesh = this.getText();
+    if (txtMesh) {
+      threeMesh.add(txtMesh);
+    }
 
     this.mesh?.render(threeMesh);
 
@@ -61,6 +75,22 @@ class Room implements Object3D {
 
     material.transparent = true;
     material.opacity = 0.5;
+
+    console.log(
+      "==",
+      Math.abs(
+        ShapeUtils.area(
+          this.corners.map(
+            (corner) => new THREE.Vector2(corner.position.x, corner.position.z)
+          )
+        )
+      )
+    );
+
+    let txtMesh = this.getText();
+    if (txtMesh) {
+      mesh.add(txtMesh);
+    }
 
     this.mesh?.render(mesh);
 
@@ -85,6 +115,42 @@ class Room implements Object3D {
     extrude.rotateX(Math.PI / 2);
 
     return extrude;
+  }
+
+  private getText(info?: string) {
+    if (!Storage.debug) return null;
+
+    let textMesh: null | THREE.Mesh = null;
+
+    if (Storage.font) {
+      const scale = 800;
+      const textGeometry = new TextGeometry(this.uuid.slice(0, 3) + info, {
+        font: Storage.font,
+        size: 120 / scale,
+        height: 1 / scale,
+        bevelThickness: 1 / scale,
+      });
+
+      let center = new Vector3();
+
+      this.corners.map((corner) => {
+        center.add(
+          new Vector3(corner.position.x, corner.position.y, corner.position.z)
+        );
+      });
+      center.setX(center.x / this.corners.length);
+      center.setY(center.y / this.corners.length);
+      center.setZ(center.z / this.corners.length);
+
+      const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      textMesh = new THREE.Mesh(textGeometry, material);
+
+      console.log("center", center);
+      textMesh.rotateOnAxis(new Vector3(1, 0, 0), -Math.PI / 2);
+      textMesh.position.copy(new Vector3(0, 1, 0));
+    }
+
+    return textMesh;
   }
 
   toJson() {

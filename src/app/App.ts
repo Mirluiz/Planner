@@ -28,16 +28,22 @@ class App {
     });
   }
 
-  run() {
-    this.database.init(() => {
-      this.database.get((res) => {
-        Storage.init().then(() => {
-          this.sceneController.model.objects;
-          this.event.emit("scene_update");
-          this.sceneController.view.animate();
+  init(): Promise<unknown> {
+    return new Promise((resolve, reject) => {
+      this.database.init(() => {
+        this.database.get((res) => {
+          Storage.init().then(() => {
+            this.sceneController.model.objects;
+            this.event.emit("scene_update");
+            resolve("");
+          });
         });
       });
     });
+  }
+
+  run() {
+    this.sceneController.view.animate();
   }
 
   save() {
