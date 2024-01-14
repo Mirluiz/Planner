@@ -164,7 +164,10 @@ class Graph {
             (c) => c.sort().join("") === cycle.sort().join("")
           )
         ) {
+          console.log("cycle", cycle);
           let order = this.restoreOrder(cycle);
+          console.log("order", order);
+          console.log("");
           if (order) {
             duplicatedRemove.push(order);
           }
@@ -173,12 +176,14 @@ class Graph {
 
       _i++;
     }
+    // console.log("duplicatedRemove", duplicatedRemove, this.graph);
 
     return duplicatedRemove;
   }
 
   private restoreOrder(cycle: string[]) {
     let ret: string[] = [];
+    let start = cycle[0];
 
     const getNext = (vertex: string) => {
       let adj = this.graph[vertex];
@@ -188,11 +193,15 @@ class Graph {
       for (let neighbor of adj) {
         if (!ret.includes(neighbor.val) && cycle.includes(neighbor.val)) {
           getNext(neighbor.val);
+          break;
+        } else if (start === neighbor.val) {
+          ret.push(neighbor.val);
+          break;
         }
       }
     };
 
-    getNext(cycle[0]);
+    getNext(start);
 
     return ret.length > 0 ? ret : null;
   }

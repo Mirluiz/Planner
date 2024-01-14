@@ -10,6 +10,7 @@ import { Canvas } from "./Canvas";
 import { Top } from "./Menus/Top";
 import { Room } from "../Demo/Room";
 import { Corner } from "../Demo/Corner";
+import { Wall } from "../Demo/Wall";
 
 const App = () => {
   const canvasRef = useRef<HTMLDivElement | null>(null);
@@ -27,8 +28,10 @@ const App = () => {
 
       const demo = new Room({ app });
       const corner = new Corner({ app });
+      const wall = new Wall({ app });
       // demo.run();
       corner.run();
+      wall.run();
       app.sceneController.event.emit("scene_update");
 
       // @ts-ignore
