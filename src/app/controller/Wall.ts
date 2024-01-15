@@ -162,7 +162,7 @@ class Wall implements Drawing {
       corner.walls.push(wall);
       corner.walls.push(wallToConnect);
 
-      wall.connections.end = corner;
+      wall.connections.start = corner;
       wallToConnect.connections[end] = corner;
 
       this.addObject(corner);
@@ -308,6 +308,11 @@ class Wall implements Drawing {
         (obj): obj is Corner =>
           obj.walls.some((w) => w.uuid === wall.uuid) && obj.uuid !== from?.uuid
       );
+      console.log("");
+      console.log("wall", wall);
+      console.log("from", from);
+      console.log("to", to);
+      console.log("");
 
       if (from && to) {
         graph.addEdge(
@@ -316,6 +321,7 @@ class Wall implements Drawing {
         );
       }
     });
+    console.log("walls", walls);
 
     let cycles = graph.getCycles();
     let roomCorners: Array<Array<Corner>> = [];

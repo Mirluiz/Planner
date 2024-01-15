@@ -150,7 +150,9 @@ class Graph {
       _i++;
     }
 
+    console.log("result", this.graph, this.vertices, allCycles);
     let result = this.removeDuplicate(allCycles);
+    // console.log("result", result, allCycles, this.vertices);
 
     return result.filter((res) => res.length > 0);
   }
