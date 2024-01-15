@@ -84,7 +84,6 @@ class Wall implements Drawing {
         ) -
         coord.distanceTo(new Vector3(b.position.x, b.position.y, b.position.z))
     );
-    // console.log("corners", corners);
 
     let closest: Corner | undefined = corners[0];
 
@@ -118,8 +117,13 @@ class Wall implements Drawing {
   ): {
     distance: number;
     position: Vector3;
+    end: "start" | "end";
   } | null {
-    let ret = null;
+    let ret: {
+      distance: number;
+      position: Vector3;
+      end: "start" | "end";
+    } | null = null;
 
     let wallStart = wall1.start;
     let wallEnd = wall1.end;
@@ -130,12 +134,24 @@ class Wall implements Drawing {
     if (startDistance !== null && endDistance !== null) {
       ret =
         startDistance.distance > endDistance.distance
-          ? endDistance
-          : startDistance;
+          ? {
+              ...endDistance,
+              end: "end",
+            }
+          : {
+              ...startDistance,
+              end: "start",
+            };
     } else if (startDistance !== null) {
-      ret = startDistance;
-    } else {
-      ret = endDistance;
+      ret = {
+        ...startDistance,
+        end: "start",
+      };
+    } else if (endDistance !== null) {
+      ret = {
+        ...endDistance,
+        end: "end",
+      };
     }
 
     return ret;
@@ -162,7 +178,7 @@ class Wall implements Drawing {
       corner.walls.push(wall);
       corner.walls.push(wallToConnect);
 
-      wall.connections.start = corner;
+      wall.connections[intersection.end] = corner;
       wallToConnect.connections[end] = corner;
 
       this.addObject(corner);
@@ -207,8 +223,7 @@ class Wall implements Drawing {
         );
 
         if (wallIndex !== -1) {
-          wallToConnect.connections.start.walls =
-            wallToConnect.connections.start.walls.slice(wallIndex, 1);
+          wallToConnect.connections.start.walls.splice(wallIndex, 1);
         }
 
         wallToConnect.connections.start.walls.push(dividedWallFromPrevCorner);
@@ -309,9 +324,9 @@ class Wall implements Drawing {
           obj.walls.some((w) => w.uuid === wall.uuid) && obj.uuid !== from?.uuid
       );
       console.log("");
-      console.log("wall", wall);
-      console.log("from", from);
-      console.log("to", to);
+      console.log("wall", wall.uuid);
+      console.log("from", from?.uuid);
+      console.log("to", to?.uuid);
       console.log("");
 
       if (from && to) {
@@ -321,7 +336,18 @@ class Wall implements Drawing {
         );
       }
     });
-    console.log("walls", walls);
+    // console.log("walls", walls);
+
+    corners.map((corner) => {
+      console.log(
+        "=",
+        corner.uuid,
+        ...corner.walls
+          .map((wall) => wall.uuid)
+          .slice(0, 3)
+          .join(" = ")
+      );
+    });
 
     let cycles = graph.getCycles();
     let roomCorners: Array<Array<Corner>> = [];
