@@ -15,7 +15,7 @@ class App {
   pipeController: PipeController;
   roomController: RoomController;
 
-  constructor(props: { canvas: HTMLElement }) {
+  constructor(props: { canvas: HTMLElement | null }) {
     this.sceneController = new SceneController(props);
 
     this.roomController = new RoomController({ scene: this.sceneController });
@@ -43,7 +43,7 @@ class App {
   }
 
   run() {
-    this.sceneController.view.animate();
+    this.sceneController.view?.animate();
   }
 
   save() {

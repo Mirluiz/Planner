@@ -23,7 +23,6 @@ class Scene {
 
   removeObject(uuid: string) {
     let objIndex = this.objects.findIndex((object) => object.uuid === uuid);
-    console.log("objIndex", objIndex);
 
     this.objects.splice(objIndex, 1);
 

@@ -52,10 +52,6 @@ class Wall implements Drawing {
     this.active = newWall;
   }
 
-  moveEnd(end: Vector3, pos: { x: number; y: number; z: number }) {
-    end.set(pos.x, pos.y, pos.z);
-  }
-
   end() {
     const corner = this.active ? this.getClosestObject(this.active.end) : null;
     const closest = this.active ? this.getClosestWall(this.active.end) : null;
@@ -64,12 +60,20 @@ class Wall implements Drawing {
       if (corner) {
         corner.walls.push(this.active);
         this.active.connections.end = corner;
-      } else if (closest && closest?.distance < 1.5) {
+      } else if (closest && closest?.distance <= 1) {
         this.connect(this.active, closest.object);
       }
     }
 
     this.active = null;
+  }
+
+  moveEnd(
+    wall: WallModel,
+    end: "start" | "end",
+    pos: { x: number; y: number; z: number }
+  ) {
+    wall[end].set(pos.x, pos.y, pos.z);
   }
 
   private getClosestObject(coord: Vector3) {
@@ -90,7 +94,7 @@ class Wall implements Drawing {
     return closest &&
       coord.distanceTo(
         new Vector3(closest.position.x, closest.position.y, closest.position.z)
-      ) <= 1
+      ) < 1
       ? closest
       : null;
   }
@@ -277,16 +281,6 @@ class Wall implements Drawing {
     this.scene.model.addObject(object);
   }
 
-  reset() {
-    if (this.active) {
-      this.clearTempCorner();
-
-      this.scene.model.removeObject(this.active.uuid);
-      this.active?.destroy();
-      this.active = null;
-    }
-  }
-
   startDraw(props: { x: number; y: number; z: number }) {
     if (this.active) {
       this.end();
@@ -300,7 +294,7 @@ class Wall implements Drawing {
 
   draw(props: { x: number; y: number; z: number }) {
     if (this.active) {
-      this.moveEnd(this.active.end, { ...props });
+      this.moveEnd(this.active, "end", { ...props });
     }
   }
 
@@ -360,6 +354,16 @@ class Wall implements Drawing {
     });
 
     this.roomController.updateByCorners(roomCorners);
+  }
+
+  reset() {
+    if (this.active) {
+      this.clearTempCorner();
+
+      this.scene.model.removeObject(this.active.uuid);
+      this.active?.destroy();
+      this.active = null;
+    }
   }
 }
 

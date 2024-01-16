@@ -59,6 +59,8 @@ class Room {
   }
 
   run() {
+    this.simulate();
+    return;
     let cornerProps: Object3DProps = {
       position: { x: 0, y: 0, z: 0 },
       rotation: { w: 0, x: 0, y: 0, z: 0 },
@@ -87,6 +89,75 @@ class Room {
     if (roomCorners.length > 0) {
       this.app.roomController.updateByCorners([roomCorners]);
     }
+  }
+
+  simulate() {
+    let wallController = this.app.wallController;
+    let roomController = this.app.roomController;
+
+    wallController.startDraw({ x: -10, y: 0, z: -10 });
+
+    wallController.draw({ x: 10, y: 0, z: -10 });
+    wallController.startDraw({ x: 10, y: 0, z: -10 });
+
+    wallController.draw({ x: 10, y: 0, z: -5 });
+    wallController.startDraw({ x: 10, y: 0, z: -5 });
+
+    wallController.draw({ x: 5, y: 0, z: -5 });
+    wallController.startDraw({ x: 5, y: 0, z: -5 });
+
+    wallController.draw({ x: 5, y: 0, z: 0 });
+    wallController.startDraw({ x: 5, y: 0, z: 0 });
+
+    wallController.draw({ x: -10, y: 0, z: 0 });
+    wallController.startDraw({ x: -10, y: 0, z: 0 });
+
+    wallController.draw({ x: -10, y: 0, z: 10 });
+    wallController.startDraw({ x: -10, y: 0, z: 10 });
+
+    wallController.draw({ x: 5, y: 0, z: 10 });
+    wallController.startDraw({ x: 5, y: 0, z: 10 });
+
+    wallController.draw({ x: 5, y: 0, z: 5 });
+    wallController.startDraw({ x: 5, y: 0, z: 5 });
+
+    wallController.draw({ x: 10, y: 0, z: 5 });
+    wallController.startDraw({ x: 10, y: 0, z: 5 });
+
+    wallController.draw({ x: 10, y: 0, z: 10 });
+    wallController.startDraw({ x: 10, y: 0, z: 10 });
+
+    wallController.reset();
+
+    wallController.startDraw({ x: 5, y: 0, z: 0 });
+
+    wallController.draw({ x: 5, y: 0, z: 5 });
+    wallController.startDraw({ x: 5, y: 0, z: 5 });
+
+    wallController.reset();
+
+    wallController.startDraw({ x: -10, y: 0, z: -10 });
+
+    wallController.draw({ x: -10, y: 0, z: 0 });
+    wallController.startDraw({ x: -10, y: 0, z: 0 });
+
+    // 7 - 8
+    wallController.reset();
+
+    wallController.startDraw({ x: 5, y: 0, z: 10 });
+
+    wallController.draw({ x: 10, y: 0, z: 10 });
+    wallController.startDraw({ x: 10, y: 0, z: 10 });
+
+    // 2 - 9
+    wallController.reset();
+
+    wallController.startDraw({ x: 10, y: 0, z: -5 });
+
+    wallController.draw({ x: 10, y: 0, z: 5 });
+    wallController.startDraw({ x: 10, y: 0, z: 5 });
+
+    wallController.reset();
   }
 }
 

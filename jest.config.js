@@ -7,4 +7,7 @@ module.exports = {
     "^.+\\.(ts|tsx)?$": "ts-jest",
     "^.+\\.(js|jsx)$": "babel-jest",
   },
+  globals: {
+    window: {},
+  },
 };

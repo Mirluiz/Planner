@@ -6,18 +6,20 @@ import { Room } from "../model/Room";
 
 class Scene {
   model: SceneModel;
-  view: SceneView;
+  view: SceneView | null = null;
   event: EventSystem = new EventSystem();
 
   activeController: Drawing | null = null;
 
-  constructor(params: { canvas: HTMLElement }) {
+  constructor(props: { canvas: HTMLElement | null }) {
     this.model = new SceneModel();
-    this.view = new SceneView({ canvas: params.canvas, controller: this });
 
-    this.view.onRender = (intersections) => {
-      this.updateIntersection(intersections);
-    };
+    if (props.canvas) {
+      this.view = new SceneView({ canvas: props.canvas, controller: this });
+      this.view.onRender = (intersections) => {
+        this.updateIntersection(intersections);
+      };
+    }
 
     this.initListeners();
   }
@@ -27,7 +29,9 @@ class Scene {
   }
 
   private initListeners() {
-    this.view.htmlElement?.addEventListener("click", (event) => {
+    this.view?.htmlElement?.addEventListener("click", (event) => {
+      if (!this.view) return;
+
       if (this.model.drawMode) {
         this.activeController?.startDraw({ ...this.view.groundIntersNet });
       }
@@ -35,7 +39,9 @@ class Scene {
       this.event.emit("scene_update");
     });
 
-    this.view.htmlElement?.addEventListener("mousemove", (event) => {
+    this.view?.htmlElement?.addEventListener("mousemove", (event) => {
+      if (!this.view) return;
+
       if (this.model.drawMode) {
         this.activeController?.draw(this.view.groundIntersNet);
       }
@@ -45,7 +51,7 @@ class Scene {
       }
     });
 
-    this.view.htmlElement?.addEventListener("keydown", (event) => {
+    this.view?.htmlElement?.addEventListener("keydown", (event) => {
       if (event.code == "Escape") {
         this.setDrawMode(null);
       }

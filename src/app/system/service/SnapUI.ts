@@ -10,7 +10,7 @@ import { Vector3 } from "three";
 
 class SnapHighlight {
   app: App;
-  sceneView: SceneView;
+  sceneView: SceneView | null;
   sceneModel: SceneModel;
 
   show: boolean = false;
@@ -29,7 +29,7 @@ class SnapHighlight {
     this.mesh = new Engine.Mesh();
 
     let threeMesh = this.render()?.returnTHREE();
-    if (threeMesh) this.sceneView.scene.add(threeMesh);
+    if (threeMesh) this.sceneView?.scene.add(threeMesh);
   }
 
   destroy() {
@@ -76,7 +76,7 @@ class SnapHighlight {
 
     const closestPipe = snapsByDistance[0];
 
-    if (closestPipe && closestPipe.distance < 1) {
+    if (closestPipe && closestPipe.distance < 1 && this.sceneView) {
       this.show = true;
 
       this.start.set(
