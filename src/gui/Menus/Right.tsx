@@ -13,15 +13,17 @@ import SendIcon from "@mui/icons-material/Send";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
-import { Corner } from "../../app/model";
+import { Corner, Wall } from "../../app/model";
 
 const Right = () => {
   const { app } = useSceneContext();
   const [corners, setCorners] = useState<Corner[]>([]);
+  const [walls, setWalls] = useState<Wall[]>([]);
 
   useEffect(() => {
     app?.sceneController.model.event.subscribe("objects_updated", () => {
       let _corners: Corner[] = [];
+      let _walls: Wall[] = [];
 
       app?.sceneController.model.objects.map((child) => {
         if (child instanceof Corner) {
@@ -30,7 +32,15 @@ const Right = () => {
         }
       });
 
+      app?.sceneController.model.objects.map((child) => {
+        if (child instanceof Wall) {
+          _walls.push(child);
+          return;
+        }
+      });
+
       setCorners(_corners);
+      setWalls(_walls);
     });
   }, [app]);
 
@@ -38,38 +48,78 @@ const Right = () => {
     <Grid
       container
       sx={{
-        background: "red",
         height: 500,
         overflow: "scroll",
       }}
     >
-      <List
-        sx={{
-          width: "100%",
-          maxWidth: 360,
-          bgcolor: "background.paper",
-        }}
-        component="nav"
-        aria-labelledby="nested-list-subheader"
-        subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
-            Nested List Items
-          </ListSubheader>
-        }
-      >
-        {corners.map((corner) => {
-          let secondary = corner.walls.map((a) => a.uuid.slice(0, 3));
+      <Grid sx={{ width: "50%" }}>
+        <List
+          sx={{
+            width: "100%",
+            maxWidth: 360,
+            bgcolor: "background.paper",
+          }}
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+              Nested List Items
+            </ListSubheader>
+          }
+        >
+          {corners.map((corner) => {
+            let secondary = corner.walls.map((a) => a.uuid.slice(0, 3));
 
-          return (
-            <ListItem key={corner.uuid}>
-              <ListItemText
-                primary={corner.uuid.slice(0, 3)}
-                secondary={secondary.join("-")}
-              />
-            </ListItem>
-          );
-        })}
-      </List>
+            return (
+              <ListItem key={corner.uuid}>
+                <ListItemText
+                  primary={corner.uuid.slice(0, 3)}
+                  secondary={secondary.join("-")}
+                />
+              </ListItem>
+            );
+          })}
+        </List>
+      </Grid>
+      <Grid sx={{ width: "50%" }}>
+        <List
+          sx={{
+            width: "100%",
+            maxWidth: 360,
+            bgcolor: "background.paper",
+          }}
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+              Nested List Items
+            </ListSubheader>
+          }
+        >
+          {walls.map((wall) => {
+            let secondary: string = "";
+
+            if (wall.connections.start instanceof Corner) {
+              secondary += `start ${wall.connections.start.uuid.slice(0, 3)}`;
+            }
+
+            secondary += " ";
+
+            if (wall.connections.end instanceof Corner) {
+              secondary += `end ${wall.connections.end.uuid.slice(0, 3)}`;
+            }
+
+            return (
+              <ListItem key={wall.uuid}>
+                <ListItemText
+                  primary={wall.uuid.slice(0, 3)}
+                  secondary={secondary}
+                />
+              </ListItem>
+            );
+          })}
+        </List>
+      </Grid>
     </Grid>
   );
 };

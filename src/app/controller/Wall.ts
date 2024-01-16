@@ -8,6 +8,8 @@ class Wall implements Drawing {
   readonly scene: SceneController;
   roomController: RoomController;
 
+  graph: Graph | null = null;
+
   active: WallModel | null = null;
 
   constructor(props: {
@@ -52,7 +54,11 @@ class Wall implements Drawing {
     this.active = newWall;
   }
 
-  end() {
+  end(pos: { x: number; y: number; z: number }) {
+    if (!this.active) return;
+
+    this.moveEnd(this.active, "end", { ...pos });
+
     const corner = this.active ? this.getClosestObject(this.active.end) : null;
     const closest = this.active ? this.getClosestWall(this.active.end) : null;
 
@@ -203,7 +209,8 @@ class Wall implements Drawing {
         start: wallToConnect.start.clone(),
         end: new Vector3(snapPosNet.x, snapPosNet.y, snapPosNet.z),
       });
-      dividedWallFromPrevCorner.connections.start = wallToConnect.start;
+      dividedWallFromPrevCorner.connections.start =
+        wallToConnect.connections.start;
       dividedWallFromPrevCorner.connections.end = corner;
 
       let dividedWallToNextCorner = new WallModel({
@@ -211,11 +218,13 @@ class Wall implements Drawing {
         end: wallToConnect.end.clone(),
       });
       dividedWallToNextCorner.connections.start = corner;
-      dividedWallToNextCorner.connections.end = wallToConnect.end;
+      dividedWallToNextCorner.connections.end = wallToConnect.connections.end;
 
       corner.walls.push(dividedWallFromPrevCorner);
       corner.walls.push(dividedWallToNextCorner);
       corner.walls.push(wall);
+
+      wall.connections.end = corner;
 
       this.addObject(dividedWallFromPrevCorner);
       this.addObject(dividedWallToNextCorner);
@@ -246,6 +255,7 @@ class Wall implements Drawing {
       }
 
       this.scene.model.removeObject(wallToConnect.uuid);
+
       wallToConnect.destroy();
 
       this.active?.end.set(snapPosNet.x, snapPosNet.y, snapPosNet.z);
@@ -283,7 +293,7 @@ class Wall implements Drawing {
 
   startDraw(props: { x: number; y: number; z: number }) {
     if (this.active) {
-      this.end();
+      this.end({ ...props });
       this.start({ ...props });
     } else {
       this.start({ ...props });
@@ -307,7 +317,7 @@ class Wall implements Drawing {
       (obj): obj is Corner => obj instanceof Corner
     );
 
-    let graph = new Graph();
+    this.graph = new Graph();
 
     walls.map((wall) => {
       let from: Corner | undefined = corners.find((obj): obj is Corner =>
@@ -319,15 +329,16 @@ class Wall implements Drawing {
       );
 
       if (from && to) {
-        graph.addEdge(
+        this.graph?.addEdge(
           { val: from.uuid, pos: from.position },
           { val: to.uuid, pos: to.position }
         );
       }
     });
-    // console.log("walls", walls);
 
-    let cycles = graph.getCycles();
+    if (!this.graph) return;
+
+    let cycles = this.graph.getCycles();
     let roomCorners: Array<Array<Corner>> = [];
 
     cycles.map((cycle) => {
