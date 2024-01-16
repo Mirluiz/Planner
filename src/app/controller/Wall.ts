@@ -323,11 +323,6 @@ class Wall implements Drawing {
         (obj): obj is Corner =>
           obj.walls.some((w) => w.uuid === wall.uuid) && obj.uuid !== from?.uuid
       );
-      console.log("");
-      console.log("wall", wall.uuid);
-      console.log("from", from?.uuid);
-      console.log("to", to?.uuid);
-      console.log("");
 
       if (from && to) {
         graph.addEdge(
@@ -337,17 +332,6 @@ class Wall implements Drawing {
       }
     });
     // console.log("walls", walls);
-
-    corners.map((corner) => {
-      console.log(
-        "=",
-        corner.uuid,
-        ...corner.walls
-          .map((wall) => wall.uuid)
-          .slice(0, 3)
-          .join(" = ")
-      );
-    });
 
     let cycles = graph.getCycles();
     let roomCorners: Array<Array<Corner>> = [];
