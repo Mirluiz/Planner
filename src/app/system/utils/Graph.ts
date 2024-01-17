@@ -151,8 +151,32 @@ class Graph {
     }
 
     let result = this.removeDuplicate(allCycles);
+    result = this.innerCycles(result);
+    result = this.removeDuplicate(result);
 
     return result.filter((res) => res.length > 0);
+  }
+
+  private innerCycles(cycles: string[][]) {
+    let ret: string[][] = [];
+
+    let _i = 0;
+    while (_i < cycles.length) {
+      let cycle = cycles[_i];
+
+      let vertices = this.getVertexCycle(cycle);
+      let hasChord = this.hasChord(vertices);
+
+      if (hasChord) {
+        ret.push(...hasChord.map((h) => h.map((_h) => _h.val)));
+      } else {
+        ret.push(cycle);
+      }
+
+      _i++;
+    }
+
+    return ret;
   }
 
   private removeDuplicate(cycles: string[][]) {
@@ -162,11 +186,11 @@ class Graph {
     while (_i < cycles.length) {
       cycles.map((cycle) => {
         let vertices = this.getVertexCycle(cycle);
+
         if (
           !duplicatedRemove.find(
             (c) => [...c].sort().join("") === [...cycle].sort().join("")
-          ) &&
-          !this.hasChord(vertices)
+          )
         ) {
           let order = this.restoreOrder(cycle);
 
@@ -182,8 +206,8 @@ class Graph {
     return duplicatedRemove;
   }
 
-  private hasChord(cycle: Vertex[]) {
-    let ret = false;
+  private hasChord(cycle: Vertex[], split: boolean = true) {
+    let ret: Vertex[][] | false = false;
 
     for (const node of cycle) {
       if (ret) break;
@@ -194,8 +218,9 @@ class Graph {
         let res = cycle.find((ver) => ver.val === neighbor.val);
 
         if (!res && this.isVertexInsideCycle(neighbor, cycle)) {
-          if (this.isChordCutCycle(node, neighbor, cycle)) {
-            ret = true;
+          let res = this.isChordCutCycle(node, neighbor, cycle);
+          if (res) {
+            ret = res;
             break;
           }
         }
@@ -227,7 +252,7 @@ class Graph {
   }
 
   private isChordCutCycle(start: Vertex, vertex: Vertex, cycle: Vertex[]) {
-    let cutCycles: Vertex[][] = [];
+    let cutCycles: Vertex[][] | false = false;
 
     let cutVertices: Vertex[] = [];
     let end: null | Vertex = null;
@@ -280,6 +305,8 @@ class Graph {
 
         firstPearceOfCycle.push(...cutVertices);
         secondPearceOfCycle.push(...cutVertices);
+
+        cutCycles = [];
         cutCycles.push(firstPearceOfCycle);
         cutCycles.push(secondPearceOfCycle);
       }

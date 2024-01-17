@@ -384,7 +384,7 @@ describe("Graph cycles", () => {
     const ver0 = { val: "0", pos: { x: 0, y: 0 } };
     const ver1 = { val: "1", pos: { x: 2, y: 0 } };
     const ver2 = { val: "2", pos: { x: 2, y: 2 } };
-    const ver3 = { val: "3`", pos: { x: 4, y: 4 } };
+    const ver3 = { val: "3", pos: { x: 4, y: 4 } };
     const ver4 = { val: "4", pos: { x: 4, y: 6 } };
     const ver5 = { val: "5", pos: { x: 2, y: 6 } };
     const ver6 = { val: "6", pos: { x: 0, y: 6 } };
@@ -404,8 +404,8 @@ describe("Graph cycles", () => {
     let result = graph.getCycles();
 
     expect(result.length).toBe(2);
-    expect(result[0]).toEqual([0, 1, 2, 3]);
-    expect(result[1]).toEqual([4, 5, 6]);
+    expect(result[0]).toEqual(["3", "2", "7", "1", "0", "6", "5", "4"]);
+    expect(result[1]).toEqual(["1", "7", "2", "3"]);
   });
 
   /**
