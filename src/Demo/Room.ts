@@ -9,6 +9,15 @@ class Room {
     corners: Array<{ pos: { x: number; y: number; z: number } } | null>;
   }> = [
     {
+      name: "Short",
+      corners: [
+        { pos: { x: 0, y: 0, z: 0 } },
+        { pos: { x: 1, y: 0, z: 1 } },
+        { pos: { x: 0, y: 0, z: 1 } },
+        null,
+      ],
+    },
+    {
       name: "Simple Room, 5 corners",
       corners: [
         { pos: { x: -2, y: 0, z: -2 } },
@@ -107,7 +116,7 @@ class Room {
   run() {
     let wallController = this.app.wallController;
     let roomController = this.app.roomController;
-    let { corners } = this.examples[4];
+    let { corners } = this.examples[0];
 
     corners.map((cornerData, index) => {
       if (!cornerData) {

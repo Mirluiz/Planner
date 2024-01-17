@@ -55,6 +55,7 @@ class Graph {
 
   private bfs(startVertex: Vertex, nextVertex: Vertex): string[] {
     let ret: string[] = [];
+    let cycles: string[][] = [];
     let startVisited: 0 | 1 | 2 = 0;
 
     const path: Array<{
@@ -112,12 +113,18 @@ class Graph {
           visited[neighbor.val] = true;
         } else if (startVertex.val === neighbor.val && startVisited === 2) {
           ret = this.getPath(startVertex.val, current.val, path);
+          if (startVertex.val === "6") {
+            console.log("vertext", current.val, " === neighbor", neighbor.val);
+            console.log("nextVertex", nextVertex.val);
+          }
 
-          queue = [];
-          break;
+          cycles[ret.length] = ret;
+          // queue = [];
+          // break;
         }
       }
     }
+    // console.log("cycles", cycles);
 
     return ret;
   }
@@ -151,7 +158,6 @@ class Graph {
     }
 
     let result = this.removeDuplicate(allCycles);
-    // console.log("result", result, allCycles, this.vertices);
 
     return result.filter((res) => res.length > 0);
   }

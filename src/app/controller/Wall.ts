@@ -43,10 +43,14 @@ class Wall implements Drawing {
     const corner = newWall?.start ? this.getClosestObject(newWall.start) : null;
     const closest = newWall?.start ? this.getClosestWall(newWall.start) : null;
 
+    // console.log("");
+    // console.log("corner", corner);
+    // console.log("");
+
     if (corner) {
       corner.walls.push(newWall);
       newWall.connections.start = corner;
-    } else if (closest && closest?.distance <= 1) {
+    } else if (closest && closest?.distance < 1) {
       this.connect(newWall, closest.object);
     }
 
@@ -62,11 +66,15 @@ class Wall implements Drawing {
     const corner = this.active ? this.getClosestObject(this.active.end) : null;
     const closest = this.active ? this.getClosestWall(this.active.end) : null;
 
+    console.log("");
+    console.log("corner", corner);
+    console.log("");
+
     if (this.active) {
       if (corner) {
         corner.walls.push(this.active);
         this.active.connections.end = corner;
-      } else if (closest && closest?.distance <= 1) {
+      } else if (closest && closest?.distance < 0.5) {
         this.connect(this.active, closest.object);
       }
     }
@@ -100,7 +108,7 @@ class Wall implements Drawing {
     return closest &&
       coord.distanceTo(
         new Vector3(closest.position.x, closest.position.y, closest.position.z)
-      ) < 1
+      ) < 0.5
       ? closest
       : null;
   }
@@ -179,6 +187,7 @@ class Wall implements Drawing {
     );
 
     let end = this.isItWallEnd(wallToConnect, snapPos);
+    console.log("intersection", wallToConnect.uuid, intersection, end);
 
     if (end) {
       let corner = new Corner({
@@ -220,6 +229,7 @@ class Wall implements Drawing {
       dividedWallToNextCorner.connections.start = corner;
       dividedWallToNextCorner.connections.end = wallToConnect.connections.end;
 
+      corner.walls.push(dividedWallFromPrevCorner);
       corner.walls.push(dividedWallFromPrevCorner);
       corner.walls.push(dividedWallToNextCorner);
       corner.walls.push(wall);
