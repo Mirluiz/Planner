@@ -348,7 +348,8 @@ class Wall implements Drawing {
 
     if (!this.graph) return;
 
-    let cycles = this.graph.getCycles();
+    // let cycles = this.graph.getCycles();
+    let cycles = this.graph.getCyclesNew();
     let roomCorners: Array<Array<Corner>> = [];
 
     cycles.map((cycle) => {

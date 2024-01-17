@@ -118,6 +118,7 @@ class Graph {
         }
       }
     }
+    // console.log("cycles", cycles);
 
     return ret;
   }
@@ -153,6 +154,71 @@ class Graph {
     let result = this.removeDuplicate(allCycles);
 
     return result.filter((res) => res.length > 0);
+  }
+
+  private dfs(
+    start: Vertex,
+    parent: Vertex,
+    current: Vertex,
+    visited: { [key: string]: boolean },
+    cycles: string[]
+  ): boolean {
+    visited[parent.val] = true;
+    visited[current.val] = true;
+    cycles.push(current.val);
+
+    let neighbors = this.graph[current.val];
+    let sortedNeighbors = neighbors.sort((a, b) =>
+      this.thetaSort(current, a, b)
+    );
+
+    for (const neighbor of sortedNeighbors) {
+      if (!visited[neighbor.val]) {
+        if (this.dfs(start, current, neighbor, visited, cycles)) {
+          return true;
+        }
+      } else if (neighbor.val !== parent.val && neighbor.val === start.val) {
+        cycles.push(start.val);
+        // If the neighbor is visited and not the parent, then there is a cycle
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  getCyclesNew() {
+    let allCycles: string[][] = [];
+
+    const max = Object.keys(this.vertices).length;
+
+    let _i = 0;
+    while (_i < max) {
+      let adjs = this.graph[Object.values(this.vertices)[_i].val];
+
+      adjs.map((adj, index) => {
+        let visited: { [key: string]: boolean } = {};
+
+        let cycles: string[] = [];
+        let ret = this.dfs(
+          Object.values(this.vertices)[_i],
+          Object.values(this.vertices)[_i],
+          adj,
+          visited,
+          cycles
+        );
+        if (ret) {
+          allCycles.push(cycles);
+        }
+      });
+
+      _i++;
+    }
+
+    let result = this.removeDuplicate(allCycles);
+
+    return result.filter((res) => res.length > 0);
+    // return 0;
   }
 
   private removeDuplicate(cycles: string[][]) {
@@ -193,11 +259,9 @@ class Graph {
 
         let res = cycle.find((ver) => ver.val === neighbor.val);
 
-        if (!res && this.isVertexInsideCycle(neighbor, cycle)) {
-          if (this.isChordCutCycle(node, neighbor, cycle)) {
-            ret = true;
-            break;
-          }
+        if (!res && this.isInsidePolygon(neighbor, cycle)) {
+          ret = true;
+          break;
         }
       }
     }
@@ -205,15 +269,15 @@ class Graph {
     return ret;
   }
 
-  private isVertexInsideCycle(vertex: Vertex, cycle: Vertex[]) {
+  private isInsidePolygon(vertex: Vertex, polygon: Vertex[]) {
     let inside = false;
     const { x, y } = vertex.pos;
 
-    for (let i = 0, j = cycle.length - 1; i < cycle.length; j = i++) {
-      const xi = cycle[i].pos.x;
-      const yi = cycle[i].pos.y;
-      const xj = cycle[j].pos.x;
-      const yj = cycle[j].pos.y;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].pos.x;
+      const yi = polygon[i].pos.y;
+      const xj = polygon[j].pos.x;
+      const yj = polygon[j].pos.y;
 
       const intersect =
         yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
@@ -226,70 +290,25 @@ class Graph {
     return inside;
   }
 
-  private isChordCutCycle(start: Vertex, vertex: Vertex, cycle: Vertex[]) {
-    let cutCycles: Vertex[][] = [];
+  private isInsideCycle(vertex: Vertex, polygon: Vertex[]) {
+    let inside = false;
+    const { x, y } = vertex.pos;
 
-    let cutVertices: Vertex[] = [];
-    let end: null | Vertex = null;
-    let visited: string[] = [];
-    visited.push(start.val);
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].pos.x;
+      const yi = polygon[i].pos.y;
+      const xj = polygon[j].pos.x;
+      const yj = polygon[j].pos.y;
 
-    const getNext = (ver: Vertex) => {
-      if (end) return;
+      const intersect =
+        yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
 
-      visited.push(ver.val);
-      cutVertices.push(ver);
-
-      for (const neighbor of this.graph[ver.val]) {
-        if (end) break;
-        if (neighbor.val === start.val) continue;
-        if (visited.includes(neighbor.val)) continue;
-
-        let res = cycle.find((v) => v.val === neighbor.val);
-
-        if (res && res.val !== start.val) {
-          end = neighbor;
-
-          break;
-        } else {
-          getNext(neighbor);
-        }
-      }
-    };
-
-    getNext(vertex);
-
-    if (end) {
-      let index = cycle.findIndex((ver) => ver.val === start.val);
-      let prevV = cycle[(index + 1) % cycle.length];
-      let nextV = cycle[index - 1];
-
-      if (prevV && nextV) {
-        let firstPearceOfCycle = this.getVerticesFromTo(
-          cycle,
-          start,
-          nextV,
-          end
-        );
-        let secondPearceOfCycle = this.getVerticesFromTo(
-          cycle,
-          start,
-          prevV,
-          end
-        );
-
-        firstPearceOfCycle.push(...cutVertices);
-        secondPearceOfCycle.push(...cutVertices);
-        cutCycles.push(firstPearceOfCycle);
-        cutCycles.push(secondPearceOfCycle);
+      if (intersect) {
+        inside = !inside;
       }
     }
 
-    return cutCycles;
-  }
-
-  private isChordFormInnerCycle(vertex: Vertex, polygon: Vertex[]) {
-    return false;
+    return inside;
   }
 
   private restoreOrder(cycle: string[]) {
@@ -322,47 +341,6 @@ class Graph {
 
       ret.push(vertex);
     });
-
-    return ret;
-  }
-
-  private getVerticesFromTo(
-    cycle: Vertex[],
-    parent: Vertex,
-    start: Vertex,
-    end: Vertex
-  ) {
-    if (start.val === end.val) return [start, parent];
-
-    let ret: Vertex[] = [];
-    let visited: string[] = [];
-
-    visited.push(parent.val);
-    ret.push(parent);
-
-    let done: boolean = false;
-    const getNext = (ver: Vertex) => {
-      if (done) return;
-
-      visited.push(ver.val);
-      ret.push(ver);
-
-      for (const neighbor of this.graph[ver.val]) {
-        if (done) break;
-        if (neighbor.val === start.val) continue;
-        if (visited.includes(neighbor.val)) continue;
-
-        if (neighbor.val === end.val) {
-          ret.push(neighbor);
-          done = true;
-          break;
-        } else {
-          getNext(neighbor);
-        }
-      }
-    };
-
-    getNext(start);
 
     return ret;
   }
