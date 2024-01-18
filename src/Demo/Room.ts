@@ -107,6 +107,30 @@ class Room {
         { pos: { x: 4, y: 0, z: 4 } },
       ],
     },
+    {
+      name: "Inner cycle example",
+      corners: [
+        { pos: { x: -8, y: 0, z: -8 } },
+        { pos: { x: -4, y: 0, z: -8 } },
+        { pos: { x: -4, y: 0, z: -4 } },
+        { pos: { x: 0, y: 0, z: -4 } },
+        { pos: { x: -2, y: 0, z: -6 } },
+        { pos: { x: 2, y: 0, z: -6 } },
+        { pos: { x: 4, y: 0, z: -4 } },
+        // { pos: { x: -2, y: 0, z: -4 } }, // TODO: this causes inf loop in cycle detection
+        // null,
+        //
+        // { pos: { x: -2, y: 0, z: -6 } },
+        // { pos: { x: -4, y: 0, z: -8 } },
+        // { pos: { x: 8, y: 0, z: -8 } },
+        // { pos: { x: 8, y: 0, z: 0 } },
+        // { pos: { x: -4, y: 0, z: 0 } },
+        // { pos: { x: -8, y: 0, z: 0 } },
+        // { pos: { x: -8, y: 0, z: -8 } },
+
+        null,
+      ],
+    },
   ];
 
   constructor(props: { app: App }) {
@@ -116,7 +140,7 @@ class Room {
   run() {
     let wallController = this.app.wallController;
     let roomController = this.app.roomController;
-    let { corners } = this.examples[0];
+    let { corners } = this.examples[7];
 
     corners.map((cornerData, index) => {
       if (!cornerData) {

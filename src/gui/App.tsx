@@ -30,7 +30,7 @@ const App = () => {
         // const corner = new Corner({ app });
         // const wall = new Wall({ app });
 
-        // demo.run();
+        demo.run();
 
         app.sceneController.event.emit("scene_update");
       });

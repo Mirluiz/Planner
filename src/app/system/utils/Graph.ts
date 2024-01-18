@@ -166,6 +166,7 @@ class Graph {
 
       let vertices = this.getVertexCycle(cycle);
       let hasChord = this.hasChord(vertices);
+      let hasInnerCycle = this.hasChord(vertices);
 
       if (hasChord) {
         ret.push(...hasChord.map((h) => h.map((_h) => _h.val)));
@@ -315,8 +316,14 @@ class Graph {
     return cutCycles;
   }
 
-  private isChordFormInnerCycle(vertex: Vertex, polygon: Vertex[]) {
-    return false;
+  private isChordFormInnerCycle(
+    start: Vertex,
+    vertex: Vertex,
+    cycle: Vertex[]
+  ) {
+    let innerCycles: Vertex[][] = [];
+
+    return innerCycles;
   }
 
   private restoreOrder(cycle: string[]) {
