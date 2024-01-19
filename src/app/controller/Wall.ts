@@ -66,10 +66,6 @@ class Wall implements Drawing {
     const corner = this.active ? this.getClosestObject(this.active.end) : null;
     const closest = this.active ? this.getClosestWall(this.active.end) : null;
 
-    console.log("");
-    console.log("corner", corner);
-    console.log("");
-
     if (this.active) {
       if (corner) {
         corner.walls.push(this.active);
@@ -187,7 +183,6 @@ class Wall implements Drawing {
     );
 
     let end = this.isItWallEnd(wallToConnect, snapPos);
-    console.log("intersection", wallToConnect.uuid, intersection, end);
 
     if (end) {
       let corner = new Corner({

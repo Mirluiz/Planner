@@ -117,16 +117,18 @@ class Room {
         { pos: { x: -2, y: 0, z: -6 } },
         { pos: { x: 2, y: 0, z: -6 } },
         { pos: { x: 4, y: 0, z: -4 } },
-        // { pos: { x: -2, y: 0, z: -4 } }, // TODO: this causes inf loop in cycle detection
-        // null,
-        //
-        // { pos: { x: -2, y: 0, z: -6 } },
-        // { pos: { x: -4, y: 0, z: -8 } },
-        // { pos: { x: 8, y: 0, z: -8 } },
-        // { pos: { x: 8, y: 0, z: 0 } },
-        // { pos: { x: -4, y: 0, z: 0 } },
-        // { pos: { x: -8, y: 0, z: 0 } },
-        // { pos: { x: -8, y: 0, z: -8 } },
+
+        { pos: { x: 0, y: 0, z: -4 } },
+
+        null,
+
+        { pos: { x: -2, y: 0, z: -6 } },
+        { pos: { x: -4, y: 0, z: -8 } },
+        { pos: { x: 8, y: 0, z: -8 } },
+        { pos: { x: 8, y: 0, z: 0 } },
+        { pos: { x: -4, y: 0, z: 0 } },
+        { pos: { x: -8, y: 0, z: 0 } },
+        { pos: { x: -8, y: 0, z: -8 } },
 
         null,
       ],

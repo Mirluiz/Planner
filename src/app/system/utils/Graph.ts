@@ -1,6 +1,6 @@
 import { Math2D } from "./Math2D";
 
-type Vertex = { val: string; pos: { x: number; y: number } };
+export type Vertex = { val: string; pos: { x: number; y: number } };
 
 class Graph {
   graph: { [key: string]: Vertex[] } = {};

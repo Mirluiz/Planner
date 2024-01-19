@@ -95,7 +95,8 @@ class Room implements Object3D {
     let vertices: Vector3[] = [];
     let geometry = new THREE.BufferGeometry();
 
-    let res = Math2D.Polygon.earClipping([...this.corners].reverse());
+    // let res = Math2D.Polygon.earClipping([...this.corners].reverse());
+    let res = Math2D.Polygon.earClipping([...this.corners]);
 
     if (res) {
       vertices = res;
@@ -117,7 +118,10 @@ class Room implements Object3D {
   private getArea() {
     let vertices: Vector3[] = [];
 
-    let res = Math2D.Polygon.earClipping([...this.corners].reverse());
+    // let res = Math2D.Polygon.earClipping([...this.corners].reverse());
+    let res = Math2D.Polygon.earClipping([...this.corners]);
+    let innerHole = [];
+    let outerPolygon = [];
     let area = 0;
 
     if (res) {
