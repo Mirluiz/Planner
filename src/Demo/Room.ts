@@ -1,6 +1,4 @@
-import { Corner } from "../app/model";
 import { App } from "../app/App";
-import { Helpers, Object3DProps } from "../app/system";
 
 class Room {
   readonly app: App;

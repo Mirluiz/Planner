@@ -4,6 +4,13 @@ import Vector3 = Geometry.Vector3;
 import Line = Geometry.Line;
 
 class Polygon {
+  static cycleInner(cycle: string[], graph: Graph) {
+    let vertexCycles = graph.getVertexCycle(cycle);
+
+    let inner = graph.getInnerCycles(vertexCycles);
+    return inner;
+  }
+
   static connectInnerOuter(inner: Vertex[], outer: Vertex[], graph: Graph) {
     let { pair, maxRight } = this.getVisiblePair(inner, outer, graph);
 
@@ -49,7 +56,7 @@ class Polygon {
 
       let intersect = this.intersect(
         { origin, direction: new Vector3(1, 0, 0) },
-        line
+        line,
       );
 
       if (intersect) {
@@ -79,7 +86,7 @@ class Polygon {
 
   static intersect(
     ray: { origin: Vector3; direction: Vector3 },
-    line: Line
+    line: Line,
   ): { position: Vector3; line: Line; distance: number } | null {
     let { direction, origin } = ray;
     let lineDirection = line.end.clone().sub(line.start.clone()).normalize();
@@ -101,7 +108,7 @@ class Polygon {
       let intersectionPosition = new Vector3(
         ray.origin.x + t * ray.direction.x,
         0,
-        ray.origin.z + t * ray.direction.z
+        ray.origin.z + t * ray.direction.z,
       );
 
       let isIntersectionLefter =

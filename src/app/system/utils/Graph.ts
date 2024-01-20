@@ -12,7 +12,7 @@ class Graph {
     path: Array<{
       parent: string;
       current: string;
-    }>
+    }>,
   ) {
     let ret: string[] = [];
 
@@ -37,7 +37,7 @@ class Graph {
 
   addEdge(
     u: { val: string; pos: { x: number; y: number } },
-    v: { val: string; pos: { x: number; y: number } }
+    v: { val: string; pos: { x: number; y: number } },
   ): void {
     if (!this.graph[u.val]) {
       this.graph[u.val] = [];
@@ -84,7 +84,7 @@ class Graph {
 
       let neighbors = this.graph[current.val];
       let sortedNeighbors = neighbors.sort((a, b) =>
-        this.thetaSort(current, a, b)
+        this.thetaSort(current, a, b),
       );
 
       for (const neighbor of sortedNeighbors) {
@@ -122,6 +122,18 @@ class Graph {
     return ret;
   }
 
+  private dfs(vertex: Vertex, visited: { [key: string]: boolean } = {}) {
+    visited[vertex.val] = true;
+
+    const neighbors = this.graph[vertex.val] || [];
+
+    for (const neighbor of neighbors) {
+      if (!visited[neighbor.val]) {
+        this.dfs(neighbor, visited);
+      }
+    }
+  }
+
   private thetaSort(current: Vertex, a: Vertex, b: Vertex) {
     let aDiff =
       (Math.atan2(a.pos.x, a.pos.x) * 180) / Math.PI -
@@ -157,7 +169,7 @@ class Graph {
     return result.filter((res) => res.length > 0);
   }
 
-  private innerCycles(cycles: string[][]) {
+  innerCycles(cycles: string[][]) {
     let ret: string[][] = [];
 
     let _i = 0;
@@ -190,7 +202,7 @@ class Graph {
 
         if (
           !duplicatedRemove.find(
-            (c) => [...c].sort().join("") === [...cycle].sort().join("")
+            (c) => [...c].sort().join("") === [...cycle].sort().join(""),
           )
         ) {
           let order = this.restoreOrder(cycle);
@@ -207,7 +219,7 @@ class Graph {
     return duplicatedRemove;
   }
 
-  private hasChord(cycle: Vertex[], split: boolean = true) {
+  hasChord(cycle: Vertex[], split: boolean = true) {
     let ret: Vertex[][] | false = false;
 
     for (const node of cycle) {
@@ -295,13 +307,13 @@ class Graph {
           cycle,
           start,
           nextV,
-          end
+          end,
         );
         let secondPearceOfCycle = this.getVerticesFromTo(
           cycle,
           start,
           prevV,
-          end
+          end,
         );
 
         firstPearceOfCycle.push(...cutVertices);
@@ -316,14 +328,50 @@ class Graph {
     return cutCycles;
   }
 
-  private isChordFormInnerCycle(
-    start: Vertex,
-    vertex: Vertex,
-    cycle: Vertex[]
-  ) {
-    let innerCycles: Vertex[][] = [];
+  isChordFormInnerCycle(cycle: Vertex[]) {
+    let innerCycle: string[] = [];
+    for (const node of cycle) {
+      for (const neighbor of this.graph[node.val]) {
+        let isCycleVertex = cycle.find((ver) => ver.val === neighbor.val);
 
-    return innerCycles;
+        if (!isCycleVertex && this.isVertexInsideCycle(neighbor, cycle)) {
+          let didCut = this.isChordCutCycle(node, neighbor, cycle);
+          if (!didCut) {
+            innerCycle = this.bfs(neighbor, neighbor);
+          }
+        }
+      }
+    }
+
+    return innerCycle;
+  }
+
+  getInnerCycles(cycle: Vertex[]) {
+    let innerVertices: Vertex[] = [];
+
+    Object.values(this.vertices).map((ver) => {
+      if (this.isVertexInsideCycle(ver, cycle)) {
+        let isVertexOnCycle = cycle.find((v) => v.val === ver.val);
+
+        if (!isVertexOnCycle) {
+          innerVertices.push(ver);
+        }
+      }
+    });
+
+    if (innerVertices.length > 2) {
+      let innerCycle = this.bfs(innerVertices[0], innerVertices[1]);
+
+      const hasIntersections = cycle.filter((value) =>
+        innerCycle.includes(value.val),
+      );
+
+      if (hasIntersections.length === 0) {
+        return innerCycle;
+      }
+    }
+
+    return [];
   }
 
   private restoreOrder(cycle: string[]) {
@@ -348,7 +396,7 @@ class Graph {
     return ret.length > 0 ? ret : null;
   }
 
-  private getVertexCycle(cycle: string[]): Vertex[] {
+  getVertexCycle(cycle: string[]): Vertex[] {
     let ret: Vertex[] = [];
 
     cycle.map((v) => {
@@ -364,7 +412,7 @@ class Graph {
     cycle: Vertex[],
     parent: Vertex,
     start: Vertex,
-    end: Vertex
+    end: Vertex,
   ) {
     if (start.val === end.val) return [start, parent];
 
