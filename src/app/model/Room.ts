@@ -83,10 +83,11 @@ class Room implements Object3D {
     material.transparent = true;
     material.opacity = 0.5;
 
-    let txtMesh = this.getText(this.getArea().toString());
-    if (txtMesh) {
-      mesh.add(txtMesh);
-    }
+    // let txtMesh = this.getText(this.getArea().toString());
+    // let txtMesh = "";
+    // if (txtMesh) {
+    //   mesh.add(txtMesh);
+    // }
 
     this.mesh?.render(mesh);
 
@@ -98,7 +99,7 @@ class Room implements Object3D {
     let geometry = new THREE.BufferGeometry();
 
     // let res = Math2D.Polygon.earClipping([...this.corners].reverse());
-    let res = Polygon.getTriangles([...this.corners]);
+    let res = Polygon.getTriangles(this.corners);
     console.log("res", res);
 
     // if (res) {
@@ -118,35 +119,35 @@ class Room implements Object3D {
     return geometry;
   }
 
-  private getArea() {
-    let vertices: Vector3[] = [];
-
-    let triangulation = Polygon.getTriangles([...this.corners]);
-    let innerHole = [];
-    let outerPolygon = [];
-    let area = 0;
-
-    if (triangulation) {
-      // vertices = triangulation;
-    }
-
-    let _i = 0;
-    const n = vertices.length;
-    while (_i < vertices.length) {
-      const v0 = vertices[_i];
-      const v1 = vertices[(_i + 1) % n];
-      const v2 = vertices[(_i + 2) % n];
-
-      area +=
-        Math.abs(
-          v0.x * (v1.z - v2.z) + v1.x * (v2.z - v0.z) + v2.x * (v0.z - v1.z)
-        ) / 2;
-
-      _i += 3;
-    }
-
-    return area;
-  }
+  // private getArea() {
+  //   let vertices: Vector3[] = [];
+  //
+  //   let triangulation = Polygon.getTriangles([...this.corners]);
+  //   let innerHole = [];
+  //   let outerPolygon = [];
+  //   let area = 0;
+  //
+  //   if (triangulation) {
+  //     // vertices = triangulation;
+  //   }
+  //
+  //   let _i = 0;
+  //   const n = vertices.length;
+  //   while (_i < vertices.length) {
+  //     const v0 = vertices[_i];
+  //     const v1 = vertices[(_i + 1) % n];
+  //     const v2 = vertices[(_i + 2) % n];
+  //
+  //     area +=
+  //       Math.abs(
+  //         v0.x * (v1.z - v2.z) + v1.x * (v2.z - v0.z) + v2.x * (v0.z - v1.z)
+  //       ) / 2;
+  //
+  //     _i += 3;
+  //   }
+  //
+  //   return area;
+  // }
 
   private getText(info?: string) {
     if (!Storage.debug) return null;

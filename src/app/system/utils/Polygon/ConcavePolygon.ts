@@ -5,52 +5,69 @@ import Line = Geometry.Line;
 import { Corner } from "../../../model";
 
 class ConcavePolygon {
-  static earClipping(corners: Corner[]) {
-    const n = corners.length;
+  static earClipping(vertices: Vertex[]): Vertex[] | undefined {
+    const n = vertices.length;
     if (n < 3) {
       return;
     }
 
-    const result: Geometry.Vector3[] = [];
+    const result: Vertex[] = [];
 
     // Copy the vertices to avoid modifying the original array
     const remainingVertices = [
-      ...corners.map(
-        (corner) =>
-          new Vector3(corner.position.x, corner.position.y, corner.position.z)
-      ),
+      ...vertices.map((vertex) => {
+        return {
+          pos: vertex,
+          vertex,
+        };
+      }),
     ];
+    // console.log("before", remainingVertices);
 
-    while (remainingVertices.length > 2) {
+    let whileLimit = 4000;
+    let limitCounter = 0;
+
+    while (remainingVertices.length > 2 && limitCounter < whileLimit) {
       for (let i = 0; i < remainingVertices.length; i++) {
         const v0 = remainingVertices[i];
         const v1 = remainingVertices[(i + 1) % n];
         const v2 = remainingVertices[(i + 2) % n];
 
-        if (this.isEar(v0, v1, v2, remainingVertices)) {
+        let rV = remainingVertices.map((rV) => rV.pos);
+
+        if (this.isEar(v0.pos, v1.pos, v2.pos, rV)) {
           // Found an ear, add triangle and remove ear vertex
-          result.push(v0, v1, v2);
+          result.push(v0.vertex, v1.vertex, v2.vertex);
           remainingVertices.splice((i + 1) % n, 1);
           break; // Restart the loop
         }
       }
+
+      limitCounter++;
     }
+    console.log("remainingVertices", remainingVertices);
 
     // Add the last triangle
-    result.push(...remainingVertices);
+    result.push(...remainingVertices.map((rV) => rV.vertex));
     return result;
   }
 
   static isEar(
-    v0: Vector3,
-    v1: Vector3,
-    v2: Vector3,
-    vertices: Geometry.Vector3[]
+    v0: Vertex,
+    v1: Vertex,
+    v2: Vertex,
+    vertices: Vertex[]
   ): boolean {
     if (!v2) return false;
+
+    let voVector = new Vector3(v0.position.x, 0, v0.position.y);
+    let v1Vector = new Vector3(v1.position.x, 0, v1.position.y);
+    let v2Vector = new Vector3(v2.position.x, 0, v2.position.y);
+
     // Check if the angle at v1 is concave
     const crossProduct =
-      (v2.x - v1.x) * (v0.z - v1.z) - (v2.z - v1.z) * (v0.x - v1.x);
+      (v2Vector.x - v1Vector.x) * (voVector.z - v1Vector.z) -
+      (v2Vector.z - v1Vector.z) * (voVector.x - v1Vector.x);
     if (crossProduct >= 0) {
       return false; // Convex angle, not an ear
     }
@@ -58,11 +75,17 @@ class ConcavePolygon {
     // Check if any other vertex is inside the triangle v0-v1-v2
     for (const vertex of vertices) {
       if (
-        vertex !== v0 &&
-        vertex !== v1 &&
-        vertex !== v2 &&
-        this.pointInTriangle(v0, v1, v2, vertex)
+        vertex.uuid !== v0.uuid &&
+        vertex.uuid !== v1.uuid &&
+        vertex.uuid !== v2.uuid &&
+        this.pointInTriangle(
+          voVector,
+          v1Vector,
+          v2Vector,
+          new Vector3(vertex.position.x, 0, vertex.position.y)
+        )
       ) {
+        // console.log("===", vertex, v0);
         return false; // Found a vertex inside the triangle, not an ear
       }
     }
@@ -130,36 +153,6 @@ class ConcavePolygon {
 
     // If the majority of cross products are positive, the cycle is counterclockwise
     return positiveCount > negativeCount;
-  }
-
-  static cycleInner(cycle: string[], graph: Graph) {
-    let vertexCycles = graph.getVertexCycle(cycle);
-
-    let inner = graph.getInnerCycles(vertexCycles);
-    return inner;
-  }
-
-  static connectInnerOuter(inner: Vertex[], outer: Vertex[], graph: Graph) {
-    let { pair, maxRight } = this.getVisiblePair(inner, outer, graph);
-
-    if (pair) {
-      let pairIndexInner = inner.findIndex((i) => i.uuid === maxRight?.uuid);
-      let pairIndexOuter = outer.findIndex((i) => i.uuid === pair?.uuid);
-
-      let innerFirstHalf = inner.slice(0, pairIndexInner);
-      let innerSecondHalf = inner.slice(pairIndexInner);
-      let sortedInnerByIndex = [...innerSecondHalf, ...innerFirstHalf]; //move paar inner index to start;
-
-      let outerFirstHalf = outer.slice(0, pairIndexOuter);
-      let outerSecondHalf = outer.slice(pairIndexOuter);
-
-      return [
-        ...outerFirstHalf,
-        pair,
-        ...sortedInnerByIndex,
-        ...outerSecondHalf,
-      ];
-    }
   }
 
   static getVisiblePair(inner: Vertex[], outer: Vertex[], graph: Graph) {
@@ -274,9 +267,9 @@ class ConcavePolygon {
   }
 
   static getTriangles(cycle: Array<Vertex>, graph: Graph): Vertex[] {
-    let ret: Vertex[] = [];
+    let ret: Vertex[] | undefined = this.earClipping(cycle);
 
-    return ret;
+    return ret ?? [];
   }
 }
 

@@ -155,8 +155,6 @@ class Room {
     });
 
     wallController.reset();
-
-    console.log("wallController.graph", wallController.graph);
   }
 }
 

@@ -56,7 +56,7 @@ class Graph {
     this.vertices[v.uuid] = v;
   }
 
-  private bfs(startVertex: Vertex, nextVertex: Vertex): string[] {
+  bfs(startVertex: Vertex, nextVertex: Vertex): string[] {
     let ret: string[] = [];
     let cycles: string[][] = [];
     let startVisited: 0 | 1 | 2 = 0;
@@ -246,7 +246,7 @@ class Graph {
     return ret;
   }
 
-  private isVertexInsideCycle(vertex: Vertex, cycle: Vertex[]) {
+  isVertexInsideCycle(vertex: Vertex, cycle: Vertex[]) {
     let inside = false;
     const { x, y } = vertex.position;
 
