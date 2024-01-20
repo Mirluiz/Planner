@@ -44,12 +44,12 @@ describe("Polygon", () => {
 
     let outer = [ver0, ver1, ver2, ver3];
     let inner = [ver4, ver5, ver6, ver7];
-    // let res = Polygon.connectInnerOuter(Object.values(graph.vertices), graph);
+
     let res = Polygon.getVisiblePair(inner, outer, graph);
     console.log("res", res);
   });
 
-  test("Triangulation polygon with hole", () => {
+  test("Triangulation polygon with hole. ", () => {
     const ver0 = { val: "0", pos: { x: 0, y: 0 } };
     const ver1 = { val: "1", pos: { x: 4, y: 2 } };
     const ver2 = { val: "2", pos: { x: 8, y: -1 } };
@@ -93,26 +93,10 @@ describe("Polygon", () => {
       ver14,
     ];
     let inner = [ver15, ver16, ver17];
-    // let res = Polygon.connectInnerOuter(Object.values(graph.vertices), graph);
     let res = Polygon.getVisiblePair(inner, outer, graph);
-    console.log("res", res);
   });
 
-  test("Intersection", () => {
-    let line1Ver = { x: 4, y: -3 };
-    let line2Ver = { x: 4, y: 3 };
-
-    let line = {
-      start: new THREE.Vector3(line1Ver.x, 0, line1Ver.y),
-      end: new THREE.Vector3(line2Ver.x, 0, line2Ver.y),
-    };
-    let origin = new THREE.Vector3(0, 0, 0);
-    let direction = new THREE.Vector3(1, 0, 0);
-
-    let res = Polygon.intersect({ origin, direction }, line);
-  });
-
-  test("Intersection case 1", () => {
+  test("Triangulation polygon with hole. connection check", () => {
     const ver0 = { val: "0", pos: { x: 0, y: 0 } };
     const ver1 = { val: "1", pos: { x: 4, y: 2 } };
     const ver2 = { val: "2", pos: { x: 8, y: -1 } };
@@ -136,17 +120,27 @@ describe("Polygon", () => {
     const ver16 = { val: "16", pos: { x: 3.5, y: -3.6 } };
     const ver17 = { val: "17", pos: { x: 2.5, y: 0.5 } };
 
-    let line1Ver = ver1.pos;
-    let line2Ver = ver2.pos;
+    const graph = new Graph();
 
-    let line = {
-      start: new THREE.Vector3(line1Ver.x, 0, line1Ver.y),
-      end: new THREE.Vector3(line2Ver.x, 0, line2Ver.y),
-    };
-    let origin = new THREE.Vector3(ver16.pos.x, 0, ver16.pos.y);
-    let direction = new THREE.Vector3(1, 0, 0);
-
-    let res = Polygon.intersect({ origin, direction }, line);
-    console.log("res", res);
+    let outer = [
+      ver0,
+      ver1,
+      ver2,
+      ver3,
+      ver4,
+      ver5,
+      ver6,
+      ver7,
+      ver8,
+      ver9,
+      ver10,
+      ver11,
+      ver12,
+      ver13,
+      ver14,
+    ];
+    let inner = [ver15, ver16, ver17];
+    let res = Polygon.connectInnerOuter(inner, outer, graph);
+    console.log("res ", res);
   });
 });

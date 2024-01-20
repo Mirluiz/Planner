@@ -4,19 +4,41 @@ import Vector3 = Geometry.Vector3;
 import Line = Geometry.Line;
 
 class Polygon {
-  static connectInnerOuter(vertices: Vertex[], graph: Graph) {}
+  static connectInnerOuter(inner: Vertex[], outer: Vertex[], graph: Graph) {
+    let { pair, maxRight } = this.getVisiblePair(inner, outer, graph);
+
+    if (pair) {
+      let pairIndexInner = inner.findIndex((i) => i.val === maxRight?.val);
+      let pairIndexOuter = outer.findIndex((i) => i.val === pair?.val);
+
+      let innerFirstHalf = inner.slice(0, pairIndexInner);
+      let innerSecondHalf = inner.slice(pairIndexInner);
+      let sortedInnerByIndex = [...innerSecondHalf, ...innerFirstHalf]; //move paar inner index to start;
+
+      let outerFirstHalf = outer.slice(0, pairIndexOuter);
+      let outerSecondHalf = outer.slice(pairIndexOuter);
+
+      return [
+        ...outerFirstHalf,
+        pair,
+        ...sortedInnerByIndex,
+        ...outerSecondHalf,
+      ];
+    }
+  }
   static getVisiblePair(inner: Vertex[], outer: Vertex[], graph: Graph) {
     let pair: Vertex | null = null;
+    let intersections: Array<{
+      distance: number;
+      line: Line & { connections: { start: Vertex; end: Vertex } };
+    }> = [];
 
     let maxRight = [...inner].sort((a, b) => b.pos.x - a.pos.x)[0];
-
-    let intersectedWall:
+    let closestIntersectedLine:
       | (Line & { connections: { start: Vertex; end: Vertex } })
       | undefined;
 
     outer.map((vertex, index, array) => {
-      if (intersectedWall) return;
-
       let nextVertex = array[(index + 1) % array.length];
       let line = {
         start: new Vector3(vertex.pos.x, 0, vertex.pos.y),
@@ -31,30 +53,26 @@ class Polygon {
       );
 
       if (intersect) {
-        console.log("line", line);
-        console.log("vertex", vertex);
-        console.log("nextVertex", nextVertex);
-        console.log("origin", origin);
-        console.log("maxRight", maxRight);
-        intersectedWall = line;
+        intersections.push({ distance: intersect.distance, line: line });
       }
     });
 
-    if (intersectedWall) {
-      let maxRightOnWall =
-        intersectedWall.start.x > intersectedWall.end.x
-          ? intersectedWall.connections.start
-          : intersectedWall.connections.end;
+    let shortest = intersections.sort((a, b) => a.distance - b.distance);
+    closestIntersectedLine = shortest[0]?.line;
 
-      pair = maxRightOnWall;
+    if (closestIntersectedLine) {
+      pair =
+        closestIntersectedLine.start.x > closestIntersectedLine.end.x
+          ? closestIntersectedLine.connections.start
+          : closestIntersectedLine.connections.end;
     }
 
     return {
       maxRight,
       pair,
-      intersectedWall: {
-        start: intersectedWall?.connections.start,
-        end: intersectedWall?.connections.end,
+      intersectedLine: {
+        start: closestIntersectedLine?.connections.start,
+        end: closestIntersectedLine?.connections.end,
       },
     };
   }
@@ -62,7 +80,7 @@ class Polygon {
   static intersect(
     ray: { origin: Vector3; direction: Vector3 },
     line: Line
-  ): { position: Vector3; line: Line } | null {
+  ): { position: Vector3; line: Line; distance: number } | null {
     let { direction, origin } = ray;
     let lineDirection = line.end.clone().sub(line.start.clone()).normalize();
     let lineLn = line.end.clone().sub(line.start.clone()).length();
@@ -70,9 +88,8 @@ class Polygon {
     const crossProduct =
       lineDirection.x * direction.z - lineDirection.z * direction.x;
 
-    // Check if the lines are parallel
     if (crossProduct === 0) {
-      return null; // No intersection (parallel lines)
+      return null;
     }
 
     const t =
@@ -81,16 +98,41 @@ class Polygon {
       crossProduct;
 
     if (t >= 0 && t <= lineLn) {
-      return {
-        position: new Vector3(
-          ray.origin.x + t * ray.direction.x,
-          0,
-          ray.origin.z + t * ray.direction.z
-        ),
-        line,
-      };
+      let intersectionPosition = new Vector3(
+        ray.origin.x + t * ray.direction.x,
+        0,
+        ray.origin.z + t * ray.direction.z
+      );
+
+      let isIntersectionLefter =
+        line.start.x < intersectionPosition.x &&
+        line.end.x < intersectionPosition.x;
+      let isIntersectionRighter =
+        line.start.x > intersectionPosition.x &&
+        line.end.x > intersectionPosition.x;
+
+      let isIntersectionUpper =
+        line.start.z < intersectionPosition.z &&
+        line.end.z < intersectionPosition.z;
+      let isIntersectionSmaller =
+        line.start.z > intersectionPosition.z &&
+        line.end.z > intersectionPosition.z;
+
+      if (
+        isIntersectionLefter ||
+        isIntersectionRighter ||
+        isIntersectionUpper ||
+        isIntersectionSmaller
+      ) {
+        return null;
+      } else {
+        return {
+          position: intersectionPosition,
+          distance: t,
+          line,
+        };
+      }
     } else {
-      // No intersection along the ray
       return null;
     }
   }
