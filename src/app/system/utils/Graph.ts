@@ -346,32 +346,46 @@ class Graph {
     return innerCycle;
   }
 
-  getInnerCycles(cycle: Vertex[]) {
-    let innerVertices: Vertex[] = [];
+  getInnerCycles(cycle: Vertex[]): string[][] {
+    let cycles: string[][] = [];
 
-    Object.values(this.vertices).map((ver) => {
-      if (this.isVertexInsideCycle(ver, cycle)) {
-        let isVertexOnCycle = cycle.find((v) => v.val === ver.val);
+    const getInner = (cycle: Vertex[], vertices: Vertex[]) => {
+      let innerVertices: Vertex[] = [];
 
-        if (!isVertexOnCycle) {
-          innerVertices.push(ver);
+      vertices.map((ver) => {
+        if (this.isVertexInsideCycle(ver, cycle)) {
+          let isVertexOnCycle = cycle.find((v) => v.val === ver.val);
+
+          if (!isVertexOnCycle) {
+            innerVertices.push(ver);
+          }
+        }
+      });
+
+      if (innerVertices.length > 2) {
+        let innerCycle = this.bfs(innerVertices[0], innerVertices[1]);
+
+        const hasIntersections = cycle.filter((value) =>
+          innerCycle.includes(value.val),
+        );
+
+        if (hasIntersections.length === 0) {
+          cycles.push(innerCycle);
+        }
+
+        let remainingVertices = innerVertices.filter(
+          (value) => !innerCycle.includes(value.val),
+        );
+
+        if (remainingVertices.length > 2) {
+          getInner(cycle, remainingVertices);
         }
       }
-    });
+    };
 
-    if (innerVertices.length > 2) {
-      let innerCycle = this.bfs(innerVertices[0], innerVertices[1]);
+    getInner(cycle, Object.values(this.vertices));
 
-      const hasIntersections = cycle.filter((value) =>
-        innerCycle.includes(value.val),
-      );
-
-      if (hasIntersections.length === 0) {
-        return innerCycle;
-      }
-    }
-
-    return [];
+    return cycles;
   }
 
   private restoreOrder(cycle: string[]) {

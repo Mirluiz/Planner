@@ -56,7 +56,7 @@ class Corner {
   run() {
     let corners: Array<CornerModel> = [];
 
-    this.examples[1].corners.map((cornerData, index) => {
+    this.examples[0].corners.map((cornerData, index) => {
       let corner = new CornerModel({
         rotation: { w: 0, x: 0, y: 0, z: 0 },
         // uuid: Helpers.uuid(),

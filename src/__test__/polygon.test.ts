@@ -1,6 +1,6 @@
 import { describe, test } from "@jest/globals";
 import { Graph } from "../app/system";
-import { Polygon } from "../app/system/utils/Polygon";
+import { Polygon } from "../app/system/utils/Polygon/Polygon";
 
 describe("Polygon", () => {
   /**
@@ -43,7 +43,6 @@ describe("Polygon", () => {
       let inner = Polygon.cycleInner(cycle, graph);
     });
 
-    // let res = Polygon.cycleInner(outer, graph);
     // console.log("res", res);
   });
 

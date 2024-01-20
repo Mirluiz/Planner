@@ -3,7 +3,7 @@ import { Graph, Math2D } from "../app/system";
 import { Wall } from "./../app/model/Wall/Wall";
 import * as THREE from "three";
 import { App } from "../app/App";
-import { Polygon } from "../app/system/utils/Polygon";
+import { Polygon } from "../app/system/utils/Polygon/Polygon";
 
 describe("Intersections", () => {
   test("Intersection", () => {
