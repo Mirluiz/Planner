@@ -1,6 +1,9 @@
 import { Math2D } from "./Math2D";
 
-export type Vertex = { val: string; pos: { x: number; y: number } };
+export interface Vertex {
+  uuid: string;
+  position: { x: number; y: number };
+}
 
 class Graph {
   graph: { [key: string]: Vertex[] } = {};
@@ -12,7 +15,7 @@ class Graph {
     path: Array<{
       parent: string;
       current: string;
-    }>,
+    }>
   ) {
     let ret: string[] = [];
 
@@ -36,21 +39,21 @@ class Graph {
   }
 
   addEdge(
-    u: { val: string; pos: { x: number; y: number } },
-    v: { val: string; pos: { x: number; y: number } },
+    u: { uuid: string; position: { x: number; y: number } },
+    v: { uuid: string; position: { x: number; y: number } }
   ): void {
-    if (!this.graph[u.val]) {
-      this.graph[u.val] = [];
+    if (!this.graph[u.uuid]) {
+      this.graph[u.uuid] = [];
     }
-    if (!this.graph[v.val]) {
-      this.graph[v.val] = [];
+    if (!this.graph[v.uuid]) {
+      this.graph[v.uuid] = [];
     }
 
-    this.graph[u.val].push(v);
-    this.graph[v.val].push(u);
+    this.graph[u.uuid].push(v);
+    this.graph[v.uuid].push(u);
 
-    this.vertices[u.val] = u;
-    this.vertices[v.val] = v;
+    this.vertices[u.uuid] = u;
+    this.vertices[v.uuid] = v;
   }
 
   private bfs(startVertex: Vertex, nextVertex: Vertex): string[] {
@@ -68,51 +71,51 @@ class Graph {
     let queue: Vertex[] = [];
     const parent: { [key: string]: string } = {};
 
-    parent[nextVertex.val] = startVertex.val;
+    parent[nextVertex.uuid] = startVertex.uuid;
     queue.push(nextVertex);
 
     path.push({
-      parent: startVertex.val,
-      current: nextVertex.val,
+      parent: startVertex.uuid,
+      current: nextVertex.uuid,
     });
 
-    visited[startVertex.val] = true;
-    visited[nextVertex.val] = true;
+    visited[startVertex.uuid] = true;
+    visited[nextVertex.uuid] = true;
 
     while (queue.length > 0) {
       const current = queue.shift()!;
 
-      let neighbors = this.graph[current.val];
+      let neighbors = this.graph[current.uuid];
       let sortedNeighbors = neighbors.sort((a, b) =>
-        this.thetaSort(current, a, b),
+        this.thetaSort(current, a, b)
       );
 
       for (const neighbor of sortedNeighbors) {
-        if (neighbor.val === startVertex.val) {
+        if (neighbor.uuid === startVertex.uuid) {
           startVisited++;
         }
 
-        if (!visited[neighbor.val]) {
+        if (!visited[neighbor.uuid]) {
           if (
-            neighbor.val === startVertex.val &&
-            current.val === nextVertex.val
+            neighbor.uuid === startVertex.uuid &&
+            current.uuid === nextVertex.uuid
           ) {
-            visited[neighbor.val] = true;
+            visited[neighbor.uuid] = true;
             continue;
           }
 
           queue.push(neighbor);
 
-          parent[neighbor.val] = current.val;
+          parent[neighbor.uuid] = current.uuid;
 
           path.push({
-            parent: current.val,
-            current: neighbor.val,
+            parent: current.uuid,
+            current: neighbor.uuid,
           });
 
-          visited[neighbor.val] = true;
-        } else if (startVertex.val === neighbor.val && startVisited === 2) {
-          ret = this.getPath(startVertex.val, current.val, path);
+          visited[neighbor.uuid] = true;
+        } else if (startVertex.uuid === neighbor.uuid && startVisited === 2) {
+          ret = this.getPath(startVertex.uuid, current.uuid, path);
 
           cycles[ret.length] = ret;
         }
@@ -123,12 +126,12 @@ class Graph {
   }
 
   private dfs(vertex: Vertex, visited: { [key: string]: boolean } = {}) {
-    visited[vertex.val] = true;
+    visited[vertex.uuid] = true;
 
-    const neighbors = this.graph[vertex.val] || [];
+    const neighbors = this.graph[vertex.uuid] || [];
 
     for (const neighbor of neighbors) {
-      if (!visited[neighbor.val]) {
+      if (!visited[neighbor.uuid]) {
         this.dfs(neighbor, visited);
       }
     }
@@ -136,12 +139,12 @@ class Graph {
 
   private thetaSort(current: Vertex, a: Vertex, b: Vertex) {
     let aDiff =
-      (Math.atan2(a.pos.x, a.pos.x) * 180) / Math.PI -
-      (Math.atan2(current.pos.x, current.pos.x) * 180) / Math.PI;
+      (Math.atan2(a.position.x, a.position.x) * 180) / Math.PI -
+      (Math.atan2(current.position.x, current.position.x) * 180) / Math.PI;
 
     let bDiff =
-      (Math.atan2(b.pos.x, b.pos.x) * 180) / Math.PI -
-      (Math.atan2(current.pos.x, current.pos.x) * 180) / Math.PI;
+      (Math.atan2(b.position.x, b.position.x) * 180) / Math.PI -
+      (Math.atan2(current.position.x, current.position.x) * 180) / Math.PI;
 
     return Math.abs(bDiff) - Math.abs(aDiff);
   }
@@ -153,7 +156,7 @@ class Graph {
 
     let _i = 0;
     while (_i < max) {
-      let adjs = this.graph[Object.values(this.vertices)[_i].val];
+      let adjs = this.graph[Object.values(this.vertices)[_i].uuid];
 
       adjs.map((adj, index) => {
         allCycles.push(this.bfs(Object.values(this.vertices)[_i], adj));
@@ -181,7 +184,7 @@ class Graph {
       let hasInnerCycle = this.hasChord(vertices);
 
       if (hasChord) {
-        ret.push(...hasChord.map((h) => h.map((_h) => _h.val)));
+        ret.push(...hasChord.map((h) => h.map((_h) => _h.uuid)));
       } else {
         ret.push(cycle);
       }
@@ -202,7 +205,7 @@ class Graph {
 
         if (
           !duplicatedRemove.find(
-            (c) => [...c].sort().join("") === [...cycle].sort().join(""),
+            (c) => [...c].sort().join("") === [...cycle].sort().join("")
           )
         ) {
           let order = this.restoreOrder(cycle);
@@ -225,10 +228,10 @@ class Graph {
     for (const node of cycle) {
       if (ret) break;
 
-      for (const neighbor of this.graph[node.val]) {
+      for (const neighbor of this.graph[node.uuid]) {
         if (ret) break;
 
-        let res = cycle.find((ver) => ver.val === neighbor.val);
+        let res = cycle.find((ver) => ver.uuid === neighbor.uuid);
 
         if (!res && this.isVertexInsideCycle(neighbor, cycle)) {
           let res = this.isChordCutCycle(node, neighbor, cycle);
@@ -245,13 +248,13 @@ class Graph {
 
   private isVertexInsideCycle(vertex: Vertex, cycle: Vertex[]) {
     let inside = false;
-    const { x, y } = vertex.pos;
+    const { x, y } = vertex.position;
 
     for (let i = 0, j = cycle.length - 1; i < cycle.length; j = i++) {
-      const xi = cycle[i].pos.x;
-      const yi = cycle[i].pos.y;
-      const xj = cycle[j].pos.x;
-      const yj = cycle[j].pos.y;
+      const xi = cycle[i].position.x;
+      const yi = cycle[i].position.y;
+      const xj = cycle[j].position.x;
+      const yj = cycle[j].position.y;
 
       const intersect =
         yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
@@ -270,22 +273,22 @@ class Graph {
     let cutVertices: Vertex[] = [];
     let end: null | Vertex = null;
     let visited: string[] = [];
-    visited.push(start.val);
+    visited.push(start.uuid);
 
     const getNext = (ver: Vertex) => {
       if (end) return;
 
-      visited.push(ver.val);
+      visited.push(ver.uuid);
       cutVertices.push(ver);
 
-      for (const neighbor of this.graph[ver.val]) {
+      for (const neighbor of this.graph[ver.uuid]) {
         if (end) break;
-        if (neighbor.val === start.val) continue;
-        if (visited.includes(neighbor.val)) continue;
+        if (neighbor.uuid === start.uuid) continue;
+        if (visited.includes(neighbor.uuid)) continue;
 
-        let res = cycle.find((v) => v.val === neighbor.val);
+        let res = cycle.find((v) => v.uuid === neighbor.uuid);
 
-        if (res && res.val !== start.val) {
+        if (res && res.uuid !== start.uuid) {
           end = neighbor;
 
           break;
@@ -298,7 +301,7 @@ class Graph {
     getNext(vertex);
 
     if (end) {
-      let index = cycle.findIndex((ver) => ver.val === start.val);
+      let index = cycle.findIndex((ver) => ver.uuid === start.uuid);
       let prevV = cycle[(index + 1) % cycle.length];
       let nextV = cycle[index - 1];
 
@@ -307,13 +310,13 @@ class Graph {
           cycle,
           start,
           nextV,
-          end,
+          end
         );
         let secondPearceOfCycle = this.getVerticesFromTo(
           cycle,
           start,
           prevV,
-          end,
+          end
         );
 
         firstPearceOfCycle.push(...cutVertices);
@@ -331,8 +334,8 @@ class Graph {
   isChordFormInnerCycle(cycle: Vertex[]) {
     let innerCycle: string[] = [];
     for (const node of cycle) {
-      for (const neighbor of this.graph[node.val]) {
-        let isCycleVertex = cycle.find((ver) => ver.val === neighbor.val);
+      for (const neighbor of this.graph[node.uuid]) {
+        let isCycleVertex = cycle.find((ver) => ver.uuid === neighbor.uuid);
 
         if (!isCycleVertex && this.isVertexInsideCycle(neighbor, cycle)) {
           let didCut = this.isChordCutCycle(node, neighbor, cycle);
@@ -354,7 +357,7 @@ class Graph {
 
       vertices.map((ver) => {
         if (this.isVertexInsideCycle(ver, cycle)) {
-          let isVertexOnCycle = cycle.find((v) => v.val === ver.val);
+          let isVertexOnCycle = cycle.find((v) => v.uuid === ver.uuid);
 
           if (!isVertexOnCycle) {
             innerVertices.push(ver);
@@ -366,7 +369,7 @@ class Graph {
         let innerCycle = this.bfs(innerVertices[0], innerVertices[1]);
 
         const hasIntersections = cycle.filter((value) =>
-          innerCycle.includes(value.val),
+          innerCycle.includes(value.uuid)
         );
 
         if (hasIntersections.length === 0) {
@@ -374,7 +377,7 @@ class Graph {
         }
 
         let remainingVertices = innerVertices.filter(
-          (value) => !innerCycle.includes(value.val),
+          (value) => !innerCycle.includes(value.uuid)
         );
 
         if (remainingVertices.length > 2) {
@@ -398,8 +401,8 @@ class Graph {
       ret.push(vertex);
 
       for (let neighbor of adj) {
-        if (!ret.includes(neighbor.val) && cycle.includes(neighbor.val)) {
-          getNext(neighbor.val);
+        if (!ret.includes(neighbor.uuid) && cycle.includes(neighbor.uuid)) {
+          getNext(neighbor.uuid);
           break;
         }
       }
@@ -426,29 +429,29 @@ class Graph {
     cycle: Vertex[],
     parent: Vertex,
     start: Vertex,
-    end: Vertex,
+    end: Vertex
   ) {
-    if (start.val === end.val) return [start, parent];
+    if (start.uuid === end.uuid) return [start, parent];
 
     let ret: Vertex[] = [];
     let visited: string[] = [];
 
-    visited.push(parent.val);
+    visited.push(parent.uuid);
     ret.push(parent);
 
     let done: boolean = false;
     const getNext = (ver: Vertex) => {
       if (done) return;
 
-      visited.push(ver.val);
+      visited.push(ver.uuid);
       ret.push(ver);
 
-      for (const neighbor of this.graph[ver.val]) {
+      for (const neighbor of this.graph[ver.uuid]) {
         if (done) break;
-        if (neighbor.val === start.val) continue;
-        if (visited.includes(neighbor.val)) continue;
+        if (neighbor.uuid === start.uuid) continue;
+        if (visited.includes(neighbor.uuid)) continue;
 
-        if (neighbor.val === end.val) {
+        if (neighbor.uuid === end.uuid) {
           ret.push(neighbor);
           done = true;
           break;

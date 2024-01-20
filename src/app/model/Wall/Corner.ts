@@ -6,13 +6,14 @@ import {
   Object3DSchema,
   Entity,
   Storage,
+  Vertex,
 } from "../../system";
 import * as THREE from "three";
 import { Wall } from "./Wall";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Vector3 } from "three";
 
-class Corner implements Object3D {
+class Corner implements Object3D, Vertex {
   mesh: Engine.Mesh | null = null;
   walls: Array<Wall> = [];
 

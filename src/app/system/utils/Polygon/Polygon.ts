@@ -1,24 +1,29 @@
 import { HolePolygon, ConcavePolygon, ConvexPolygon } from "./";
+import { Graph, Vertex } from "../Graph";
 
 class Polygon {
-  hole: HolePolygon;
-  concave: ConcavePolygon;
-  convex: ConcavePolygon;
+  static isConcave(cycle: Array<Vertex>): boolean {
+    return false;
+  }
+  static isConvex(cycle: Array<Vertex>): boolean {
+    return false;
+  }
+  static hasHole(cycle: Array<Vertex>): boolean {
+    return false;
+  }
 
-  constructor() {
-    this.hole = new HolePolygon();
-    this.concave = new ConcavePolygon();
-    this.convex = new ConvexPolygon();
-  }
+  static getTriangles(cycle: Array<Vertex>, graph: Graph): Vertex[] {
+    let ret: Vertex[] = [];
 
-  static isConcave(): boolean {
-    return false;
-  }
-  static isConvex(): boolean {
-    return false;
-  }
-  static hasHole(): boolean {
-    return false;
+    if (this.hasHole(cycle)) {
+      ret = HolePolygon.getTriangles(cycle, graph);
+    } else if (this.isConcave(cycle)) {
+      ret = ConcavePolygon.getTriangles(cycle, graph);
+    } else if (this.isConvex(cycle)) {
+      ret = ConvexPolygon.getTriangles(cycle, graph);
+    }
+
+    return ret;
   }
 }
 

@@ -5,7 +5,7 @@ import Line = Geometry.Line;
 import { Corner } from "../../../model";
 
 class HolePolygon {
-  static earClipping(corners: Corner[]) {
+  private static earClipping(corners: Corner[]) {
     const n = corners.length;
     if (n < 3) {
       return;
@@ -17,7 +17,7 @@ class HolePolygon {
     const remainingVertices = [
       ...corners.map(
         (corner) =>
-          new Vector3(corner.position.x, corner.position.y, corner.position.z),
+          new Vector3(corner.position.x, corner.position.y, corner.position.z)
       ),
     ];
 
@@ -41,11 +41,11 @@ class HolePolygon {
     return result;
   }
 
-  static isEar(
+  private static isEar(
     v0: Vector3,
     v1: Vector3,
     v2: Vector3,
-    vertices: Geometry.Vector3[],
+    vertices: Geometry.Vector3[]
   ): boolean {
     if (!v2) return false;
     // Check if the angle at v1 is concave
@@ -70,23 +70,23 @@ class HolePolygon {
     return true; // It's an ear
   }
 
-  static pointInTriangle(
+  private static pointInTriangle(
     v0: Vector3,
     v1: Vector3,
     v2: Vector3,
-    p: Vector3,
+    p: Vector3
   ): boolean {
     const areaOriginal = Math.abs(
-      (v1.x - v0.x) * (v2.z - v0.z) - (v2.x - v0.x) * (v1.z - v0.z),
+      (v1.x - v0.x) * (v2.z - v0.z) - (v2.x - v0.x) * (v1.z - v0.z)
     );
     const area1 = Math.abs(
-      (p.x - v0.x) * (v1.z - v0.z) - (v1.x - v0.x) * (p.z - v0.z),
+      (p.x - v0.x) * (v1.z - v0.z) - (v1.x - v0.x) * (p.z - v0.z)
     );
     const area2 = Math.abs(
-      (p.x - v1.x) * (v2.z - v1.z) - (v2.x - v1.x) * (p.z - v1.z),
+      (p.x - v1.x) * (v2.z - v1.z) - (v2.x - v1.x) * (p.z - v1.z)
     );
     const area3 = Math.abs(
-      (p.x - v2.x) * (v0.z - v2.z) - (v0.x - v2.x) * (p.z - v2.z),
+      (p.x - v2.x) * (v0.z - v2.z) - (v0.x - v2.x) * (p.z - v2.z)
     );
 
     return Math.abs(area1 + area2 + area3 - areaOriginal) < 1e-6; // Use an epsilon to handle floating-point errors
@@ -95,14 +95,14 @@ class HolePolygon {
   private static calculateCrossProduct(
     v1: Vector3,
     v2: Vector3,
-    v3: Vector3,
+    v3: Vector3
   ): number {
     const crossProduct =
       (v2.x - v1.x) * (v3.z - v1.z) - (v3.x - v1.x) * (v2.z - v1.z);
     return crossProduct;
   }
 
-  static isCycleCounterclockwise(vertices: Vector3[]): boolean {
+  private static isCycleCounterclockwise(vertices: Vector3[]): boolean {
     const n = vertices.length;
 
     // Ensure there are at least three vertices
@@ -132,19 +132,23 @@ class HolePolygon {
     return positiveCount > negativeCount;
   }
 
-  static cycleInner(cycle: string[], graph: Graph) {
+  private static cycleInner(cycle: string[], graph: Graph) {
     let vertexCycles = graph.getVertexCycle(cycle);
 
     let inner = graph.getInnerCycles(vertexCycles);
     return inner;
   }
 
-  static connectInnerOuter(inner: Vertex[], outer: Vertex[], graph: Graph) {
+  private static connectInnerOuter(
+    inner: Vertex[],
+    outer: Vertex[],
+    graph: Graph
+  ) {
     let { pair, maxRight } = this.getVisiblePair(inner, outer, graph);
 
     if (pair) {
-      let pairIndexInner = inner.findIndex((i) => i.val === maxRight?.val);
-      let pairIndexOuter = outer.findIndex((i) => i.val === pair?.val);
+      let pairIndexInner = inner.findIndex((i) => i.uuid === maxRight?.uuid);
+      let pairIndexOuter = outer.findIndex((i) => i.uuid === pair?.uuid);
 
       let innerFirstHalf = inner.slice(0, pairIndexInner);
       let innerSecondHalf = inner.slice(pairIndexInner);
@@ -162,14 +166,18 @@ class HolePolygon {
     }
   }
 
-  static getVisiblePair(inner: Vertex[], outer: Vertex[], graph: Graph) {
+  private static getVisiblePair(
+    inner: Vertex[],
+    outer: Vertex[],
+    graph: Graph
+  ) {
     let pair: Vertex | null = null;
     let intersections: Array<{
       distance: number;
       line: Line & { connections: { start: Vertex; end: Vertex } };
     }> = [];
 
-    let maxRight = [...inner].sort((a, b) => b.pos.x - a.pos.x)[0];
+    let maxRight = [...inner].sort((a, b) => b.position.x - a.position.x)[0];
     let closestIntersectedLine:
       | (Line & { connections: { start: Vertex; end: Vertex } })
       | undefined;
@@ -177,15 +185,15 @@ class HolePolygon {
     outer.map((vertex, index, array) => {
       let nextVertex = array[(index + 1) % array.length];
       let line = {
-        start: new Vector3(vertex.pos.x, 0, vertex.pos.y),
-        end: new Vector3(nextVertex.pos.x, 0, nextVertex.pos.y),
+        start: new Vector3(vertex.position.x, 0, vertex.position.y),
+        end: new Vector3(nextVertex.position.x, 0, nextVertex.position.y),
         connections: { start: vertex, end: nextVertex },
       };
-      let origin = new Vector3(maxRight.pos.x, 0, maxRight.pos.y);
+      let origin = new Vector3(maxRight.position.x, 0, maxRight.position.y);
 
       let intersect = this.intersect(
         { origin, direction: new Vector3(1, 0, 0) },
-        line,
+        line
       );
 
       if (intersect) {
@@ -213,9 +221,10 @@ class HolePolygon {
     };
   }
 
-  static intersect(
+  //TODO: move to line
+  private static intersect(
     ray: { origin: Vector3; direction: Vector3 },
-    line: Line,
+    line: Line
   ): { position: Vector3; line: Line; distance: number } | null {
     let { direction, origin } = ray;
     let lineDirection = line.end.clone().sub(line.start.clone()).normalize();
@@ -237,7 +246,7 @@ class HolePolygon {
       let intersectionPosition = new Vector3(
         ray.origin.x + t * ray.direction.x,
         0,
-        ray.origin.z + t * ray.direction.z,
+        ray.origin.z + t * ray.direction.z
       );
 
       let isIntersectionLefter =
@@ -271,6 +280,12 @@ class HolePolygon {
     } else {
       return null;
     }
+  }
+
+  static getTriangles(cycle: Array<Vertex>, graph: Graph): Vertex[] {
+    let ret: Vertex[] = [];
+
+    return ret;
   }
 }
 

@@ -7,11 +7,13 @@ import {
   Helpers,
   Storage,
   Math2D,
+  Vertex,
 } from "../system";
 import * as THREE from "three";
 import { Corner } from "./Wall/Corner";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Vector3, ShapeUtils } from "three";
+import { Polygon } from "../system/utils/Polygon";
 
 class Room implements Object3D {
   mesh: Engine.Mesh | null = null;
@@ -96,21 +98,22 @@ class Room implements Object3D {
     let geometry = new THREE.BufferGeometry();
 
     // let res = Math2D.Polygon.earClipping([...this.corners].reverse());
-    let res = Math2D.Polygon.earClipping([...this.corners]);
+    let res = Polygon.getTriangles([...this.corners]);
+    console.log("res", res);
 
-    if (res) {
-      vertices = res;
-    }
-
-    let verNumbers: number[] = [];
-
-    vertices.map((v) => {
-      verNumbers.push(v.x, v.y, v.z);
-    });
-
-    let vert = new Float32Array(verNumbers);
-
-    geometry.setAttribute("position", new THREE.BufferAttribute(vert, 3));
+    // if (res) {
+    //   vertices = res;
+    // }
+    //
+    // let verNumbers: number[] = [];
+    //
+    // vertices.map((v) => {
+    //   verNumbers.push(v.x, v.y, v.z);
+    // });
+    //
+    // let vert = new Float32Array(verNumbers);
+    //
+    // geometry.setAttribute("position", new THREE.BufferAttribute(vert, 3));
 
     return geometry;
   }
@@ -118,14 +121,13 @@ class Room implements Object3D {
   private getArea() {
     let vertices: Vector3[] = [];
 
-    // let res = Math2D.Polygon.earClipping([...this.corners].reverse());
-    let res = Math2D.Polygon.earClipping([...this.corners]);
+    let triangulation = Polygon.getTriangles([...this.corners]);
     let innerHole = [];
     let outerPolygon = [];
     let area = 0;
 
-    if (res) {
-      vertices = res;
+    if (triangulation) {
+      // vertices = triangulation;
     }
 
     let _i = 0;
