@@ -1,14 +1,12 @@
 import { Wall as WallModel, Corner } from "./../model/";
 import { Scene as SceneController } from "../controller/Scene";
 import { Room as RoomController } from "../controller/Room";
-import { Drawing, Geometry, Graph, Math2D } from "../system";
+import { Drawing, Geometry, Math2D } from "../system";
 import { Vector3 } from "three";
 
 class Wall implements Drawing {
   readonly scene: SceneController;
   roomController: RoomController;
-
-  graph: Graph | null = null;
 
   active: WallModel | null = null;
 
@@ -81,29 +79,29 @@ class Wall implements Drawing {
   moveEnd(
     wall: WallModel,
     end: "start" | "end",
-    pos: { x: number; y: number; z: number }
+    pos: { x: number; y: number; z: number },
   ) {
     wall[end].set(pos.x, pos.y, pos.z);
   }
 
   private getClosestObject(coord: Vector3) {
     let corners = this.scene.model.objects.filter(
-      (obj): obj is Corner => obj instanceof Corner
+      (obj): obj is Corner => obj instanceof Corner,
     );
 
     corners.sort(
       (a, b) =>
         coord.distanceTo(
-          new Vector3(a.position.x, a.position.y, a.position.z)
+          new Vector3(a.position.x, a.position.y, a.position.z),
         ) -
-        coord.distanceTo(new Vector3(b.position.x, b.position.y, b.position.z))
+        coord.distanceTo(new Vector3(b.position.x, b.position.y, b.position.z)),
     );
 
     let closest: Corner | undefined = corners[0];
 
     return closest &&
       coord.distanceTo(
-        new Vector3(closest.position.x, closest.position.y, closest.position.z)
+        new Vector3(closest.position.x, closest.position.y, closest.position.z),
       ) < 0.5
       ? closest
       : null;
@@ -117,7 +115,7 @@ class Wall implements Drawing {
     let snapsByDistance = Math2D.Line.seekSnap(this.walls, coord);
 
     let excludeItself = snapsByDistance.filter(
-      (snap) => snap.object.uuid !== this.active?.uuid
+      (snap) => snap.object.uuid !== this.active?.uuid,
     );
 
     const closest = excludeItself[0];
@@ -127,7 +125,7 @@ class Wall implements Drawing {
 
   private getWallsIntersectionSnap(
     wall1: WallModel,
-    wall2: WallModel
+    wall2: WallModel,
   ): {
     distance: number;
     position: Vector3;
@@ -179,7 +177,7 @@ class Wall implements Drawing {
     const snapPos = intersection.position;
 
     const snapPosNet = Math2D.NetAlgorithms.netBind(
-      new Vector3(snapPos.x, snapPos.y, snapPos.z)
+      new Vector3(snapPos.x, snapPos.y, snapPos.z),
     );
 
     let end = this.isItWallEnd(wallToConnect, snapPos);
@@ -237,7 +235,7 @@ class Wall implements Drawing {
 
       if (wallToConnect.connections.start instanceof Corner) {
         let wallIndex = wallToConnect.connections.start.walls.findIndex(
-          (wall) => wall.uuid === wallToConnect.uuid
+          (wall) => wall.uuid === wallToConnect.uuid,
         );
 
         if (wallIndex !== -1) {
@@ -249,7 +247,7 @@ class Wall implements Drawing {
 
       if (wallToConnect.connections.end instanceof Corner) {
         let wallIndex = wallToConnect.connections.end.walls.findIndex(
-          (wall) => wall.uuid === wallToConnect.uuid
+          (wall) => wall.uuid === wallToConnect.uuid,
         );
 
         if (wallIndex !== -1) {
@@ -275,7 +273,7 @@ class Wall implements Drawing {
     let corner = this.scene.model.objects.find(
       (obj): obj is Corner =>
         obj instanceof Corner &&
-        obj.walls.some((w) => w.uuid === this.active?.uuid)
+        obj.walls.some((w) => w.uuid === this.active?.uuid),
     );
 
     if (corner) {
@@ -304,7 +302,7 @@ class Wall implements Drawing {
       this.start({ ...props });
     }
 
-    this.checkForRoom();
+    this.updateGraph();
   }
 
   draw(props: { x: number; y: number; z: number }) {
@@ -313,37 +311,44 @@ class Wall implements Drawing {
     }
   }
 
-  private checkForRoom() {
+  private updateGraph() {
+    this.roomController.graph.graph = {};
+    this.roomController.graph.vertices = {};
+
     let walls = this.scene.model.objects.filter(
-      (obj): obj is WallModel => obj instanceof WallModel
+      (obj): obj is WallModel => obj instanceof WallModel,
     );
 
     let corners = this.scene.model.objects.filter(
-      (obj): obj is Corner => obj instanceof Corner
+      (obj): obj is Corner => obj instanceof Corner,
     );
-
-    this.graph = new Graph();
 
     walls.map((wall) => {
       let from: Corner | undefined = corners.find((obj): obj is Corner =>
-        obj.walls.some((w) => w.uuid === wall.uuid)
+        obj.walls.some((w) => w.uuid === wall.uuid),
       );
       let to: Corner | undefined = corners.find(
         (obj): obj is Corner =>
-          obj.walls.some((w) => w.uuid === wall.uuid) && obj.uuid !== from?.uuid
+          obj.walls.some((w) => w.uuid === wall.uuid) &&
+          obj.uuid !== from?.uuid,
       );
 
       if (from && to) {
-        this.graph?.addEdge(
+        this.roomController.graph?.addEdge(
           { uuid: from.uuid, position: from.position },
-          { uuid: to.uuid, position: to.position }
+          { uuid: to.uuid, position: to.position },
         );
       }
     });
 
-    if (!this.graph) return;
+    // console.log(
+    //   "this.roomController.graph",
+    //   Object.values(this.roomController.graph.vertices).length,
+    // );
+    // console.log("==", this.roomController.graph.graph);
+    if (!this.roomController.graph) return;
 
-    let cycles = this.graph.getCycles();
+    let cycles = this.roomController.graph.getCycles();
     let roomCorners: Array<Array<Corner>> = [];
 
     cycles.map((cycle) => {
@@ -352,13 +357,17 @@ class Wall implements Drawing {
 
       cycle.map((uuid) => {
         let corner: Corner | undefined = corners.find(
-          (obj): obj is Corner => obj.uuid === uuid
+          (obj): obj is Corner => obj.uuid === uuid,
         );
 
         if (corner) {
           _corners.push(corner);
           vectors.push(
-            new Vector3(corner.position.x, corner.position.y, corner.position.z)
+            new Vector3(
+              corner.position.x,
+              corner.position.y,
+              corner.position.z,
+            ),
           );
         }
       });
@@ -366,7 +375,7 @@ class Wall implements Drawing {
       roomCorners.push(_corners);
     });
 
-    this.roomController.updateByCorners(roomCorners, this.graph);
+    this.roomController.updateByCorners(roomCorners);
   }
 
   reset() {

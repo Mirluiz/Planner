@@ -13,7 +13,7 @@ import { Wall } from "./Wall";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Vector3 } from "three";
 
-class Corner implements Object3D, Vertex {
+class Corner implements Object3D {
   mesh: Engine.Mesh | null = null;
   walls: Array<Wall> = [];
 
@@ -70,7 +70,7 @@ class Corner implements Object3D, Vertex {
       this.dimension.width,
       this.dimension.width,
       this.dimension.height,
-      32
+      32,
     );
     const material = new THREE.MeshBasicMaterial({ color: 0x00 });
     const mesh = new THREE.Mesh(geometry, material);

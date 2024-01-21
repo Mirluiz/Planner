@@ -99,11 +99,9 @@ class Room implements Object3D {
     let geometry = new THREE.BufferGeometry();
 
     let verNumbers: number[] = [];
-    console.log("this.triangulation", this.triangulation);
 
     this.triangulation.reverse().map((v) => {
-      console.log("v", v); // TODO: it is corner, I dont know why
-      // verNumbers.push(v.position.x, 0, v.position.z);
+      verNumbers.push(v.position.x, 0, v.position.y);
     });
 
     let vert = new Float32Array(verNumbers);
@@ -129,7 +127,7 @@ class Room implements Object3D {
         Math.abs(
           v0.position.x * (v1.position.y - v2.position.y) +
             v1.position.x * (v2.position.y - v0.position.y) +
-            v2.position.x * (v0.position.y - v1.position.y)
+            v2.position.x * (v0.position.y - v1.position.y),
         ) / 2;
 
       _i += 3;
@@ -152,14 +150,14 @@ class Room implements Object3D {
           size: 120 / scale,
           height: 1 / scale,
           bevelThickness: 1 / scale,
-        }
+        },
       );
 
       let center = new Vector3();
 
       this.corners.map((corner) => {
         center.add(
-          new Vector3(corner.position.x, corner.position.y, corner.position.z)
+          new Vector3(corner.position.x, corner.position.y, corner.position.z),
         );
       });
       center.setX(center.x / this.corners.length);

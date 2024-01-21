@@ -368,7 +368,9 @@ class Graph {
       });
 
       if (innerVertices.length > 2) {
-        let innerCycle = this.bfs(innerVertices[0], innerVertices[1]);
+        // let innerCycle = this.bfs(innerVertices[0], innerVertices[1]);
+        let innerCycle: string[] = [];
+        // console.log("innerCycle", innerVertices, innerCycle);
 
         const hasIntersections = cycle.filter((value) =>
           innerCycle.includes(value.uuid),
@@ -382,13 +384,14 @@ class Graph {
           (value) => !innerCycle.includes(value.uuid),
         );
 
-        if (remainingVertices.length > 2) {
+        if (remainingVertices.length > 4) {
           getInner(cycle, remainingVertices);
         }
       }
     };
 
     getInner(cycle, Object.values(this.vertices));
+    console.log(" Object.values(this.vertices)", Object.values(this.vertices));
 
     return cycles;
   }

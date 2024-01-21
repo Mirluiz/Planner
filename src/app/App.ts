@@ -2,6 +2,7 @@ import { Scene as SceneController } from "./controller/Scene";
 import { Pipe as PipeController } from "../app/controller/Pipe";
 import { Wall as WallController } from "../app/controller/Wall";
 import { Room as RoomController } from "../app/controller/Room";
+import { Graph as GraphController } from "../app/controller/Graph";
 import { EventSystem, Database, Object3D, Storage } from "./system";
 import { Corner } from "./model";
 
@@ -10,6 +11,7 @@ class App {
   event: EventSystem = new EventSystem();
   active: Object3D | null = null;
 
+  graphController: GraphController;
   sceneController: SceneController;
   wallController: WallController;
   pipeController: PipeController;
@@ -18,7 +20,12 @@ class App {
   constructor(props: { canvas: HTMLElement | null }) {
     this.sceneController = new SceneController(props);
 
-    this.roomController = new RoomController({ scene: this.sceneController });
+    this.graphController = new GraphController();
+
+    this.roomController = new RoomController({
+      scene: this.sceneController,
+      graph: this.graphController,
+    });
     this.pipeController = new PipeController({
       scene: this.sceneController,
     });
@@ -57,7 +64,7 @@ class App {
       },
       () => {
         console.log("saved");
-      }
+      },
     );
   }
 

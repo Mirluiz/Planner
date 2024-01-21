@@ -1,5 +1,5 @@
 import { HolePolygon, ConcavePolygon, ConvexPolygon } from "./";
-import { Graph, Vertex } from "../Graph";
+import { Graph, Vertex } from "../../../controller/Graph";
 
 class Polygon {
   static isConcave(cycle: Array<Vertex>): boolean {
@@ -57,7 +57,7 @@ class Polygon {
       let innerCycle = graph.bfs(innerVertices[0], innerVertices[1]);
 
       const hasIntersections = cycle.filter((value) =>
-        innerCycle.includes(value.uuid)
+        innerCycle.includes(value.uuid),
       );
 
       if (hasIntersections.length === 0) {

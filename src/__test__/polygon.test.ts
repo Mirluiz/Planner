@@ -1,5 +1,5 @@
 import { describe, test } from "@jest/globals";
-import { Graph, Vertex } from "../app/system";
+import { Graph, Vertex } from "../app/controller/Graph";
 import { Polygon } from "../app/system/utils/Polygon/Polygon";
 import { Vector3 } from "three";
 

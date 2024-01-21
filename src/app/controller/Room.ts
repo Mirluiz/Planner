@@ -1,14 +1,17 @@
 import { Corner, Wall as WallModel } from "../model";
-import { Graph, Helpers, Math2D, Object3DProps } from "../system";
+import { Helpers, Math2D, Object3DProps } from "../system";
 import { Scene as SceneController } from "./Scene";
 import { Room as RoomModel } from "./../model/Room";
+import { Graph as GraphController } from "./Graph";
 import { Polygon } from "../system/utils/Polygon";
 
 class Room {
   readonly scene: SceneController;
+  readonly graph: GraphController;
 
-  constructor(props: { scene: SceneController }) {
+  constructor(props: { scene: SceneController; graph: GraphController }) {
     this.scene = props.scene;
+    this.graph = props.graph;
   }
 
   get rooms() {
@@ -17,7 +20,7 @@ class Room {
     });
   }
 
-  updateByCorners(corners: Array<Array<Corner>>, graph: Graph) {
+  updateByCorners(corners: Array<Array<Corner>>) {
     this.scene.model.objects.map((obj) => {
       if (obj instanceof RoomModel) {
         obj.destroy();
@@ -27,7 +30,7 @@ class Room {
     this.scene.model.objects = this.scene.model.objects.filter(
       (obj): obj is RoomModel => {
         return !(obj instanceof RoomModel);
-      }
+      },
     );
 
     corners.map((roomCorners) => {
@@ -41,10 +44,24 @@ class Room {
       roomCorners.map((_c) => {
         newRoom.corners.push(_c);
       });
-      newRoom.triangulation = Polygon.getTriangles(roomCorners, graph);
+
+      newRoom.triangulation = this.getTriangles(roomCorners);
 
       this.scene.model.addObject(newRoom);
     });
+  }
+
+  private getTriangles(corners: Corner[]) {
+    let vertices = corners.map((corner) => {
+      return {
+        uuid: corner.uuid,
+        position: { x: corner.position.x, y: corner.position.z },
+        isVertex: true,
+      };
+    });
+
+    return Polygon.getTriangles(vertices, this.graph);
+    // return [];
   }
 }
 
