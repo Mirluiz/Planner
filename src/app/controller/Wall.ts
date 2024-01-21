@@ -335,8 +335,8 @@ class Wall implements Drawing {
 
       if (from && to) {
         this.graph?.addEdge(
-          { val: from.uuid, pos: from.position },
-          { val: to.uuid, pos: to.position }
+          { uuid: from.uuid, position: from.position },
+          { uuid: to.uuid, position: to.position }
         );
       }
     });
@@ -363,13 +363,10 @@ class Wall implements Drawing {
         }
       });
 
-      if (!Math2D.Polygon.isCycleCounterclockwise(vectors)) {
-        _corners.reverse();
-      }
       roomCorners.push(_corners);
     });
 
-    this.roomController.updateByCorners(roomCorners);
+    this.roomController.updateByCorners(roomCorners, this.graph);
   }
 
   reset() {

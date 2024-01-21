@@ -12,10 +12,10 @@ describe("Graph cycles", () => {
         2
    */
   test("1 room", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 5, y: 4 } };
-    const ver2 = { val: "2", pos: { x: 0, y: 8 } };
-    const ver3 = { val: "3", pos: { x: -5, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 5, y: 4 } };
+    const ver2 = { uuid: "2", position: { x: 0, y: 8 } };
+    const ver3 = { uuid: "3", position: { x: -5, y: 4 } };
 
     const graph = new Graph();
 
@@ -40,10 +40,10 @@ describe("Graph cycles", () => {
         2
    */
   test("2 room", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 5, y: 4 } };
-    const ver2 = { val: "2", pos: { x: 0, y: 8 } };
-    const ver3 = { val: "3", pos: { x: -5, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 5, y: 4 } };
+    const ver2 = { uuid: "2", position: { x: 0, y: 8 } };
+    const ver3 = { uuid: "3", position: { x: -5, y: 4 } };
 
     const graph = new Graph();
 
@@ -70,12 +70,12 @@ describe("Graph cycles", () => {
        3 -- 2
    */
   test("5 room", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 6, y: 4 } };
-    const ver2 = { val: "2", pos: { x: 4, y: 8 } };
-    const ver3 = { val: "3", pos: { x: -4, y: 8 } };
-    const ver4 = { val: "4", pos: { x: -6, y: 4 } };
-    const ver5 = { val: "5", pos: { x: 0, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 6, y: 4 } };
+    const ver2 = { uuid: "2", position: { x: 4, y: 8 } };
+    const ver3 = { uuid: "3", position: { x: -4, y: 8 } };
+    const ver4 = { uuid: "4", position: { x: -6, y: 4 } };
+    const ver5 = { uuid: "5", position: { x: 0, y: 4 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -109,12 +109,12 @@ describe("Graph cycles", () => {
         3----5---- 4
    */
   test("1 room with 6 edges", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: -2, y: 2 } };
-    const ver2 = { val: "2", pos: { x: 2, y: 2 } };
-    const ver3 = { val: "3", pos: { x: -4, y: 4 } };
-    const ver4 = { val: "4", pos: { x: -0, y: 4 } };
-    const ver5 = { val: "5", pos: { x: 4, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: -2, y: 2 } };
+    const ver2 = { uuid: "2", position: { x: 2, y: 2 } };
+    const ver3 = { uuid: "3", position: { x: -4, y: 4 } };
+    const ver4 = { uuid: "4", position: { x: -0, y: 4 } };
+    const ver5 = { uuid: "5", position: { x: 4, y: 4 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -138,12 +138,12 @@ describe("Graph cycles", () => {
       3----5----4
    */
   test("2 room with 7 edges", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: -2, y: 2 } };
-    const ver2 = { val: "2", pos: { x: 2, y: 2 } };
-    const ver3 = { val: "3", pos: { x: -4, y: 4 } };
-    const ver4 = { val: "4", pos: { x: -0, y: 4 } };
-    const ver5 = { val: "5", pos: { x: 4, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: -2, y: 2 } };
+    const ver2 = { uuid: "2", position: { x: 2, y: 2 } };
+    const ver3 = { uuid: "3", position: { x: -4, y: 4 } };
+    const ver4 = { uuid: "4", position: { x: -0, y: 4 } };
+    const ver5 = { uuid: "5", position: { x: 4, y: 4 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -167,10 +167,10 @@ describe("Graph cycles", () => {
       1 --- 2 ---- 3
    */
   test("1 room with orphan edge", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: -2, y: 2 } };
-    const ver2 = { val: "2", pos: { x: 2, y: 2 } };
-    const ver3 = { val: "3", pos: { x: 4, y: 2 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: -2, y: 2 } };
+    const ver2 = { uuid: "2", position: { x: 2, y: 2 } };
+    const ver3 = { uuid: "3", position: { x: 4, y: 2 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -193,11 +193,11 @@ describe("Graph cycles", () => {
              4
    */
   test("2 room with 6 edges", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: -2, y: 2 } };
-    const ver2 = { val: "2", pos: { x: 2, y: 2 } };
-    const ver3 = { val: "3", pos: { x: 6, y: 2 } };
-    const ver4 = { val: "4", pos: { x: 4, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: -2, y: 2 } };
+    const ver2 = { uuid: "2", position: { x: 2, y: 2 } };
+    const ver3 = { uuid: "3", position: { x: 6, y: 2 } };
+    const ver4 = { uuid: "4", position: { x: 4, y: 4 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -221,14 +221,14 @@ describe("Graph cycles", () => {
       4 -- 5 -- 6 -- 7
    */
   test("3 room with 10 edges", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 2, y: 0 } };
-    const ver2 = { val: "2", pos: { x: 4, y: 0 } };
-    const ver3 = { val: "3", pos: { x: 6, y: 0 } };
-    const ver4 = { val: "4", pos: { x: 0, y: 4 } };
-    const ver5 = { val: "5", pos: { x: 2, y: 4 } };
-    const ver6 = { val: "6", pos: { x: 4, y: 4 } };
-    const ver7 = { val: "7", pos: { x: 8, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 2, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 4, y: 0 } };
+    const ver3 = { uuid: "3", position: { x: 6, y: 0 } };
+    const ver4 = { uuid: "4", position: { x: 0, y: 4 } };
+    const ver5 = { uuid: "5", position: { x: 2, y: 4 } };
+    const ver6 = { uuid: "6", position: { x: 4, y: 4 } };
+    const ver7 = { uuid: "7", position: { x: 8, y: 4 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -260,14 +260,14 @@ describe("Graph cycles", () => {
 
    */
   test("3 room with 9 edges", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 2, y: 0 } };
-    const ver2 = { val: "2", pos: { x: 0, y: 4 } };
-    const ver3 = { val: "3", pos: { x: 2, y: 4 } };
-    const ver4 = { val: "4", pos: { x: 4, y: 4 } };
-    const ver5 = { val: "5", pos: { x: 4, y: 0 } };
-    const ver6 = { val: "6", pos: { x: 8, y: 4 } };
-    const ver7 = { val: "7", pos: { x: 12, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 2, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 0, y: 4 } };
+    const ver3 = { uuid: "3", position: { x: 2, y: 4 } };
+    const ver4 = { uuid: "4", position: { x: 4, y: 4 } };
+    const ver5 = { uuid: "5", position: { x: 4, y: 0 } };
+    const ver6 = { uuid: "6", position: { x: 8, y: 4 } };
+    const ver7 = { uuid: "7", position: { x: 12, y: 4 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -299,16 +299,16 @@ describe("Graph cycles", () => {
 
    */
   test("2 room with 11 edges", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 2, y: 0 } };
-    const ver2 = { val: "2", pos: { x: 2, y: 2 } };
-    const ver3 = { val: "3", pos: { x: 2, y: 4 } };
-    const ver4 = { val: "4", pos: { x: 0, y: 4 } };
-    const ver5 = { val: "5", pos: { x: 6, y: 2 } };
-    const ver6 = { val: "6", pos: { x: 6, y: 0 } };
-    const ver7 = { val: "7", pos: { x: 8, y: 0 } };
-    const ver8 = { val: "8", pos: { x: 8, y: 4 } };
-    const ver9 = { val: "9", pos: { x: 6, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 2, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 2, y: 2 } };
+    const ver3 = { uuid: "3", position: { x: 2, y: 4 } };
+    const ver4 = { uuid: "4", position: { x: 0, y: 4 } };
+    const ver5 = { uuid: "5", position: { x: 6, y: 2 } };
+    const ver6 = { uuid: "6", position: { x: 6, y: 0 } };
+    const ver7 = { uuid: "7", position: { x: 8, y: 0 } };
+    const ver8 = { uuid: "8", position: { x: 8, y: 4 } };
+    const ver9 = { uuid: "9", position: { x: 6, y: 4 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -346,17 +346,17 @@ describe("Graph cycles", () => {
    6 ------ 7 -- 10
    */
   test("4 room with 13 edges", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 10, y: 0 } };
-    const ver2 = { val: "2", pos: { x: 10, y: 4 } };
-    const ver3 = { val: "3", pos: { x: 8, y: 4 } };
-    const ver4 = { val: "4", pos: { x: 8, y: 5 } };
-    const ver5 = { val: "5", pos: { x: 0, y: 5 } };
-    const ver6 = { val: "6", pos: { x: 0, y: 10 } };
-    const ver7 = { val: "7", pos: { x: 8, y: 10 } };
-    const ver8 = { val: "8", pos: { x: 8, y: 7 } };
-    const ver9 = { val: "9", pos: { x: 10, y: 7 } };
-    const ver10 = { val: "10", pos: { x: 10, y: 10 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 10, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 10, y: 4 } };
+    const ver3 = { uuid: "3", position: { x: 8, y: 4 } };
+    const ver4 = { uuid: "4", position: { x: 8, y: 5 } };
+    const ver5 = { uuid: "5", position: { x: 0, y: 5 } };
+    const ver6 = { uuid: "6", position: { x: 0, y: 10 } };
+    const ver7 = { uuid: "7", position: { x: 8, y: 10 } };
+    const ver8 = { uuid: "8", position: { x: 8, y: 7 } };
+    const ver9 = { uuid: "9", position: { x: 10, y: 7 } };
+    const ver10 = { uuid: "10", position: { x: 10, y: 10 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);

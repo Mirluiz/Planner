@@ -131,6 +131,26 @@ class Room {
         null,
       ],
     },
+    {
+      name: "Room with hole",
+      corners: [
+        { pos: { x: 0, y: 0, z: 0 } },
+        { pos: { x: 4, y: 0, z: 0 } },
+        { pos: { x: 4, y: 0, z: 4 } },
+        { pos: { x: 0, y: 0, z: 4 } },
+        { pos: { x: 0, y: 0, z: 0 } },
+
+        null,
+
+        { pos: { x: 2, y: 0, z: 2 } },
+        { pos: { x: 3, y: 0, z: 2 } },
+        { pos: { x: 3, y: 0, z: 3 } },
+        { pos: { x: 2, y: 0, z: 3 } },
+        { pos: { x: 2, y: 0, z: 2 } },
+
+        null,
+      ],
+    },
   ];
 
   constructor(props: { app: App }) {
@@ -140,7 +160,7 @@ class Room {
   run() {
     let wallController = this.app.wallController;
     let roomController = this.app.roomController;
-    let { corners } = this.examples[7];
+    let { corners } = this.examples[8];
 
     corners.map((cornerData, index) => {
       if (!cornerData) {

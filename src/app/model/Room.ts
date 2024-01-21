@@ -19,6 +19,7 @@ class Room implements Object3D {
   mesh: Engine.Mesh | null = null;
 
   corners: Array<Corner> = [];
+  triangulation: Array<Vertex> = [];
 
   uuid;
   dimension;
@@ -95,59 +96,47 @@ class Room implements Object3D {
   }
 
   private getGeometry() {
-    let vertices: Vector3[] = [];
     let geometry = new THREE.BufferGeometry();
 
-    // let res = Math2D.Polygon.earClipping([...this.corners].reverse());
-    let res = Polygon.getTriangles(this.corners);
-    console.log("res", res);
+    let verNumbers: number[] = [];
+    console.log("this.triangulation", this.triangulation);
 
-    // if (res) {
-    //   vertices = res;
-    // }
-    //
-    // let verNumbers: number[] = [];
-    //
-    // vertices.map((v) => {
-    //   verNumbers.push(v.x, v.y, v.z);
-    // });
-    //
-    // let vert = new Float32Array(verNumbers);
-    //
-    // geometry.setAttribute("position", new THREE.BufferAttribute(vert, 3));
+    this.triangulation.reverse().map((v) => {
+      console.log("v", v); // TODO: it is corner, I dont know why
+      // verNumbers.push(v.position.x, 0, v.position.z);
+    });
+
+    let vert = new Float32Array(verNumbers);
+
+    geometry.setAttribute("position", new THREE.BufferAttribute(vert, 3));
 
     return geometry;
   }
 
-  // private getArea() {
-  //   let vertices: Vector3[] = [];
-  //
-  //   let triangulation = Polygon.getTriangles([...this.corners]);
-  //   let innerHole = [];
-  //   let outerPolygon = [];
-  //   let area = 0;
-  //
-  //   if (triangulation) {
-  //     // vertices = triangulation;
-  //   }
-  //
-  //   let _i = 0;
-  //   const n = vertices.length;
-  //   while (_i < vertices.length) {
-  //     const v0 = vertices[_i];
-  //     const v1 = vertices[(_i + 1) % n];
-  //     const v2 = vertices[(_i + 2) % n];
-  //
-  //     area +=
-  //       Math.abs(
-  //         v0.x * (v1.z - v2.z) + v1.x * (v2.z - v0.z) + v2.x * (v0.z - v1.z)
-  //       ) / 2;
-  //
-  //     _i += 3;
-  //   }
-  //
-  //   return area;
-  // }
+  private getArea() {
+    let innerHole = [];
+    let outerPolygon = [];
+    let area = 0;
+
+    let _i = 0;
+    const n = this.triangulation.length;
+    while (_i < this.triangulation.length) {
+      const v0 = this.triangulation[_i];
+      const v1 = this.triangulation[(_i + 1) % n];
+      const v2 = this.triangulation[(_i + 2) % n];
+
+      area +=
+        Math.abs(
+          v0.position.x * (v1.position.y - v2.position.y) +
+            v1.position.x * (v2.position.y - v0.position.y) +
+            v2.position.x * (v0.position.y - v1.position.y)
+        ) / 2;
+
+      _i += 3;
+    }
+
+    return area;
+  }
 
   private getText(info?: string) {
     if (!Storage.debug) return null;

@@ -27,11 +27,11 @@ const App = () => {
       app.init().then(() => {
         app.run();
         const demo = new Room({ app });
-        const corner = new Corner({ app });
+        // const corner = new Corner({ app });
         // const wall = new Wall({ app });
 
-        // demo.run();
-        corner.run();
+        demo.run();
+        // corner.run();
 
         app.sceneController.event.emit("scene_update");
       });

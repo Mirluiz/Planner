@@ -13,13 +13,13 @@ describe("Graph inner cycles", () => {
 
    */
   test("2 room. have inner vertex", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 2, y: 0 } };
-    const ver2 = { val: "2", pos: { x: 2, y: 2 } };
-    const ver3 = { val: "3`", pos: { x: 4, y: 4 } };
-    const ver4 = { val: "4", pos: { x: 4, y: 6 } };
-    const ver5 = { val: "5", pos: { x: 2, y: 6 } };
-    const ver6 = { val: "6", pos: { x: 0, y: 6 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 2, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 2, y: 2 } };
+    const ver3 = { uuid: "3`", position: { x: 4, y: 4 } };
+    const ver4 = { uuid: "4", position: { x: 4, y: 6 } };
+    const ver5 = { uuid: "5", position: { x: 2, y: 6 } };
+    const ver6 = { uuid: "6", position: { x: 0, y: 6 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -51,14 +51,14 @@ describe("Graph inner cycles", () => {
 
    */
   test("2 room, inner vertices with more corners", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 2, y: 0 } };
-    const ver2 = { val: "2", pos: { x: 2, y: 2 } };
-    const ver3 = { val: "3", pos: { x: 4, y: 4 } };
-    const ver4 = { val: "4", pos: { x: 4, y: 6 } };
-    const ver5 = { val: "5", pos: { x: 2, y: 6 } };
-    const ver6 = { val: "6", pos: { x: 0, y: 6 } };
-    const ver7 = { val: "7", pos: { x: 0, y: 6 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 2, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 2, y: 2 } };
+    const ver3 = { uuid: "3", position: { x: 4, y: 4 } };
+    const ver4 = { uuid: "4", position: { x: 4, y: 6 } };
+    const ver5 = { uuid: "5", position: { x: 2, y: 6 } };
+    const ver6 = { uuid: "6", position: { x: 0, y: 6 } };
+    const ver7 = { uuid: "7", position: { x: 0, y: 6 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -90,14 +90,14 @@ describe("Graph inner cycles", () => {
 
    */
   test("One outer room, one inner. has adj vertex", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 2, y: 0 } };
-    const ver2 = { val: "2", pos: { x: 2, y: 2 } };
-    const ver3 = { val: "3", pos: { x: 4, y: 2 } };
-    const ver4 = { val: "4", pos: { x: 6, y: 0 } };
-    const ver5 = { val: "5", pos: { x: 6, y: 6 } };
-    const ver6 = { val: "6", pos: { x: 4, y: 6 } };
-    const ver7 = { val: "7", pos: { x: 0, y: 6 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 2, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 2, y: 2 } };
+    const ver3 = { uuid: "3", position: { x: 4, y: 2 } };
+    const ver4 = { uuid: "4", position: { x: 6, y: 0 } };
+    const ver5 = { uuid: "5", position: { x: 6, y: 6 } };
+    const ver6 = { uuid: "6", position: { x: 4, y: 6 } };
+    const ver7 = { uuid: "7", position: { x: 0, y: 6 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -129,19 +129,19 @@ describe("Graph inner cycles", () => {
 
    */
   test("One outer, two inner rooms room. has adj vertex", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 2, y: 0 } };
-    const ver2 = { val: "2", pos: { x: 2, y: 2 } };
-    const ver3 = { val: "3", pos: { x: 4, y: 2 } };
-    const ver4 = { val: "4", pos: { x: 3, y: 1 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 2, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 2, y: 2 } };
+    const ver3 = { uuid: "3", position: { x: 4, y: 2 } };
+    const ver4 = { uuid: "4", position: { x: 3, y: 1 } };
 
-    const ver5 = { val: "5", pos: { x: 6, y: 1 } };
-    const ver6 = { val: "6", pos: { x: 7, y: 2 } };
+    const ver5 = { uuid: "5", position: { x: 6, y: 1 } };
+    const ver6 = { uuid: "6", position: { x: 7, y: 2 } };
 
-    const ver7 = { val: "7", pos: { x: 8, y: 0 } };
-    const ver8 = { val: "8", pos: { x: 8, y: 6 } };
-    const ver9 = { val: "9", pos: { x: 2, y: 6 } };
-    const ver10 = { val: "10", pos: { x: 0, y: 6 } };
+    const ver7 = { uuid: "7", position: { x: 8, y: 0 } };
+    const ver8 = { uuid: "8", position: { x: 8, y: 6 } };
+    const ver9 = { uuid: "9", position: { x: 2, y: 6 } };
+    const ver10 = { uuid: "10", position: { x: 0, y: 6 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -175,15 +175,15 @@ describe("Graph inner cycles", () => {
 
    */
   test("One outer, two inner rooms room. not connected", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 4, y: 0 } };
-    const ver2 = { val: "2", pos: { x: 4, y: 4 } };
-    const ver3 = { val: "3", pos: { x: 0, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 4, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 4, y: 4 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 4 } };
 
-    const ver4 = { val: "4", pos: { x: 2, y: 2 } };
-    const ver5 = { val: "5", pos: { x: 3, y: 2 } };
-    const ver6 = { val: "6", pos: { x: 3, y: 3 } };
-    const ver7 = { val: "7", pos: { x: 2, y: 3 } };
+    const ver4 = { uuid: "4", position: { x: 2, y: 2 } };
+    const ver5 = { uuid: "5", position: { x: 3, y: 2 } };
+    const ver6 = { uuid: "6", position: { x: 3, y: 3 } };
+    const ver7 = { uuid: "7", position: { x: 2, y: 3 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);

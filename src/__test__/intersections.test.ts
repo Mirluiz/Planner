@@ -4,6 +4,7 @@ import { Wall } from "./../app/model/Wall/Wall";
 import * as THREE from "three";
 import { App } from "../app/App";
 import { Polygon } from "../app/system/utils/Polygon/Polygon";
+import { ConcavePolygon, ConvexPolygon } from "../app/system/utils/Polygon";
 
 describe("Intersections", () => {
   test("Intersection", () => {
@@ -17,7 +18,7 @@ describe("Intersections", () => {
     let origin = new THREE.Vector3(0, 0, 0);
     let direction = new THREE.Vector3(1, 0, 0);
 
-    let res = Polygon.intersect({ origin, direction }, line);
+    let res = ConcavePolygon.intersect({ origin, direction }, line);
     expect(res).toBe(null);
   });
 
@@ -44,7 +45,7 @@ describe("Intersections", () => {
     let origin = new THREE.Vector3(originPos.x, 0, originPos.y);
     let direction = new THREE.Vector3(1, 0, 0);
 
-    let res = Polygon.intersect({ origin, direction }, line);
+    let res = ConcavePolygon.intersect({ origin, direction }, line);
     expect(res).toBe(null);
   });
 
@@ -71,7 +72,7 @@ describe("Intersections", () => {
     let origin = new THREE.Vector3(originPos.x, 0, originPos.y);
     let direction = new THREE.Vector3(1, 0, 0);
 
-    let res = Polygon.intersect({ origin, direction }, line);
+    let res = ConcavePolygon.intersect({ origin, direction }, line);
     expect(res).toBe(null);
   });
 
@@ -94,7 +95,7 @@ describe("Intersections", () => {
     let origin = new THREE.Vector3(originPos.x, 0, originPos.y);
     let direction = new THREE.Vector3(1, 0, 0);
 
-    let res = Polygon.intersect({ origin, direction }, line);
+    let res = ConcavePolygon.intersect({ origin, direction }, line);
     expect(res).toEqual({
       distance: 4,
       line: { end: { x: 4, y: 0, z: -10 }, start: { x: 4, y: 0, z: 10 } },
@@ -124,7 +125,7 @@ describe("Intersections", () => {
     let origin = new THREE.Vector3(originPos.x, 0, originPos.y);
     let direction = new THREE.Vector3(1, 0, 0);
 
-    let res = Polygon.intersect({ origin, direction }, line);
+    let res = ConcavePolygon.intersect({ origin, direction }, line);
     expect(res).toBe(null);
   });
 });

@@ -20,46 +20,46 @@ describe("Graph cycles", () => {
 
    */
   test("example from book", () => {
-    const ver0 = { val: "0", pos: { x: 0, y: 0 } };
-    const ver1 = { val: "1", pos: { x: 0, y: 10 } };
-    const ver2 = { val: "2", pos: { x: 10, y: 10 } };
-    const ver3 = { val: "3", pos: { x: 5, y: 5 } };
-    const ver4 = { val: "4", pos: { x: 3, y: 8 } };
-    const ver5 = { val: "5", pos: { x: 10, y: 0 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 0, y: 10 } };
+    const ver2 = { uuid: "2", position: { x: 10, y: 10 } };
+    const ver3 = { uuid: "3", position: { x: 5, y: 5 } };
+    const ver4 = { uuid: "4", position: { x: 3, y: 8 } };
+    const ver5 = { uuid: "5", position: { x: 10, y: 0 } };
 
-    const ver6 = { val: "6", pos: { x: 15, y: 0 } };
+    const ver6 = { uuid: "6", position: { x: 15, y: 0 } };
 
-    const ver8 = { val: "7", pos: { x: 20, y: 10 } };
-    const ver7 = { val: "8", pos: { x: 20, y: 0 } };
-    const ver9 = { val: "9", pos: { x: 30, y: 0 } };
+    const ver8 = { uuid: "7", position: { x: 20, y: 10 } };
+    const ver7 = { uuid: "8", position: { x: 20, y: 0 } };
+    const ver9 = { uuid: "9", position: { x: 30, y: 0 } };
 
-    const ver10 = { val: "10", pos: { x: 10, y: 15 } };
-    const ver11 = { val: "11", pos: { x: 15, y: 10 } };
-    const ver12 = { val: "12", pos: { x: 20, y: 15 } };
+    const ver10 = { uuid: "10", position: { x: 10, y: 15 } };
+    const ver11 = { uuid: "11", position: { x: 15, y: 10 } };
+    const ver12 = { uuid: "12", position: { x: 20, y: 15 } };
 
-    const ver13 = { val: "13", pos: { x: 20, y: 20 } };
-    const ver14 = { val: "14", pos: { x: 30, y: 17 } };
-    const ver15 = { val: "15", pos: { x: 35, y: 15 } };
+    const ver13 = { uuid: "13", position: { x: 20, y: 20 } };
+    const ver14 = { uuid: "14", position: { x: 30, y: 17 } };
+    const ver15 = { uuid: "15", position: { x: 35, y: 15 } };
 
-    const ver16 = { val: "16", pos: { x: 40, y: 0 } };
-    const ver17 = { val: "17", pos: { x: 50, y: 0 } };
-    const ver18 = { val: "18", pos: { x: 50, y: 10 } };
-    const ver19 = { val: "19", pos: { x: 60, y: 0 } };
+    const ver16 = { uuid: "16", position: { x: 40, y: 0 } };
+    const ver17 = { uuid: "17", position: { x: 50, y: 0 } };
+    const ver18 = { uuid: "18", position: { x: 50, y: 10 } };
+    const ver19 = { uuid: "19", position: { x: 60, y: 0 } };
 
-    const ver20 = { val: "20", pos: { x: 50, y: 20 } };
-    const ver21 = { val: "21", pos: { x: 60, y: 20 } };
-    const ver22 = { val: "22", pos: { x: 60, y: 10 } };
+    const ver20 = { uuid: "20", position: { x: 50, y: 20 } };
+    const ver21 = { uuid: "21", position: { x: 60, y: 20 } };
+    const ver22 = { uuid: "22", position: { x: 60, y: 10 } };
 
-    const ver23 = { val: "23", pos: { x: 52, y: 18 } };
-    const ver24 = { val: "24", pos: { x: 58, y: 18 } };
-    const ver25 = { val: "25", pos: { x: 55, y: 15 } };
+    const ver23 = { uuid: "23", position: { x: 52, y: 18 } };
+    const ver24 = { uuid: "24", position: { x: 58, y: 18 } };
+    const ver25 = { uuid: "25", position: { x: 55, y: 15 } };
 
-    const ver26 = { val: "26", pos: { x: 45, y: 5 } };
-    const ver27 = { val: "27", pos: { x: 35, y: 5 } };
+    const ver26 = { uuid: "26", position: { x: 45, y: 5 } };
+    const ver27 = { uuid: "27", position: { x: 35, y: 5 } };
 
-    const ver28 = { val: "28", pos: { x: 30, y: 5 } };
-    const ver29 = { val: "29", pos: { x: 35, y: 8 } };
-    const ver30 = { val: "30", pos: { x: 25, y: 8 } };
+    const ver28 = { uuid: "28", position: { x: 30, y: 5 } };
+    const ver29 = { uuid: "29", position: { x: 35, y: 8 } };
+    const ver30 = { uuid: "30", position: { x: 25, y: 8 } };
 
     const graph = new Graph();
 
