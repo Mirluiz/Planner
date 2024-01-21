@@ -1,6 +1,6 @@
-import { Graph, Vertex } from "../../../../Backup/Graph";
 import { Geometry } from "../../interfaces";
 import Vector3 = Geometry.Vector3;
+import { Vertex } from "../../../controller";
 
 class ConvexPolygon {
   static getTriangles(vertices: Array<Vertex>): Vertex[] {

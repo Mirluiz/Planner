@@ -1,7 +1,7 @@
 export interface Vertex {
   isVertex: boolean;
   uuid: string;
-  position: { x: number; y: number };
+  position: { x: number; y: number; z: number };
 }
 
 class Graph {
@@ -14,7 +14,7 @@ class Graph {
     path: Array<{
       parent: string;
       current: string;
-    }>,
+    }>
   ) {
     let ret: string[] = [];
 
@@ -38,8 +38,8 @@ class Graph {
   }
 
   addEdge(
-    _u: { uuid: string; position: { x: number; y: number } },
-    _v: { uuid: string; position: { x: number; y: number } },
+    _u: { uuid: string; position: { x: number; y: number; z: number } },
+    _v: { uuid: string; position: { x: number; y: number; z: number } }
   ): void {
     let u = { ..._u, isVertex: true };
     let v = { ..._v, isVertex: true };
@@ -89,7 +89,7 @@ class Graph {
 
       let neighbors = this.graph[current.uuid];
       let sortedNeighbors = neighbors.sort((a, b) =>
-        this.thetaSort(current, a, b),
+        this.thetaSort(current, a, b)
       );
 
       for (const neighbor of sortedNeighbors) {
@@ -207,7 +207,7 @@ class Graph {
 
         if (
           !duplicatedRemove.find(
-            (c) => [...c].sort().join("") === [...cycle].sort().join(""),
+            (c) => [...c].sort().join("") === [...cycle].sort().join("")
           )
         ) {
           let order = this.restoreOrder(cycle);
@@ -254,9 +254,9 @@ class Graph {
 
     for (let i = 0, j = cycle.length - 1; i < cycle.length; j = i++) {
       const xi = cycle[i].position.x;
-      const yi = cycle[i].position.y;
+      const yi = cycle[i].position.z;
       const xj = cycle[j].position.x;
-      const yj = cycle[j].position.y;
+      const yj = cycle[j].position.z;
 
       const intersect =
         yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
@@ -312,13 +312,13 @@ class Graph {
           cycle,
           start,
           nextV,
-          end,
+          end
         );
         let secondPearceOfCycle = this.getVerticesFromTo(
           cycle,
           start,
           prevV,
-          end,
+          end
         );
 
         firstPearceOfCycle.push(...cutVertices);
@@ -371,7 +371,7 @@ class Graph {
         let innerCycle = this.bfs(innerVertices[0], innerVertices[1]);
 
         const hasIntersections = cycle.filter((value) =>
-          innerCycle.includes(value.uuid),
+          innerCycle.includes(value.uuid)
         );
 
         if (hasIntersections.length === 0) {
@@ -379,7 +379,7 @@ class Graph {
         }
 
         let remainingVertices = innerVertices.filter(
-          (value) => !innerCycle.includes(value.uuid),
+          (value) => !innerCycle.includes(value.uuid)
         );
 
         if (remainingVertices.length > 4) {
@@ -431,7 +431,7 @@ class Graph {
     cycle: Vertex[],
     parent: Vertex,
     start: Vertex,
-    end: Vertex,
+    end: Vertex
   ) {
     if (start.uuid === end.uuid) return [start, parent];
 

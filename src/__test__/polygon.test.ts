@@ -2,6 +2,7 @@ import { describe, test } from "@jest/globals";
 import { Graph, Vertex } from "../app/controller/Graph";
 import { Polygon } from "../app/system/utils/Polygon/Polygon";
 import { Vector3 } from "three";
+import { ConcavePolygon } from "../app/system/utils/Polygon";
 
 describe("Polygon", () => {
   /**
@@ -294,5 +295,150 @@ describe("Polygon triangulation", () => {
     let b = new Vector3(1, 0, 1);
 
     console.log(a === b);
+  });
+
+  /**
+
+   1 ------------- 0
+   |               |
+   |    4 --- 5    |
+   |    |     |    |
+   |    7 --- 6    |
+   |               |
+   2 ------------- 3
+
+   */
+  test("Triangulation polygon case 5", () => {
+    const ver0 = { uuid: "0", position: { x: 5, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 0, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 0, y: 4 } };
+    const ver3 = { uuid: "3", position: { x: 4, y: 4 } };
+
+    const ver4 = { uuid: "4", position: { x: 2, y: 2 } };
+    const ver5 = { uuid: "5", position: { x: 3, y: 2 } };
+    const ver6 = { uuid: "6", position: { x: 3, y: 3 } };
+    const ver7 = { uuid: "7", position: { x: 2, y: 3 } };
+
+    const graph = new Graph();
+    graph.addEdge(ver0, ver1);
+    graph.addEdge(ver1, ver2);
+    graph.addEdge(ver2, ver3);
+    graph.addEdge(ver3, ver0);
+
+    graph.addEdge(ver4, ver5);
+    graph.addEdge(ver5, ver6);
+    graph.addEdge(ver6, ver7);
+    graph.addEdge(ver7, ver4);
+
+    let cycles = graph.getCycles();
+
+    let vertexCycle = graph.getVertexCycle(cycles[0]);
+
+    let triangles = Polygon.getTriangles(vertexCycle, graph);
+
+    console.log("triangles", triangles);
+  });
+});
+
+describe("Polygon clockwise", () => {
+  /**
+
+   0 ------------- 1
+   |               |
+   |               |
+   |               |
+   |               |
+   |               |
+   3 ------------- 2
+
+   */
+  test("Polygon clock", () => {
+    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 4, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 4, y: 4 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 4 } };
+
+    const graph = new Graph();
+    graph.addEdge(ver0, ver1);
+    graph.addEdge(ver1, ver2);
+    graph.addEdge(ver2, ver3);
+    graph.addEdge(ver3, ver0);
+
+    let cycles = graph.getCycles();
+
+    let vertexCycle = graph.getVertexCycle(cycles[0]);
+    let points = vertexCycle.map(
+      (v) => new Vector3(v.position.x, 0, v.position.y)
+    );
+    let triangles = ConcavePolygon.isCycleCounterclockwise(points);
+
+    console.log("triangles", triangles);
+    // expect(triangles).toStrictEqual(['0', '1'])
+  });
+
+  /**
+
+   1 ------------- 0
+   |               |
+   |               |
+   |               |
+   |               |
+   |               |
+   2 ------------- 3
+
+   */
+  test("Polygon counter clock", () => {
+    const ver0 = { uuid: "0", position: { x: 4, y: 0 } };
+    const ver1 = { uuid: "1", position: { x: 0, y: 0 } };
+    const ver2 = { uuid: "2", position: { x: 0, y: 4 } };
+    const ver3 = { uuid: "3", position: { x: 4, y: 4 } };
+
+    const graph = new Graph();
+    graph.addEdge(ver0, ver1);
+    graph.addEdge(ver1, ver2);
+    graph.addEdge(ver2, ver3);
+    graph.addEdge(ver3, ver0);
+
+    let cycles = graph.getCycles();
+
+    let vertexCycle = graph.getVertexCycle(cycles[0]);
+    let points = vertexCycle.map(
+      (v) => new Vector3(v.position.x, 0, v.position.y)
+    );
+    let triangles = ConcavePolygon.isCycleCounterclockwise(points);
+
+    console.log("triangles", triangles);
+    // expect(triangles).toStrictEqual(['0', '1'])
+  });
+
+  /**
+
+   2 ------------- 3
+   |               |
+   |               |
+   |               |
+   |               |
+   |               |
+   1 ------------- 0
+
+   */
+  test("Polygon clock case 1", () => {
+    const ver0 = { uuid: "0", position: { x: 10, y: 0, z: 10 } };
+    const ver1 = { uuid: "1", position: { x: 0, y: 0, z: 10 } };
+    const ver2 = { uuid: "2", position: { x: 0, y: 0, z: 0 } };
+    const ver3 = { uuid: "3", position: { x: 10, y: 0, z: 0 } };
+
+    const graph = new Graph();
+    graph.addEdge(ver0, ver1);
+    graph.addEdge(ver1, ver2);
+    graph.addEdge(ver2, ver3);
+    graph.addEdge(ver3, ver0);
+
+    let cycles = graph.getCycles();
+
+    let vertexCycle = graph.getVertexCycle(cycles[0]);
+    let points = vertexCycle.map(
+      (v) => new Vector3(v.position.x, 0, v.position.y)
+    );
   });
 });

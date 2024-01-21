@@ -7,13 +7,14 @@ import {
   Helpers,
   Storage,
   Math2D,
-  Vertex,
 } from "../system";
 import * as THREE from "three";
 import { Corner } from "./Wall/Corner";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Vector3, ShapeUtils } from "three";
 import { Polygon } from "../system/utils/Polygon";
+import { Color } from "../system/utils/Color";
+import { Vertex } from "../controller";
 
 class Room implements Object3D {
   mesh: Engine.Mesh | null = null;
@@ -40,8 +41,9 @@ class Room implements Object3D {
     const threeMesh = this.mesh.returnTHREE();
 
     const geometry = this.getGeometry();
+
     const material = new THREE.MeshBasicMaterial({
-      color: 0x009dc4,
+      color: Color.pick(),
     });
 
     if (!threeMesh) return;
@@ -73,21 +75,20 @@ class Room implements Object3D {
 
   render() {
     this.mesh?.destroy();
-
     let geometry = this.getGeometry();
 
     const material = new THREE.MeshBasicMaterial({
-      color: 0x009dc4,
+      color: Color.pick(),
     });
     const mesh = new THREE.Mesh(geometry, material);
 
     material.transparent = true;
     material.opacity = 0.5;
 
-    let txtMesh = this.getText(this.getArea().toString());
-    if (txtMesh) {
-      mesh.add(txtMesh);
-    }
+    // let txtMesh = this.getText(this.getArea().toString());
+    // if (txtMesh) {
+    //   mesh.add(txtMesh);
+    // }
 
     this.mesh?.render(mesh);
 
@@ -99,8 +100,8 @@ class Room implements Object3D {
 
     let verNumbers: number[] = [];
 
-    this.triangulation.reverse().map((v) => {
-      verNumbers.push(v.position.x, 0, v.position.y);
+    this.triangulation.map((v) => {
+      verNumbers.push(v.position.x, v.position.y, v.position.z);
     });
 
     let vert = new Float32Array(verNumbers);
@@ -126,7 +127,7 @@ class Room implements Object3D {
         Math.abs(
           v0.position.x * (v1.position.y - v2.position.y) +
             v1.position.x * (v2.position.y - v0.position.y) +
-            v2.position.x * (v0.position.y - v1.position.y),
+            v2.position.x * (v0.position.y - v1.position.y)
         ) / 2;
 
       _i += 3;
@@ -149,14 +150,14 @@ class Room implements Object3D {
           size: 120 / scale,
           height: 1 / scale,
           bevelThickness: 1 / scale,
-        },
+        }
       );
 
       let center = new Vector3();
 
       this.corners.map((corner) => {
         center.add(
-          new Vector3(corner.position.x, corner.position.y, corner.position.z),
+          new Vector3(corner.position.x, corner.position.y, corner.position.z)
         );
       });
       center.setX(center.x / this.corners.length);

@@ -8,19 +8,28 @@ class HolePolygon {
   private static connectInnerOuter(
     inner: Vertex[],
     outer: Vertex[],
-    graph: Graph,
+    graph: Graph
   ) {
-    let { pair, maxRight } = this.getVisiblePair(inner, outer, graph);
-
     {
       let isCCL = ConcavePolygon.isCycleCounterclockwise(
-        inner.map((i) => new Vector3(i.position.x, 0, i.position.y)),
+        inner.map((i) => new Vector3(i.position.x, i.position.y, i.position.z))
       );
 
-      if (!isCCL) {
+      if (isCCL) {
         inner = inner.reverse();
       }
     }
+    {
+      let isCCL = ConcavePolygon.isCycleCounterclockwise(
+        outer.map((i) => new Vector3(i.position.x, i.position.y, i.position.z))
+      );
+
+      if (!isCCL) {
+        outer = outer.reverse();
+      }
+    }
+
+    let { pair, maxRight } = this.getVisiblePair(inner, outer, graph);
 
     if (pair) {
       let pairIndexInner = inner.findIndex((i) => i.uuid === maxRight?.uuid);
@@ -46,7 +55,7 @@ class HolePolygon {
   private static getVisiblePair(
     inner: Vertex[],
     outer: Vertex[],
-    graph: Graph,
+    graph: Graph
   ) {
     let pair: Vertex | null = null;
     let intersections: Array<{
@@ -62,15 +71,27 @@ class HolePolygon {
     outer.map((vertex, index, array) => {
       let nextVertex = array[(index + 1) % array.length];
       let line = {
-        start: new Vector3(vertex.position.x, 0, vertex.position.y),
-        end: new Vector3(nextVertex.position.x, 0, nextVertex.position.y),
+        start: new Vector3(
+          vertex.position.x,
+          vertex.position.y,
+          vertex.position.z
+        ),
+        end: new Vector3(
+          nextVertex.position.x,
+          nextVertex.position.y,
+          nextVertex.position.z
+        ),
         connections: { start: vertex, end: nextVertex },
       };
-      let origin = new Vector3(maxRight.position.x, 0, maxRight.position.y);
+      let origin = new Vector3(
+        maxRight.position.x,
+        maxRight.position.y,
+        maxRight.position.z
+      );
 
       let intersect = this.intersect(
         { origin, direction: new Vector3(1, 0, 0) },
-        line,
+        line
       );
 
       if (intersect) {
@@ -101,7 +122,7 @@ class HolePolygon {
   //TODO: move to line
   private static intersect(
     ray: { origin: Vector3; direction: Vector3 },
-    line: Line,
+    line: Line
   ): { position: Vector3; line: Line; distance: number } | null {
     let { direction, origin } = ray;
     let lineDirection = line.end.clone().sub(line.start.clone()).normalize();
@@ -123,7 +144,7 @@ class HolePolygon {
       let intersectionPosition = new Vector3(
         ray.origin.x + t * ray.direction.x,
         0,
-        ray.origin.z + t * ray.direction.z,
+        ray.origin.z + t * ray.direction.z
       );
 
       let isIntersectionLefter =
@@ -166,17 +187,14 @@ class HolePolygon {
 
     if (innerCycles && innerCycles[0].length > 3) {
       let vertexCycle = graph.getVertexCycle(innerCycles[0]);
-      // let startedWithLowest = cycle.map(() => {})
 
-      // console.log("sorted", sorted);
-      // ret = this.connectInnerOuter(vertexCycle, sortedCycle, graph);
-      //
-      // if (ret) {
-      //   console.log("ret", ret);
-      //   // let res = ConcavePolygon.earClipping(ret);
-      //   //
-      //   // ret = res;
-      // }
+      let result = this.connectInnerOuter(vertexCycle, cycle, graph);
+
+      if (result) {
+        let res = ConcavePolygon.earClipping(result);
+
+        ret = res;
+      }
     }
 
     return ret ?? [];

@@ -30,7 +30,7 @@ class Room {
     this.scene.model.objects = this.scene.model.objects.filter(
       (obj): obj is RoomModel => {
         return !(obj instanceof RoomModel);
-      },
+      }
     );
 
     corners.map((roomCorners) => {
@@ -46,10 +46,6 @@ class Room {
       });
 
       newRoom.triangulation = this.getTriangles(roomCorners);
-      // console.log("");
-      // console.log("corners", newRoom.corners);
-      // console.log("triangulation", newRoom.triangulation);
-      // console.log("");
 
       this.scene.model.addObject(newRoom);
     });
@@ -59,7 +55,7 @@ class Room {
     let vertices = corners.map((corner) => {
       return {
         uuid: corner.uuid,
-        position: { x: corner.position.x, y: corner.position.z },
+        position: { x: corner.position.x, y: 0, z: corner.position.z },
         isVertex: true,
       };
     });

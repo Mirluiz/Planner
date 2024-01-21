@@ -57,7 +57,7 @@ class Polygon {
       let innerCycle = graph.bfs(innerVertices[0], innerVertices[1]);
 
       const hasIntersections = cycle.filter((value) =>
-        innerCycle.includes(value.uuid),
+        innerCycle.includes(value.uuid)
       );
 
       if (hasIntersections.length === 0) {

@@ -13,14 +13,7 @@ class ConcavePolygon {
 
     const result: Vertex[] = [];
 
-    const remainingVertices = [
-      ...vertices.map((vertex) => {
-        return {
-          pos: vertex,
-          vertex,
-        };
-      }),
-    ];
+    const remainingVertices = [...vertices];
 
     let whileLimit = 4000;
     let limitCounter = 0;
@@ -31,11 +24,9 @@ class ConcavePolygon {
         const v1 = remainingVertices[(i + 1) % n];
         const v2 = remainingVertices[(i + 2) % n];
 
-        let rV = remainingVertices.map((rV) => rV.pos);
+        if (v0 && v1 && v2 && this.isEar(v0, v1, v2, remainingVertices)) {
+          result.push(v0, v1, v2);
 
-        if (this.isEar(v0.pos, v1.pos, v2.pos, rV)) {
-          // Found an ear, add triangle and remove ear vertex
-          result.push(v0.vertex, v1.vertex, v2.vertex);
           remainingVertices.splice((i + 1) % n, 1);
           break; // Restart the loop
         }
@@ -44,8 +35,7 @@ class ConcavePolygon {
       limitCounter++;
     }
 
-    // Add the last triangle
-    result.push(...remainingVertices.map((rV) => rV.vertex));
+    result.push(...remainingVertices);
     return result;
   }
 
@@ -53,13 +43,13 @@ class ConcavePolygon {
     v0: Vertex,
     v1: Vertex,
     v2: Vertex,
-    vertices: Vertex[],
+    vertices: Vertex[]
   ): boolean {
     if (!v2) return false;
 
-    let voVector = new Vector3(v0.position.x, 0, v0.position.y);
-    let v1Vector = new Vector3(v1.position.x, 0, v1.position.y);
-    let v2Vector = new Vector3(v2.position.x, 0, v2.position.y);
+    let voVector = new Vector3(v0.position.x, v0.position.y, v0.position.z);
+    let v1Vector = new Vector3(v1.position.x, v1.position.y, v1.position.z);
+    let v2Vector = new Vector3(v2.position.x, v2.position.y, v2.position.z);
 
     // Check if the angle at v1 is concave
     const crossProduct =
@@ -71,18 +61,19 @@ class ConcavePolygon {
 
     // Check if any other vertex is inside the triangle v0-v1-v2
     for (const vertex of vertices) {
+      let res = this.pointInTriangle(
+        voVector,
+        v1Vector,
+        v2Vector,
+        new Vector3(vertex.position.x, vertex.position.y, vertex.position.z)
+      );
+
       if (
         vertex.uuid !== v0.uuid &&
         vertex.uuid !== v1.uuid &&
         vertex.uuid !== v2.uuid &&
-        this.pointInTriangle(
-          voVector,
-          v1Vector,
-          v2Vector,
-          new Vector3(vertex.position.x, 0, vertex.position.y),
-        )
+        res
       ) {
-        // console.log("===", vertex, v0);
         return false; // Found a vertex inside the triangle, not an ear
       }
     }
@@ -94,32 +85,26 @@ class ConcavePolygon {
     v0: Vector3,
     v1: Vector3,
     v2: Vector3,
-    p: Vector3,
+    p: Vector3
   ): boolean {
     const areaOriginal = Math.abs(
-      (v1.x - v0.x) * (v2.z - v0.z) - (v2.x - v0.x) * (v1.z - v0.z),
+      (v1.x - v0.x) * (v2.z - v0.z) - (v2.x - v0.x) * (v1.z - v0.z)
     );
     const area1 = Math.abs(
-      (p.x - v0.x) * (v1.z - v0.z) - (v1.x - v0.x) * (p.z - v0.z),
+      (p.x - v0.x) * (v1.z - v0.z) - (v1.x - v0.x) * (p.z - v0.z)
     );
     const area2 = Math.abs(
-      (p.x - v1.x) * (v2.z - v1.z) - (v2.x - v1.x) * (p.z - v1.z),
+      (p.x - v1.x) * (v2.z - v1.z) - (v2.x - v1.x) * (p.z - v1.z)
     );
     const area3 = Math.abs(
-      (p.x - v2.x) * (v0.z - v2.z) - (v0.x - v2.x) * (p.z - v2.z),
+      (p.x - v2.x) * (v0.z - v2.z) - (v0.x - v2.x) * (p.z - v2.z)
     );
 
     return Math.abs(area1 + area2 + area3 - areaOriginal) < 1e-6; // Use an epsilon to handle floating-point errors
   }
 
-  private static calculateCrossProduct(
-    v1: Vector3,
-    v2: Vector3,
-    v3: Vector3,
-  ): number {
-    const crossProduct =
-      (v2.x - v1.x) * (v3.z - v1.z) - (v3.x - v1.x) * (v2.z - v1.z);
-    return crossProduct;
+  private static calculateCrossProduct(v1: Vector3, v2: Vector3): number {
+    return (v2.x - v1.x) * (v2.z - v1.z);
   }
 
   static isCycleCounterclockwise(vertices: Vector3[]): boolean {
@@ -137,9 +122,9 @@ class ConcavePolygon {
     for (let i = 0; i < n; i++) {
       const v1 = vertices[i];
       const v2 = vertices[(i + 1) % n];
-      const v3 = vertices[(i + 2) % n];
+      // const v3 = vertices[(i + 2) % n];
 
-      const crossProduct = this.calculateCrossProduct(v1, v2, v3);
+      const crossProduct = this.calculateCrossProduct(v1, v2);
 
       if (crossProduct > 0) {
         positiveCount++;
@@ -175,7 +160,7 @@ class ConcavePolygon {
 
       let intersect = this.intersect(
         { origin, direction: new Vector3(1, 0, 0) },
-        line,
+        line
       );
 
       if (intersect) {
@@ -205,7 +190,7 @@ class ConcavePolygon {
 
   static intersect(
     ray: { origin: Vector3; direction: Vector3 },
-    line: Line,
+    line: Line
   ): { position: Vector3; line: Line; distance: number } | null {
     let { direction, origin } = ray;
     let lineDirection = line.end.clone().sub(line.start.clone()).normalize();
@@ -227,7 +212,7 @@ class ConcavePolygon {
       let intersectionPosition = new Vector3(
         ray.origin.x + t * ray.direction.x,
         0,
-        ray.origin.z + t * ray.direction.z,
+        ray.origin.z + t * ray.direction.z
       );
 
       let isIntersectionLefter =
