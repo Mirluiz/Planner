@@ -1,4 +1,4 @@
-import { Graph, Vertex } from "../Graph";
+import { Graph, Vertex } from "../../../../Backup/Graph";
 import { Geometry } from "../../interfaces";
 import Vector3 = Geometry.Vector3;
 

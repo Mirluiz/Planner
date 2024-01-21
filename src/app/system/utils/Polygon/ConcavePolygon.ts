@@ -13,7 +13,6 @@ class ConcavePolygon {
 
     const result: Vertex[] = [];
 
-    // Copy the vertices to avoid modifying the original array
     const remainingVertices = [
       ...vertices.map((vertex) => {
         return {
@@ -22,7 +21,6 @@ class ConcavePolygon {
         };
       }),
     ];
-    // console.log("before", remainingVertices);
 
     let whileLimit = 4000;
     let limitCounter = 0;
@@ -45,7 +43,6 @@ class ConcavePolygon {
 
       limitCounter++;
     }
-    console.log("remainingVertices", remainingVertices);
 
     // Add the last triangle
     result.push(...remainingVertices.map((rV) => rV.vertex));

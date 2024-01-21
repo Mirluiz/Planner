@@ -46,6 +46,10 @@ class Room {
       });
 
       newRoom.triangulation = this.getTriangles(roomCorners);
+      // console.log("");
+      // console.log("corners", newRoom.corners);
+      // console.log("triangulation", newRoom.triangulation);
+      // console.log("");
 
       this.scene.model.addObject(newRoom);
     });
@@ -61,7 +65,6 @@ class Room {
     });
 
     return Polygon.getTriangles(vertices, this.graph);
-    // return [];
   }
 }
 

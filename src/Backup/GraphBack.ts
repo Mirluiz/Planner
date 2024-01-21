@@ -1,4 +1,4 @@
-import { Math2D } from "./Math2D";
+import { Math2D } from "../app/system/utils/Math2D";
 
 type Vertex = { val: string; pos: { x: number; y: number } };
 
@@ -12,7 +12,7 @@ class Graph {
     path: Array<{
       parent: string;
       current: string;
-    }>
+    }>,
   ) {
     let ret: string[] = [];
 
@@ -37,7 +37,7 @@ class Graph {
 
   addEdge(
     u: { val: string; pos: { x: number; y: number } },
-    v: { val: string; pos: { x: number; y: number } }
+    v: { val: string; pos: { x: number; y: number } },
   ): void {
     if (!this.graph[u.val]) {
       this.graph[u.val] = [];
@@ -84,7 +84,7 @@ class Graph {
 
       let neighbors = this.graph[current.val];
       let sortedNeighbors = neighbors.sort((a, b) =>
-        this.thetaSort(current, a, b)
+        this.thetaSort(current, a, b),
       );
 
       for (const neighbor of sortedNeighbors) {
@@ -161,7 +161,7 @@ class Graph {
     parent: Vertex,
     current: Vertex,
     visited: { [key: string]: boolean },
-    cycles: string[]
+    cycles: string[],
   ): boolean {
     visited[parent.val] = true;
     visited[current.val] = true;
@@ -169,7 +169,7 @@ class Graph {
 
     let neighbors = this.graph[current.val];
     let sortedNeighbors = neighbors.sort((a, b) =>
-      this.thetaSort(current, a, b)
+      this.thetaSort(current, a, b),
     );
 
     for (const neighbor of sortedNeighbors) {
@@ -205,7 +205,7 @@ class Graph {
           Object.values(this.vertices)[_i],
           adj,
           visited,
-          cycles
+          cycles,
         );
         if (ret) {
           allCycles.push(cycles);
@@ -230,7 +230,7 @@ class Graph {
         let vertices = this.getVertexCycle(cycle);
         if (
           !duplicatedRemove.find(
-            (c) => [...c].sort().join("") === [...cycle].sort().join("")
+            (c) => [...c].sort().join("") === [...cycle].sort().join(""),
           ) &&
           !this.hasChord(vertices)
         ) {

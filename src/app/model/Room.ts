@@ -84,11 +84,10 @@ class Room implements Object3D {
     material.transparent = true;
     material.opacity = 0.5;
 
-    // let txtMesh = this.getText(this.getArea().toString());
-    // let txtMesh = "";
-    // if (txtMesh) {
-    //   mesh.add(txtMesh);
-    // }
+    let txtMesh = this.getText(this.getArea().toString());
+    if (txtMesh) {
+      mesh.add(txtMesh);
+    }
 
     this.mesh?.render(mesh);
 

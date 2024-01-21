@@ -161,15 +161,22 @@ class HolePolygon {
 
   static getTriangles(cycle: Array<Vertex>, graph: Graph): Vertex[] {
     let innerCycles = graph.getInnerCycles(cycle);
+
     let ret: Vertex[] | undefined;
 
-    if (innerCycles) {
+    if (innerCycles && innerCycles[0].length > 3) {
       let vertexCycle = graph.getVertexCycle(innerCycles[0]);
-      ret = this.connectInnerOuter(vertexCycle, cycle, graph);
+      // let startedWithLowest = cycle.map(() => {})
 
-      if (ret) {
-        let res = ConcavePolygon.earClipping(ret);
-      }
+      // console.log("sorted", sorted);
+      // ret = this.connectInnerOuter(vertexCycle, sortedCycle, graph);
+      //
+      // if (ret) {
+      //   console.log("ret", ret);
+      //   // let res = ConcavePolygon.earClipping(ret);
+      //   //
+      //   // ret = res;
+      // }
     }
 
     return ret ?? [];
