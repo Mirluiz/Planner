@@ -151,6 +151,44 @@ class Room {
         null,
       ],
     },
+
+    {
+      name: "Convex Room ",
+      corners: [
+        { pos: { x: 0, y: 0, z: 0 } },
+        { pos: { x: 5, y: 0, z: 2 } },
+        { pos: { x: 10, y: 0, z: 0 } },
+        { pos: { x: 10, y: 0, z: 10 } },
+        { pos: { x: 0, y: 0, z: 10 } },
+        { pos: { x: 0, y: 0, z: 0 } },
+
+        null,
+      ],
+    },
+
+    {
+      name: "Convex Room case 1",
+      corners: [
+        { pos: { x: 0, y: 0, z: 0 } },
+        { pos: { x: 3, y: 0, z: 1 } },
+        { pos: { x: 7, y: 0, z: 1 } },
+        { pos: { x: 10, y: 0, z: 0 } },
+        { pos: { x: 0, y: 0, z: 0 } },
+
+        null,
+      ],
+    },
+    {
+      name: "Convex Room case  2",
+      corners: [
+        { pos: { x: 0, y: 0, z: 0 } },
+        { pos: { x: 0, y: 0, z: 5 } },
+        { pos: { x: 5, y: 0, z: 5 } },
+        { pos: { x: 0, y: 0, z: 0 } },
+
+        null,
+      ],
+    },
   ];
 
   constructor(props: { app: App }) {
@@ -159,7 +197,7 @@ class Room {
 
   run() {
     let wallController = this.app.wallController;
-    let { corners } = this.examples[8];
+    let { corners } = this.examples[11];
 
     corners.map((cornerData, index) => {
       if (!cornerData) {

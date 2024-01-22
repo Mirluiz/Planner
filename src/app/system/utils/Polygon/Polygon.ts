@@ -1,5 +1,6 @@
 import { HolePolygon, ConcavePolygon, ConvexPolygon } from "./";
 import { Graph, Vertex } from "../../../controller/Graph";
+import { Vector3 } from "three";
 
 class Polygon {
   static isConcave(cycle: Array<Vertex>): boolean {
@@ -68,12 +69,25 @@ class Polygon {
     return ret;
   }
 
-  static getTriangles(cycle: Array<Vertex>, graph: Graph): Vertex[] {
+  static getTriangles(c: Array<Vertex>, graph: Graph): Vertex[] {
     let ret: Vertex[] = [];
+    let cycle = [...c];
+
+    {
+      let isCCL = ConcavePolygon.isCycleCounterclockwise(
+        cycle.map((i) => new Vector3(i.position.x, i.position.y, i.position.z))
+      );
+
+      if (!isCCL) {
+        cycle = cycle.reverse();
+      }
+    }
 
     if (this.hasHole(cycle, graph)) {
+      console.log("1");
       ret = HolePolygon.getTriangles(cycle, graph);
     } else if (this.isConcave(cycle)) {
+      console.log("2");
       ret = ConcavePolygon.getTriangles(cycle, graph);
     } else if (this.isConvex(cycle)) {
       ret = ConvexPolygon.getTriangles(cycle);
@@ -85,11 +99,11 @@ class Polygon {
   static crossProductZ(p1: Vertex, p2: Vertex, p3: Vertex): number {
     const vector1 = {
       x: p2.position.x - p1.position.x,
-      y: p2.position.y - p1.position.y,
+      y: p2.position.z - p1.position.z,
     };
     const vector2 = {
       x: p3.position.x - p2.position.x,
-      y: p3.position.y - p2.position.y,
+      y: p3.position.z - p2.position.z,
     };
 
     return vector1.x * vector2.y - vector1.y * vector2.x;

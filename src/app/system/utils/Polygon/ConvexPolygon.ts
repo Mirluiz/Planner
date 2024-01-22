@@ -1,9 +1,25 @@
 import { Geometry } from "../../interfaces";
 import Vector3 = Geometry.Vector3;
 import { Vertex } from "../../../controller";
+import { ConcavePolygon } from "./ConcavePolygon";
 
 class ConvexPolygon {
-  static getTriangles(vertices: Array<Vertex>): Vertex[] {
+  static getTriangles(vS: Array<Vertex>): Vertex[] {
+    let vertices = [...vS];
+    {
+      let isCCL = ConcavePolygon.isCycleCounterclockwise(
+        vertices.map(
+          (i) => new Vector3(i.position.x, i.position.y, i.position.z)
+        )
+      );
+      console.log("isCCL", isCCL);
+      console.log("==", ...vertices.map((i) => i.uuid.slice(0, 3)));
+
+      if (!isCCL) {
+        vertices = vertices.reverse();
+      }
+    }
+
     let ret: Vertex[] = [];
 
     const n = vertices.length;
@@ -16,7 +32,11 @@ class ConvexPolygon {
     const remainingVertices = [
       ...vertices.map((vertex) => {
         return {
-          pos: new Vector3(vertex.position.x, 0, vertex.position.y),
+          pos: new Vector3(
+            vertex.position.x,
+            vertex.position.y,
+            vertex.position.z
+          ),
           vertex,
         };
       }),
@@ -29,7 +49,6 @@ class ConvexPolygon {
 
       ret.push(...[origin.vertex, v1.vertex, v2.vertex]);
     }
-
     return ret;
   }
 }

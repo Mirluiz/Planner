@@ -343,6 +343,7 @@ class Wall implements Drawing {
     if (!this.roomController.graph) return;
 
     let cycles = this.roomController.graph.getCycles();
+
     let roomCorners: Array<Array<Corner>> = [];
 
     cycles.map((cycle) => {

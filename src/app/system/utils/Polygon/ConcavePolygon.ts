@@ -104,37 +104,28 @@ class ConcavePolygon {
   }
 
   private static calculateCrossProduct(v1: Vector3, v2: Vector3): number {
-    return (v2.x - v1.x) * (v2.z - v1.z);
+    return (v2.x - v1.x) * (v2.z + v1.z);
   }
 
   static isCycleCounterclockwise(vertices: Vector3[]): boolean {
     const n = vertices.length;
 
-    // Ensure there are at least three vertices
     if (n < 3) {
       console.error("A cycle must have at least three vertices.");
       return false;
     }
 
-    let positiveCount = 0;
-    let negativeCount = 0;
+    let res = 0;
 
     for (let i = 0; i < n; i++) {
       const v1 = vertices[i];
       const v2 = vertices[(i + 1) % n];
-      // const v3 = vertices[(i + 2) % n];
 
       const crossProduct = this.calculateCrossProduct(v1, v2);
-
-      if (crossProduct > 0) {
-        positiveCount++;
-      } else if (crossProduct < 0) {
-        negativeCount++;
-      }
+      res += crossProduct;
     }
 
-    // If the majority of cross products are positive, the cycle is counterclockwise
-    return positiveCount > negativeCount;
+    return res > 0;
   }
 
   static getVisiblePair(inner: Vertex[], outer: Vertex[], graph: Graph) {
@@ -249,6 +240,16 @@ class ConcavePolygon {
   }
 
   static getTriangles(cycle: Array<Vertex>, graph: Graph): Vertex[] {
+    {
+      let isCCL = ConcavePolygon.isCycleCounterclockwise(
+        cycle.map((i) => new Vector3(i.position.x, i.position.y, i.position.z))
+      );
+
+      if (!isCCL) {
+        cycle = cycle.reverse();
+      }
+    }
+
     let ret: Vertex[] | undefined = this.earClipping(cycle);
 
     return ret ?? [];

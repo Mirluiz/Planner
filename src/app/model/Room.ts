@@ -13,11 +13,13 @@ import { Corner } from "./Wall/Corner";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Vector3, ShapeUtils } from "three";
 import { Polygon } from "../system/utils/Polygon";
-import { Color } from "../system/utils/Color";
+import { Color, ColorManager } from "../system/utils/Color";
 import { Vertex } from "../controller";
 
 class Room implements Object3D {
   mesh: Engine.Mesh | null = null;
+
+  color: number;
 
   corners: Array<Corner> = [];
   triangulation: Array<Vertex> = [];
@@ -34,6 +36,7 @@ class Room implements Object3D {
     this.position = props.position ?? { x: 0, y: 0, z: 0 };
 
     this.mesh = new Engine.Mesh();
+    this.color = ColorManager.pick();
   }
 
   update() {
@@ -43,7 +46,7 @@ class Room implements Object3D {
     const geometry = this.getGeometry();
 
     const material = new THREE.MeshBasicMaterial({
-      color: Color.pick(),
+      color: this.color,
     });
 
     if (!threeMesh) return;
@@ -78,7 +81,7 @@ class Room implements Object3D {
     let geometry = this.getGeometry();
 
     const material = new THREE.MeshBasicMaterial({
-      color: Color.pick(),
+      color: this.color,
     });
     const mesh = new THREE.Mesh(geometry, material);
 

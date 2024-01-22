@@ -1,4 +1,4 @@
-type ColorT = {
+export type Color = {
   maroon: 0x800000;
   brown: 0x9a6324;
   olive: 0x808000;
@@ -16,11 +16,12 @@ type ColorT = {
   magenta: 0xf032e6;
   beige: 0xfffac8;
   lavender: 0xdcbeff;
+  light_yellow: 0xfff000;
 };
 
-class Color {
+class ColorManager {
   static pickedColor: number[] = [];
-  static readonly colors: { [key in keyof ColorT]: number } = {
+  static readonly colors: { [key in keyof Color]: number } = {
     maroon: 0x800000,
     brown: 0x9a6324,
     olive: 0x808000,
@@ -38,9 +39,10 @@ class Color {
     magenta: 0xf032e6,
     beige: 0xfffac8,
     lavender: 0xdcbeff,
+    light_yellow: 0xfff000,
   };
 
-  static pick() {
+  static pick(): number {
     if (Object.values(this.colors).length === this.pickedColor.length) {
       this.pickedColor = [];
     }
@@ -49,7 +51,7 @@ class Color {
 
     const color = Object.values(this.colors)[lastIndex];
     this.pickedColor.push(color);
-    return color ?? 0xfff000;
+    return color ?? this.colors["light_yellow"];
   }
 
   static getNameByNumber(value: number) {
@@ -62,4 +64,4 @@ class Color {
   }
 }
 
-export { Color };
+export { ColorManager };

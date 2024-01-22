@@ -17,15 +17,15 @@ describe("Polygon", () => {
 
    */
   test("Polygon has hole", () => {
-    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
-    const ver1 = { uuid: "1", position: { x: 4, y: 0 } };
-    const ver2 = { uuid: "2", position: { x: 4, y: 4 } };
-    const ver3 = { uuid: "3", position: { x: 0, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 4, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 4, y: 0, z: 4 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 0, z: 4 } };
 
-    const ver4 = { uuid: "4", position: { x: 2, y: 2 } };
-    const ver5 = { uuid: "5", position: { x: 3, y: 2 } };
-    const ver6 = { uuid: "6", position: { x: 3, y: 3 } };
-    const ver7 = { uuid: "7", position: { x: 2, y: 3 } };
+    const ver4 = { uuid: "4", position: { x: 2, y: 0, z: 2 } };
+    const ver5 = { uuid: "5", position: { x: 3, y: 0, z: 2 } };
+    const ver6 = { uuid: "6", position: { x: 3, y: 0, z: 3 } };
+    const ver7 = { uuid: "7", position: { x: 2, y: 0, z: 3 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -62,10 +62,10 @@ describe("Polygon", () => {
 
    */
   test("Polygon is convex", () => {
-    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
-    const ver1 = { uuid: "1", position: { x: 4, y: 0 } };
-    const ver2 = { uuid: "2", position: { x: 4, y: 4 } };
-    const ver3 = { uuid: "3", position: { x: 0, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 4, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 4, y: 0, z: 4 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 0, z: 4 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -97,12 +97,12 @@ describe("Polygon", () => {
 
    */
   test("Polygon is concave", () => {
-    const ver0 = { uuid: "0", position: { x: 4, y: 0 } };
-    const ver1 = { uuid: "1", position: { x: 8, y: 0 } };
-    const ver2 = { uuid: "2", position: { x: 8, y: 4 } };
-    const ver3 = { uuid: "3", position: { x: 0, y: 4 } };
-    const ver4 = { uuid: "4", position: { x: 0, y: 2 } };
-    const ver5 = { uuid: "5", position: { x: 4, y: 2 } };
+    const ver0 = { uuid: "0", position: { x: 4, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 8, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 8, y: 0, z: 4 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 0, z: 4 } };
+    const ver4 = { uuid: "4", position: { x: 0, y: 0, z: 2 } };
+    const ver5 = { uuid: "5", position: { x: 4, y: 0, z: 2 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -138,10 +138,10 @@ describe("Polygon triangulation", () => {
 
    */
   test("Polygon triangulation case 1", () => {
-    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
-    const ver1 = { uuid: "1", position: { x: 4, y: 0 } };
-    const ver2 = { uuid: "2", position: { x: 4, y: 4 } };
-    const ver3 = { uuid: "3", position: { x: 0, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 4, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 4, y: 0, z: 4 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 0, z: 4 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -170,20 +170,20 @@ describe("Polygon triangulation", () => {
 
    */
   test("Triangulation polygon case 2", () => {
-    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
-    const ver1 = { uuid: "1", position: { x: 10, y: 0 } };
-    const ver2 = { uuid: "2", position: { x: 10, y: 4 } };
-    const ver3 = { uuid: "3", position: { x: 0, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 10, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 10, y: 0, z: 4 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 0, z: 4 } };
 
-    const ver4 = { uuid: "4", position: { x: 2, y: 2 } };
-    const ver5 = { uuid: "5", position: { x: 3, y: 2 } };
-    const ver6 = { uuid: "6", position: { x: 3, y: 3 } };
-    const ver7 = { uuid: "7", position: { x: 2, y: 3 } };
+    const ver4 = { uuid: "4", position: { x: 2, y: 0, z: 2 } };
+    const ver5 = { uuid: "5", position: { x: 3, y: 0, z: 2 } };
+    const ver6 = { uuid: "6", position: { x: 3, y: 0, z: 3 } };
+    const ver7 = { uuid: "7", position: { x: 2, y: 0, z: 3 } };
 
-    const ver8 = { uuid: "8", position: { x: 4, y: 2 } };
-    const ver9 = { uuid: "9", position: { x: 5, y: 2 } };
-    const ver10 = { uuid: "10", position: { x: 5, y: 3 } };
-    const ver11 = { uuid: "11", position: { x: 4, y: 3 } };
+    const ver8 = { uuid: "8", position: { x: 4, y: 0, z: 2 } };
+    const ver9 = { uuid: "9", position: { x: 5, y: 0, z: 2 } };
+    const ver10 = { uuid: "10", position: { x: 5, y: 0, z: 3 } };
+    const ver11 = { uuid: "11", position: { x: 4, y: 0, z: 3 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -225,15 +225,15 @@ describe("Polygon triangulation", () => {
 
    */
   test("Triangulation polygon case 3", () => {
-    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
-    const ver1 = { uuid: "1", position: { x: 4, y: 0 } };
-    const ver2 = { uuid: "2", position: { x: 5, y: 4 } };
-    const ver3 = { uuid: "3", position: { x: 0, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 4, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 5, y: 0, z: 4 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 0, z: 4 } };
 
-    const ver4 = { uuid: "4", position: { x: 2, y: 2 } };
-    const ver5 = { uuid: "5", position: { x: 3, y: 2 } };
-    const ver6 = { uuid: "6", position: { x: 3, y: 3 } };
-    const ver7 = { uuid: "7", position: { x: 2, y: 3 } };
+    const ver4 = { uuid: "4", position: { x: 2, y: 0, z: 2 } };
+    const ver5 = { uuid: "5", position: { x: 3, y: 0, z: 2 } };
+    const ver6 = { uuid: "6", position: { x: 3, y: 0, z: 3 } };
+    const ver7 = { uuid: "7", position: { x: 2, y: 0, z: 3 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -267,12 +267,12 @@ describe("Polygon triangulation", () => {
 
    */
   test("Triangulation polygon case 4", () => {
-    const ver0 = { uuid: "0", position: { x: 4, y: 0 } };
-    const ver1 = { uuid: "1", position: { x: 8, y: 0 } };
-    const ver2 = { uuid: "2", position: { x: 8, y: 4 } };
-    const ver3 = { uuid: "3", position: { x: 0, y: 4 } };
-    const ver4 = { uuid: "4", position: { x: 0, y: 2 } };
-    const ver5 = { uuid: "5", position: { x: 4, y: 2 } };
+    const ver0 = { uuid: "0", position: { x: 4, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 8, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 8, y: 0, z: 4 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 0, z: 4 } };
+    const ver4 = { uuid: "4", position: { x: 0, y: 0, z: 2 } };
+    const ver5 = { uuid: "5", position: { x: 4, y: 0, z: 2 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -309,15 +309,15 @@ describe("Polygon triangulation", () => {
 
    */
   test("Triangulation polygon case 5", () => {
-    const ver0 = { uuid: "0", position: { x: 5, y: 0 } };
-    const ver1 = { uuid: "1", position: { x: 0, y: 0 } };
-    const ver2 = { uuid: "2", position: { x: 0, y: 4 } };
-    const ver3 = { uuid: "3", position: { x: 4, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 5, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 0, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 0, y: 0, z: 4 } };
+    const ver3 = { uuid: "3", position: { x: 4, y: 0, z: 4 } };
 
-    const ver4 = { uuid: "4", position: { x: 2, y: 2 } };
-    const ver5 = { uuid: "5", position: { x: 3, y: 2 } };
-    const ver6 = { uuid: "6", position: { x: 3, y: 3 } };
-    const ver7 = { uuid: "7", position: { x: 2, y: 3 } };
+    const ver4 = { uuid: "4", position: { x: 2, y: 0, z: 2 } };
+    const ver5 = { uuid: "5", position: { x: 3, y: 0, z: 2 } };
+    const ver6 = { uuid: "6", position: { x: 3, y: 0, z: 3 } };
+    const ver7 = { uuid: "7", position: { x: 2, y: 0, z: 3 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -353,10 +353,10 @@ describe("Polygon clockwise", () => {
 
    */
   test("Polygon clock", () => {
-    const ver0 = { uuid: "0", position: { x: 0, y: 0 } };
-    const ver1 = { uuid: "1", position: { x: 4, y: 0 } };
-    const ver2 = { uuid: "2", position: { x: 4, y: 4 } };
-    const ver3 = { uuid: "3", position: { x: 0, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 0, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 4, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 4, y: 0, z: 4 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 0, z: 4 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -388,10 +388,10 @@ describe("Polygon clockwise", () => {
 
    */
   test("Polygon counter clock", () => {
-    const ver0 = { uuid: "0", position: { x: 4, y: 0 } };
-    const ver1 = { uuid: "1", position: { x: 0, y: 0 } };
-    const ver2 = { uuid: "2", position: { x: 0, y: 4 } };
-    const ver3 = { uuid: "3", position: { x: 4, y: 4 } };
+    const ver0 = { uuid: "0", position: { x: 4, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 0, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 0, y: 0, z: 4 } };
+    const ver3 = { uuid: "3", position: { x: 4, y: 0, z: 4 } };
 
     const graph = new Graph();
     graph.addEdge(ver0, ver1);
@@ -440,5 +440,31 @@ describe("Polygon clockwise", () => {
     let points = vertexCycle.map(
       (v) => new Vector3(v.position.x, 0, v.position.y)
     );
+  });
+
+  /**
+
+    0
+   | \
+   |  \
+   |   \
+   |    \
+   |     \
+   1 ---- 2
+
+   */
+  test("Polygon clock case 2", () => {
+    const ver0 = { uuid: "0", position: { x: 0, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 0, y: 0, z: 10 } };
+    const ver2 = { uuid: "2", position: { x: 10, y: 0, z: 10 } };
+    const ver3 = { uuid: "2", position: { x: 0, y: 0, z: 0 } };
+
+    let points = [ver0, ver1, ver2, ver3].map(
+      (v) => new Vector3(v.position.x, v.position.y, v.position.z)
+    );
+
+    console.log("points", points);
+    let clock = ConcavePolygon.isCycleCounterclockwise(points);
+    console.log("clock", clock);
   });
 });
