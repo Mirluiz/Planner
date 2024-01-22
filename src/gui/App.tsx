@@ -1,16 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import { App as PiperApp } from "./../app/App";
-import { Fitting, Pipe } from "../app/model";
 import { SceneProviderContext } from "./System/PiperContext";
 import { Left } from "./Menus/Left";
 import { BottomBar } from "./Menus/BottomBar";
 import { Right } from "./Menus/Right";
-import { Canvas } from "./Canvas";
 import { Top } from "./Menus/Top";
-import { Room } from "../Demo/Room";
-import { Corner } from "../Demo/Corner";
-import { Wall } from "../Demo/Wall";
+import { Room } from "../Demo/Room/Room";
 
 const App = () => {
   const canvasRef = useRef<HTMLDivElement | null>(null);

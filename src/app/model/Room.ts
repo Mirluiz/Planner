@@ -17,9 +17,8 @@ import { Color, ColorManager } from "../system/utils/Color";
 import { Vertex } from "../controller";
 
 class Room implements Object3D {
+  hovered: boolean = false;
   mesh: Engine.Mesh | null = null;
-
-  color: number;
 
   corners: Array<Corner> = [];
   triangulation: Array<Vertex> = [];
@@ -36,7 +35,6 @@ class Room implements Object3D {
     this.position = props.position ?? { x: 0, y: 0, z: 0 };
 
     this.mesh = new Engine.Mesh();
-    this.color = ColorManager.pick();
   }
 
   update() {
@@ -46,7 +44,7 @@ class Room implements Object3D {
     const geometry = this.getGeometry();
 
     const material = new THREE.MeshBasicMaterial({
-      color: this.color,
+      color: this.hovered ? ColorManager.colors["light_grey"] : 0xffffff,
     });
 
     if (!threeMesh) return;
@@ -81,12 +79,15 @@ class Room implements Object3D {
     let geometry = this.getGeometry();
 
     const material = new THREE.MeshBasicMaterial({
-      color: this.color,
+      color: this.hovered ? ColorManager.colors["light_grey"] : 0xffffff,
     });
     const mesh = new THREE.Mesh(geometry, material);
 
     material.transparent = true;
     material.opacity = 0.5;
+
+    mesh.name = "Room";
+    mesh.userData.object = this;
 
     // let txtMesh = this.getText(this.getArea().toString());
     // if (txtMesh) {

@@ -17,6 +17,7 @@ export type Color = {
   beige: 0xfffac8;
   lavender: 0xdcbeff;
   light_yellow: 0xfff000;
+  light_grey: 0xc6c6c6;
 };
 
 class ColorManager {
@@ -40,6 +41,7 @@ class ColorManager {
     beige: 0xfffac8,
     lavender: 0xdcbeff,
     light_yellow: 0xfff000,
+    light_grey: 0xc6c6c6,
   };
 
   static pick(): number {
@@ -50,6 +52,7 @@ class ColorManager {
     let lastIndex = this.pickedColor.length;
 
     const color = Object.values(this.colors)[lastIndex];
+
     this.pickedColor.push(color);
     return color ?? this.colors["light_yellow"];
   }

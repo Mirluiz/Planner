@@ -250,16 +250,16 @@ class Graph {
 
   isVertexInsideCycle(vertex: Vertex, cycle: Vertex[]) {
     let inside = false;
-    const { x, y } = vertex.position;
+    const { x, y, z } = vertex.position;
 
     for (let i = 0, j = cycle.length - 1; i < cycle.length; j = i++) {
       const xi = cycle[i].position.x;
-      const yi = cycle[i].position.z;
+      const zi = cycle[i].position.z;
       const xj = cycle[j].position.x;
-      const yj = cycle[j].position.z;
+      const zj = cycle[j].position.z;
 
       const intersect =
-        yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+        zi > z !== zj > z && x < ((xj - xi) * (z - zi)) / (zj - zi) + xi;
 
       if (intersect) {
         inside = !inside;

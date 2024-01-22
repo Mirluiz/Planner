@@ -90,6 +90,7 @@ class Polygon {
       console.log("2");
       ret = ConcavePolygon.getTriangles(cycle, graph);
     } else if (this.isConvex(cycle)) {
+      console.log("3");
       ret = ConvexPolygon.getTriangles(cycle);
     }
 

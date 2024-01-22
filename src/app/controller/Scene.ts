@@ -34,6 +34,18 @@ class Scene {
 
       if (this.model.drawMode) {
         this.activeController?.startDraw({ ...this.view.groundIntersNet });
+      } else {
+        this.model.objects.map((element) => {
+          if (element instanceof Room) {
+            element.hovered = false;
+          }
+        });
+
+        this.model.intersects.map((intersect) => {
+          if (intersect.object instanceof Room) {
+            intersect.object.hovered = true;
+          }
+        });
       }
 
       this.event.emit("scene_update");

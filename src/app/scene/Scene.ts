@@ -273,10 +273,6 @@ class Scene {
     this.groundIntersNet.x = +(this.groundInters.x / 10).toFixed(1) * 10;
     this.groundIntersNet.z = +(this.groundInters.z / 10).toFixed(1) * 10;
 
-    // console.log("IntersNet", this.groundIntersNet);
-    // console.log("Inters", this.groundInters);
-    // console.log("");
-
     this.snapHighLight?.run();
 
     this.renderer.render(this.scene, this.camera);

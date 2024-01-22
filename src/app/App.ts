@@ -26,9 +26,11 @@ class App {
       scene: this.sceneController,
       graph: this.graphController,
     });
+
     this.pipeController = new PipeController({
       scene: this.sceneController,
     });
+
     this.wallController = new WallController({
       scene: this.sceneController,
       roomController: this.roomController,
@@ -64,7 +66,7 @@ class App {
       },
       () => {
         console.log("saved");
-      },
+      }
     );
   }
 

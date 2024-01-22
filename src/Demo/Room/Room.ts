@@ -1,6 +1,8 @@
-import { App } from "../app/App";
+import { App } from "../../app/App";
+import { Hole } from "./Hole";
 
 class Room {
+  readonly roomsWithHole: Hole;
   readonly app: App;
   examples: Array<{
     name: string;
@@ -151,7 +153,6 @@ class Room {
         null,
       ],
     },
-
     {
       name: "Convex Room ",
       corners: [
@@ -165,7 +166,6 @@ class Room {
         null,
       ],
     },
-
     {
       name: "Convex Room case 1",
       corners: [
@@ -193,25 +193,27 @@ class Room {
 
   constructor(props: { app: App }) {
     this.app = props.app;
+    this.roomsWithHole = new Hole({ app: props.app });
   }
 
   run() {
-    let wallController = this.app.wallController;
-    let { corners } = this.examples[11];
-
-    corners.map((cornerData, index) => {
-      if (!cornerData) {
-        wallController.reset();
-      } else {
-        wallController.startDraw({
-          x: cornerData.pos.x,
-          y: cornerData.pos.y,
-          z: cornerData.pos.z,
-        });
-      }
-    });
-
-    wallController.reset();
+    this.roomsWithHole.run();
+    // let wallController = this.app.wallController;
+    // let { corners } = this.examples[8];
+    //
+    // corners.map((cornerData, index) => {
+    //   if (!cornerData) {
+    //     wallController.reset();
+    //   } else {
+    //     wallController.startDraw({
+    //       x: cornerData.pos.x,
+    //       y: cornerData.pos.y,
+    //       z: cornerData.pos.z,
+    //     });
+    //   }
+    // });
+    //
+    // wallController.reset();
   }
 }
 

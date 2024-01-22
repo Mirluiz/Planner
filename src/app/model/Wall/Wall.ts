@@ -134,7 +134,6 @@ class Wall implements Object3D, Geometry.Line {
     mesh.rotateY(Math.PI / 2);
 
     mesh.name = "Wall";
-
     mesh.userData.object = this;
 
     let textMesh = this.getText();

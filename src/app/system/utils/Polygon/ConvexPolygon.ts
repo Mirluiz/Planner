@@ -12,8 +12,6 @@ class ConvexPolygon {
           (i) => new Vector3(i.position.x, i.position.y, i.position.z)
         )
       );
-      console.log("isCCL", isCCL);
-      console.log("==", ...vertices.map((i) => i.uuid.slice(0, 3)));
 
       if (!isCCL) {
         vertices = vertices.reverse();
