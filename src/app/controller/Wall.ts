@@ -369,6 +369,43 @@ class Wall implements Drawing {
     this.roomController.updateByCorners(roomCorners);
   }
 
+  private updateWallAngles() {
+    this.walls.map((wall, index, array) => {
+      if (wall.connections.end instanceof Corner) {
+        let nextWalls: WallModel[] = [];
+
+        let corner = wall.connections.end;
+
+        corner.walls.map((cornerWall) => {
+          if (cornerWall.uuid !== wall.uuid) {
+            nextWalls.push(cornerWall);
+          }
+        });
+
+        if (nextWalls.length === 1) {
+          let nextWall = nextWalls[0];
+          let oppositeAngle: "start" | "end" = nextWall.connections.end
+            ? "start"
+            : "end";
+
+          let current = wall.end.clone().sub(wall.start).normalize();
+          let nextAngle = nextWall[oppositeAngle]
+            .clone()
+            .sub(nextWall[oppositeAngle === "start" ? "end" : "start"])
+            .normalize();
+
+          // let angle = current.angleTo(nextAngle);
+          let angle = angleBetweenVectorsWithOrientation(current, nextAngle);
+
+          wall.startAngle = -angle / 2;
+          nextWall.endAngle = angle / 2;
+        }
+        // let middleCorner = array[(index + 1) % array.length];
+        // let nextCorner = array[(index + 2) % array.length];
+      }
+    });
+  }
+
   reset() {
     if (this.active) {
       this.clearTempCorner();
@@ -377,7 +414,25 @@ class Wall implements Drawing {
       this.active?.destroy();
       this.active = null;
     }
+
+    this.updateWallAngles();
   }
+}
+
+function angleBetweenVectorsWithOrientation(
+  vectorA: Vector3,
+  vectorB: Vector3
+) {
+  const crossProduct = vectorA.x * vectorB.z - vectorA.z * vectorB.x;
+  const dotProduct = vectorA.x * vectorB.x + vectorA.z * vectorB.z;
+
+  // Calculate the angle in radians using atan2
+  const angleRadians = Math.atan2(crossProduct, dotProduct);
+
+  // Convert the angle to degrees
+  const angleDegrees = angleRadians * (180 / Math.PI);
+
+  return angleRadians;
 }
 
 export { Wall };

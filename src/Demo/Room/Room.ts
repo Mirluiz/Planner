@@ -35,6 +35,7 @@ class Room {
         { pos: { x: 2, y: 0, z: 2 } },
         { pos: { x: 2, y: 0, z: -2 } },
         { pos: { x: -2, y: 0, z: -2 } },
+        null,
       ],
     },
     {
@@ -199,7 +200,6 @@ class Room {
   }
 
   run() {
-    // this.roomsWithHole.run();
     let wallController = this.app.wallController;
     let { corners } = this.examples[3];
 

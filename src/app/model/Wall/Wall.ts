@@ -98,10 +98,10 @@ class Wall implements Object3D, Geometry.Line {
       threeMesh.add(txtMesh);
     }
 
-    // let angleMesh = this.getAngle();
-    // if (angleMesh) {
-    //   threeMesh.add(angleMesh);
-    // }
+    let angleMesh = this.getAngle();
+    if (angleMesh) {
+      threeMesh.add(...angleMesh);
+    }
 
     this.mesh?.render(threeMesh);
 
@@ -150,10 +150,10 @@ class Wall implements Object3D, Geometry.Line {
       mesh.add(textMesh);
     }
 
-    // let angleMesh = this.getAngle();
-    // if (angleMesh) {
-    //   mesh.add(angleMesh);
-    // }
+    let angleMesh = this.getAngle();
+    if (angleMesh) {
+      mesh.add(...angleMesh);
+    }
 
     this.mesh?.render(mesh);
 
@@ -165,7 +165,8 @@ class Wall implements Object3D, Geometry.Line {
     let ln = this.start.distanceTo(this.end);
     let h = 1.6;
 
-    let endAngle = (this.getEndAngle() * Math.PI) / 180; // is angle
+    // let endAngle = (this.getEndAngle() * Math.PI) / 180; // is angle
+    let endAngle = this.getEndAngle(); // is angle
     let endCrop = (depth / 2) * Math.tan(endAngle);
     let endSideEdgeLn =
       Math.sqrt(endCrop * endCrop + (depth / 2) * (depth / 2)) * 2;
@@ -185,7 +186,7 @@ class Wall implements Object3D, Geometry.Line {
         .add(new THREE.Vector3(ln / 2, 0, 0)),
     ];
 
-    let startAngle = (this.getStartAngle() * Math.PI) / 180; // is angle
+    let startAngle = this.getStartAngle(); // is angle
     let startCrop = (depth / 2) * Math.tan(startAngle);
 
     let startSideEdgeLn =
@@ -323,22 +324,30 @@ class Wall implements Object3D, Geometry.Line {
 
   private getAngle() {
     let ln = this.start.distanceTo(this.end);
+    let ret = [];
+    {
+      const geometry = new THREE.BoxGeometry(1, 2, 0.05);
+      const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+      const cube = new THREE.Mesh(geometry, material);
 
-    const geometry = new THREE.BoxGeometry(1, 2, 0.05);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
+      cube.rotateY(this.endAngle);
 
-    // console.log(
-    //   "(this.endAngle * Math.PI) / 180",
-    //   this.endAngle,
-    //   (this.endAngle * Math.PI) / 180
-    // );
-    cube.rotateY((this.endAngle * Math.PI) / 180);
+      cube.position.set(ln / 2 - 0.2, 2, 0);
+      ret.push(cube);
+    }
 
-    cube.position.set(-ln / 2, 2, 0);
-    // cube.position.set(0, 2, 0);
+    {
+      const geometry = new THREE.BoxGeometry(1, 2, 0.05);
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // green start
+      const cube = new THREE.Mesh(geometry, material);
 
-    return cube;
+      cube.rotateY(this.startAngle);
+
+      cube.position.set(-ln / 2 + 0.2, 2, 0);
+      ret.push(cube);
+    }
+
+    return ret;
   }
 
   static fromJson(schema: Object3DSchema) {
