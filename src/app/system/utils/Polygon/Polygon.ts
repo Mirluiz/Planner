@@ -84,13 +84,10 @@ class Polygon {
     }
 
     if (this.hasHole(cycle, graph)) {
-      console.log("1");
       ret = HolePolygon.getTriangles(cycle, graph);
     } else if (this.isConcave(cycle)) {
-      console.log("2");
       ret = ConcavePolygon.getTriangles(cycle, graph);
     } else if (this.isConvex(cycle)) {
-      console.log("3");
       ret = ConvexPolygon.getTriangles(cycle);
     }
 

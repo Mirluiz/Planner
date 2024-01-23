@@ -4,6 +4,7 @@ import { Scene as SceneController } from "./Scene";
 import { Room as RoomModel } from "./../model/Room";
 import { Graph as GraphController } from "./Graph";
 import { Polygon } from "../system/utils/Polygon";
+import { Vector3 } from "three";
 
 class Room {
   readonly scene: SceneController;
@@ -45,6 +46,68 @@ class Room {
         newRoom.corners.push(_c);
       });
 
+      roomCorners.map((value, index, array) => {
+        let middleCorner = array[(index + 1) % array.length];
+        let nextCorner = array[(index + 2) % array.length];
+
+        let toMiddleWall: WallModel | undefined;
+        let toNextWall: WallModel | undefined;
+
+        value.walls.map((wall) => {
+          let _w = middleCorner.walls.find((w) => w.uuid === wall.uuid);
+          if (_w) {
+            toMiddleWall = _w;
+          }
+        });
+
+        middleCorner.walls.map((wall) => {
+          let _w = nextCorner.walls.find((w) => w.uuid === wall.uuid);
+          if (_w) {
+            toNextWall = _w;
+          }
+        });
+
+        if (toNextWall && toMiddleWall) {
+          let v0 = new Vector3(
+            value.position.x,
+            value.position.y,
+            value.position.z
+          );
+          let v1 = new Vector3(
+            middleCorner.position.x,
+            middleCorner.position.y,
+            middleCorner.position.z
+          );
+          let v2 = new Vector3(
+            nextCorner.position.x,
+            nextCorner.position.y,
+            nextCorner.position.z
+          );
+
+          let angle = angleBetweenVectorsWithOrientation(
+            v0.clone().sub(v1),
+            v2.clone().sub(v1)
+          );
+
+          middleCorner.walls.map((wall) => {
+            if (
+              wall.connections.start instanceof Corner &&
+              wall.connections.end instanceof Corner
+            ) {
+              // toMiddleWall.endAngle = -angle / 2;
+              if (wall.connections.end.uuid === middleCorner.uuid) {
+                wall.endAngle = -angle / 2;
+              } else if (wall.connections.start.uuid === middleCorner.uuid) {
+                wall.startAngle = -angle / 2;
+              }
+            }
+          });
+
+          // toNextWall.startAngle = -angle / 2;
+          console.log("toNextWall.startAngle", toNextWall.startAngle);
+        }
+      });
+
       newRoom.triangulation = this.getTriangles(roomCorners);
 
       this.scene.model.addObject(newRoom);
@@ -62,6 +125,22 @@ class Room {
 
     return Polygon.getTriangles(vertices, this.graph);
   }
+}
+
+function angleBetweenVectorsWithOrientation(
+  vectorA: Vector3,
+  vectorB: Vector3
+) {
+  const crossProduct = vectorA.x * vectorB.z - vectorA.z * vectorB.x;
+  const dotProduct = vectorA.x * vectorB.x + vectorA.z * vectorB.z;
+
+  // Calculate the angle in radians using atan2
+  const angleRadians = Math.atan2(crossProduct, dotProduct);
+
+  // Convert the angle to degrees
+  const angleDegrees = angleRadians * (180 / Math.PI);
+
+  return angleDegrees;
 }
 
 export { Room };

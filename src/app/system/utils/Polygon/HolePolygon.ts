@@ -185,7 +185,7 @@ class HolePolygon {
 
     let ret: Vertex[] | undefined;
 
-    if (innerCycles && innerCycles[0].length > 3) {
+    if (innerCycles && innerCycles[0].length >= 3) {
       let vertexCycle = graph.getVertexCycle(innerCycles[0]);
 
       let result = this.connectInnerOuter(vertexCycle, cycle, graph);

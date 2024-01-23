@@ -286,15 +286,6 @@ describe("Polygon triangulation", () => {
 
     let vertexCycle = graph.getVertexCycle(cycles[0]);
     let triangulation = Polygon.getTriangles(vertexCycle, graph);
-
-    console.log("triangulation", triangulation);
-  });
-
-  test("test aaa", () => {
-    let a = new Vector3(1, 0, 1);
-    let b = new Vector3(1, 0, 1);
-
-    console.log(a === b);
   });
 
   /**
@@ -337,6 +328,168 @@ describe("Polygon triangulation", () => {
     let triangles = Polygon.getTriangles(vertexCycle, graph);
 
     console.log("triangles", triangles);
+  });
+
+  /**
+
+   2 ----- 1 -------- 0
+   |       |          |
+   |       5          |
+   |     /  \         |
+   |    6 -- 7        |
+   |                  |
+   3 ---------------- 4
+
+   */
+  test("Triangulation polygon case 6", () => {
+    const ver0 = { uuid: "0", position: { x: 10, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 5, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 0, y: 0, z: 0 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 0, z: 10 } };
+    const ver4 = { uuid: "4", position: { x: 10, y: 0, z: 10 } };
+
+    const ver5 = { uuid: "5", position: { x: 5, y: 0, z: 3 } };
+    const ver6 = { uuid: "6", position: { x: 3, y: 0, z: 7 } };
+    const ver7 = { uuid: "7", position: { x: 8, y: 0, z: 7 } };
+
+    const graph = new Graph();
+    graph.addEdge(ver0, ver1);
+    graph.addEdge(ver1, ver2);
+    graph.addEdge(ver2, ver3);
+    graph.addEdge(ver3, ver4);
+    graph.addEdge(ver4, ver0);
+
+    graph.addEdge(ver1, ver5);
+    graph.addEdge(ver5, ver6);
+    graph.addEdge(ver6, ver7);
+    graph.addEdge(ver7, ver5);
+
+    let cycles = graph.getCycles();
+    let vertexCycle = graph.getVertexCycle(cycles[0]);
+
+    let triangles = Polygon.getTriangles(vertexCycle, graph);
+
+    expect(cycles.length).toBe(2);
+    expect(triangles).toStrictEqual([
+      { uuid: "5", position: { x: 5, y: 0, z: 3 }, isVertex: true },
+      { uuid: "7", position: { x: 8, y: 0, z: 7 }, isVertex: true },
+      { uuid: "0", position: { x: 10, y: 0, z: 0 }, isVertex: true },
+      { uuid: "5", position: { x: 5, y: 0, z: 3 }, isVertex: true },
+      { uuid: "0", position: { x: 10, y: 0, z: 0 }, isVertex: true },
+      { uuid: "1", position: { x: 5, y: 0, z: 0 }, isVertex: true },
+      { uuid: "6", position: { x: 3, y: 0, z: 7 }, isVertex: true },
+      { uuid: "5", position: { x: 5, y: 0, z: 3 }, isVertex: true },
+      { uuid: "1", position: { x: 5, y: 0, z: 0 }, isVertex: true },
+      { uuid: "6", position: { x: 3, y: 0, z: 7 }, isVertex: true },
+      { uuid: "1", position: { x: 5, y: 0, z: 0 }, isVertex: true },
+      { uuid: "2", position: { x: 0, y: 0, z: 0 }, isVertex: true },
+      { uuid: "6", position: { x: 3, y: 0, z: 7 }, isVertex: true },
+      { uuid: "2", position: { x: 0, y: 0, z: 0 }, isVertex: true },
+      { uuid: "3", position: { x: 0, y: 0, z: 10 }, isVertex: true },
+      { uuid: "7", position: { x: 8, y: 0, z: 7 }, isVertex: true },
+      { uuid: "6", position: { x: 3, y: 0, z: 7 }, isVertex: true },
+      { uuid: "3", position: { x: 0, y: 0, z: 10 }, isVertex: true },
+      { uuid: "7", position: { x: 8, y: 0, z: 7 }, isVertex: true },
+      { uuid: "3", position: { x: 0, y: 0, z: 10 }, isVertex: true },
+      { uuid: "4", position: { x: 10, y: 0, z: 10 }, isVertex: true },
+      { uuid: "0", position: { x: 10, y: 0, z: 0 }, isVertex: true },
+      { uuid: "7", position: { x: 8, y: 0, z: 7 }, isVertex: true },
+      { uuid: "4", position: { x: 10, y: 0, z: 10 }, isVertex: true },
+      { uuid: "0", position: { x: 10, y: 0, z: 0 }, isVertex: true },
+      { uuid: "4", position: { x: 10, y: 0, z: 10 }, isVertex: true },
+    ]);
+  });
+
+  /**
+
+   2 ----- 1 ---- 0
+   |     /  \     |
+   |    5 -- 6    |
+   |              |
+   |              |
+   |              |
+   3 ------------ 4
+
+   */
+  test("Triangulation polygon case 7", () => {
+    const ver0 = { uuid: "0", position: { x: 10, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 5, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 0, y: 0, z: 0 } };
+    const ver3 = { uuid: "3", position: { x: 0, y: 0, z: 10 } };
+    const ver4 = { uuid: "4", position: { x: 10, y: 0, z: 10 } };
+
+    const ver5 = { uuid: "5", position: { x: 2, y: 0, z: 3 } };
+    const ver6 = { uuid: "6", position: { x: 5, y: 0, z: 3 } };
+
+    const graph = new Graph();
+    graph.addEdge(ver0, ver1);
+    graph.addEdge(ver1, ver2);
+    graph.addEdge(ver2, ver3);
+    graph.addEdge(ver3, ver4);
+    graph.addEdge(ver4, ver0);
+
+    graph.addEdge(ver1, ver5);
+    graph.addEdge(ver5, ver6);
+    graph.addEdge(ver6, ver1);
+
+    let cycles = graph.getCycles();
+    let vertexCycle = graph.getVertexCycle(cycles[0]);
+
+    let triangles = Polygon.getTriangles(vertexCycle, graph);
+
+    expect(triangles).toStrictEqual([
+      { uuid: "0", position: { x: 10, y: 0, z: 0 }, isVertex: true },
+      { uuid: "1", position: { x: 5, y: 0, z: 0 }, isVertex: true },
+      { uuid: "2", position: { x: 0, y: 0, z: 0 }, isVertex: true },
+      { uuid: "0", position: { x: 10, y: 0, z: 0 }, isVertex: true },
+      { uuid: "2", position: { x: 0, y: 0, z: 0 }, isVertex: true },
+      { uuid: "3", position: { x: 0, y: 0, z: 10 }, isVertex: true },
+      { uuid: "0", position: { x: 10, y: 0, z: 0 }, isVertex: true },
+      { uuid: "3", position: { x: 0, y: 0, z: 10 }, isVertex: true },
+      { uuid: "4", position: { x: 10, y: 0, z: 10 }, isVertex: true },
+    ]);
+  });
+
+  /**
+   * TODO: it is problematic
+                  10 -- 9
+                  |      \
+                  |       \
+   1 ------------ 0        8
+   |              |\       |
+   |              | \      |
+   |              |  \     |
+   |              |   4    |
+   |              | /      7
+   2 ------------ 3      /
+                /      /
+              /      /
+            5 -----6
+
+   */
+  test("Triangulation polygon case 8", () => {
+    const ver0 = { uuid: "0", position: { x: 10, y: 0, z: 0 } };
+    const ver1 = { uuid: "1", position: { x: 0, y: 0, z: 0 } };
+    const ver2 = { uuid: "2", position: { x: 0, y: 0, z: 10 } };
+    const ver3 = { uuid: "3", position: { x: 10, y: 0, z: 10 } };
+
+    const ver4 = { uuid: "4", position: { x: 13, y: 0, z: 5 } };
+    const ver5 = { uuid: "5", position: { x: 0, y: 0, z: 10 } };
+    const ver6 = { uuid: "6", position: { x: 0, y: 0, z: 10 } };
+    const ver7 = { uuid: "7", position: { x: 0, y: 0, z: 10 } };
+    const ver8 = { uuid: "8", position: { x: 0, y: 0, z: 10 } };
+    const ver9 = { uuid: "9", position: { x: 0, y: 0, z: 10 } };
+    const ver10 = { uuid: "10", position: { x: 0, y: 0, z: 10 } };
+
+    const graph = new Graph();
+    graph.addEdge(ver0, ver1);
+    graph.addEdge(ver1, ver2);
+    graph.addEdge(ver2, ver3);
+
+    let cycles = graph.getCycles();
+    let vertexCycle = graph.getVertexCycle(cycles[0]);
+
+    let triangles = Polygon.getTriangles(vertexCycle, graph);
   });
 });
 

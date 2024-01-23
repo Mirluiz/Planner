@@ -34,18 +34,19 @@ class Room {
         { pos: { x: -2, y: 0, z: 2 } },
         { pos: { x: 2, y: 0, z: 2 } },
         { pos: { x: 2, y: 0, z: -2 } },
+        { pos: { x: -2, y: 0, z: -2 } },
       ],
     },
     {
       name: "Simple Room, 6 corners",
       corners: [
         { pos: { x: -4, y: 0, z: 4 } },
-        { pos: { x: -6, y: 0, z: 0 } },
+        { pos: { x: -8, y: 0, z: 0 } },
         { pos: { x: -4, y: 0, z: -4 } },
 
         { pos: { x: 4, y: 0, z: -4 } },
-        { pos: { x: 6, y: 0, z: 0 } },
         { pos: { x: 4, y: 0, z: 4 } },
+        { pos: { x: -4, y: 0, z: 4 } },
       ],
     },
     {
@@ -62,6 +63,7 @@ class Room {
         { pos: { x: 4, y: 0, z: -4 } },
         { pos: { x: 6, y: 0, z: 0 } },
         { pos: { x: 4, y: 0, z: 4 } },
+        { pos: { x: -4, y: 0, z: 4 } },
       ],
     },
     {
@@ -197,23 +199,23 @@ class Room {
   }
 
   run() {
-    this.roomsWithHole.run();
-    // let wallController = this.app.wallController;
-    // let { corners } = this.examples[8];
-    //
-    // corners.map((cornerData, index) => {
-    //   if (!cornerData) {
-    //     wallController.reset();
-    //   } else {
-    //     wallController.startDraw({
-    //       x: cornerData.pos.x,
-    //       y: cornerData.pos.y,
-    //       z: cornerData.pos.z,
-    //     });
-    //   }
-    // });
-    //
-    // wallController.reset();
+    // this.roomsWithHole.run();
+    let wallController = this.app.wallController;
+    let { corners } = this.examples[3];
+
+    corners.map((cornerData, index) => {
+      if (!cornerData) {
+        wallController.reset();
+      } else {
+        wallController.startDraw({
+          x: cornerData.pos.x,
+          y: cornerData.pos.y,
+          z: cornerData.pos.z,
+        });
+      }
+    });
+
+    wallController.reset();
   }
 }
 

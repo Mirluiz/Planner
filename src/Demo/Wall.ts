@@ -10,8 +10,15 @@ class Wall {
     {
       name: "One Wall",
       ends: [
-        { x: -6, y: 0, z: -4 },
-        { x: 0, y: 0, z: -9 },
+        { x: 0, y: 0, z: 0 },
+        { x: 10, y: 0, z: 0 },
+      ],
+    },
+    {
+      name: "One Wall",
+      ends: [
+        { x: 10, y: 0, z: 0 },
+        { x: 10, y: 0, z: 10 },
       ],
     },
   ];
@@ -28,7 +35,7 @@ class Wall {
       dimension: { width: 0.1, depth: 1, height: 1 },
     };
 
-    this.examples.map((cornerData) => {
+    this.examples.map((cornerData, index) => {
       let wall = new WallModel({
         ...cornerProps,
         start: new THREE.Vector3(
@@ -42,6 +49,13 @@ class Wall {
           cornerData.ends[1].z
         ),
       });
+      if (index === 1) {
+        wall.endAngle = 45;
+      } else {
+        wall.startAngle = -45;
+      }
+
+      // wall.endAngle = Math.PI / 2;
       this.app.sceneController.model.addObject(wall);
     });
   }

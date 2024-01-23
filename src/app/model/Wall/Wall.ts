@@ -25,6 +25,9 @@ class Wall implements Object3D, Geometry.Line {
   start;
   end;
 
+  startAngle: number = 0;
+  endAngle: number = 0;
+
   connections: {
     start: Object | null;
     end: Object | null;
@@ -95,6 +98,11 @@ class Wall implements Object3D, Geometry.Line {
       threeMesh.add(txtMesh);
     }
 
+    // let angleMesh = this.getAngle();
+    // if (angleMesh) {
+    //   threeMesh.add(angleMesh);
+    // }
+
     this.mesh?.render(threeMesh);
 
     threeMesh.updateMatrix();
@@ -142,6 +150,11 @@ class Wall implements Object3D, Geometry.Line {
       mesh.add(textMesh);
     }
 
+    // let angleMesh = this.getAngle();
+    // if (angleMesh) {
+    //   mesh.add(angleMesh);
+    // }
+
     this.mesh?.render(mesh);
 
     return this.mesh;
@@ -154,7 +167,6 @@ class Wall implements Object3D, Geometry.Line {
 
     let endAngle = (this.getEndAngle() * Math.PI) / 180; // is angle
     let endCrop = (depth / 2) * Math.tan(endAngle);
-
     let endSideEdgeLn =
       Math.sqrt(endCrop * endCrop + (depth / 2) * (depth / 2)) * 2;
 
@@ -255,17 +267,18 @@ class Wall implements Object3D, Geometry.Line {
       ),
     ];
 
-    const vertices = [...front, ...up, ...right, ...bottom, ...back, ...left];
+    // const vertices = [...front, ...up, ...right, ...bottom, ...back, ...left];
+    const vertices = [...front, ...right, ...back, ...left];
 
     return new THREE.BoxGeometry().setFromPoints(vertices);
   }
 
   private getStartAngle() {
-    return 0;
+    return this.startAngle;
   }
 
   private getEndAngle() {
-    return 0;
+    return this.endAngle;
   }
 
   private angle(start: Vector3, end: Vector3) {
@@ -306,6 +319,26 @@ class Wall implements Object3D, Geometry.Line {
     }
 
     return textMesh;
+  }
+
+  private getAngle() {
+    let ln = this.start.distanceTo(this.end);
+
+    const geometry = new THREE.BoxGeometry(1, 2, 0.05);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+
+    // console.log(
+    //   "(this.endAngle * Math.PI) / 180",
+    //   this.endAngle,
+    //   (this.endAngle * Math.PI) / 180
+    // );
+    cube.rotateY((this.endAngle * Math.PI) / 180);
+
+    cube.position.set(-ln / 2, 2, 0);
+    // cube.position.set(0, 2, 0);
+
+    return cube;
   }
 
   static fromJson(schema: Object3DSchema) {

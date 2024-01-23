@@ -136,8 +136,6 @@ class Scene {
         this.controls.enabled = true;
         this.controller.event.emit("scene_update");
       }
-
-      event.stopImmediatePropagation();
     });
   }
 
