@@ -370,38 +370,105 @@ class Wall implements Drawing {
   }
 
   private updateWallAngles() {
-    this.walls.map((wall, index, array) => {
-      if (wall.connections.end instanceof Corner) {
-        let nextWalls: WallModel[] = [];
+    // this.corners.map((corner, index, array) => {
+    //   if (wall.connections.end instanceof Corner) {
+    //     let nextWalls: WallModel[] = [];
+    //
+    //     let corner = wall.connections.end;
+    //
+    //     corner.walls.map((cornerWall) => {
+    //       if (cornerWall.uuid !== wall.uuid) {
+    //         nextWalls.push(cornerWall);
+    //       }
+    //     });
+    //
+    //     if (nextWalls.length === 1) {
+    //       let nextWall = nextWalls[0];
+    //       let oppositeAngle: "start" | "end" = nextWall.connections.end
+    //         ? "start"
+    //         : "end";
+    //
+    //       let current = wall.end.clone().sub(wall.start).normalize();
+    //       let nextAngle = nextWall[oppositeAngle]
+    //         .clone()
+    //         .sub(nextWall[oppositeAngle === "start" ? "end" : "start"])
+    //         .normalize();
+    //
+    //       // let angle = current.angleTo(nextAngle);
+    //       let angle = angleBetweenVectorsWithOrientation(current, nextAngle);
+    //
+    //       // wall.startAngle = angle / 2;
+    //       wall.endAngle = angle / 2;
+    //       // nextWall.endAngle = angle / 2;
+    //       // nextWall.startAngle = angle / 2;
+    //     }
+    //   }
+    // });
+    this.corners.map((corner, index, array) => {
+      if (corner.walls.length > 1) {
+        corner.walls.map((wall, index, array) => {
+          let cornerPos = new Vector3(
+            corner.position.x,
+            corner.position.y,
+            corner.position.z
+          );
+          let nextWall = array[(index + 1) % array.length];
 
-        let corner = wall.connections.end;
+          let wallOppositeEnd: undefined | "start" | "end";
+          let nextWallOppositeEnd: undefined | "start" | "end";
 
-        corner.walls.map((cornerWall) => {
-          if (cornerWall.uuid !== wall.uuid) {
-            nextWalls.push(cornerWall);
+          if (
+            wall.connections.end instanceof Corner &&
+            wall.connections.end.uuid === corner.uuid
+          ) {
+            // wallOppositeEnd = wall.start.clone();
+            wallOppositeEnd = "start";
+          } else if (
+            wall.connections.start instanceof Corner &&
+            wall.connections.start.uuid === corner.uuid
+          ) {
+            // wallOppositeEnd = wall.end.clone();
+            wallOppositeEnd = "end";
           }
-        });
 
-        if (nextWalls.length === 1) {
-          let nextWall = nextWalls[0];
-          let oppositeAngle: "start" | "end" = nextWall.connections.end
-            ? "start"
-            : "end";
+          if (
+            nextWall.connections.end instanceof Corner &&
+            nextWall.connections.end.uuid === corner.uuid
+          ) {
+            // nextWallOppositeEnd = nextWall.start.clone();
+            nextWallOppositeEnd = "start";
+          } else if (
+            nextWall.connections.start instanceof Corner &&
+            nextWall.connections.start.uuid === corner.uuid
+          ) {
+            // nextWallOppositeEnd = nextWall.end.clone();
+            nextWallOppositeEnd = "end";
+          }
 
-          let current = wall.end.clone().sub(wall.start).normalize();
-          let nextAngle = nextWall[oppositeAngle]
+          if (!nextWallOppositeEnd || !wallOppositeEnd) return;
+
+          let currentNormal = wall[wallOppositeEnd]
             .clone()
-            .sub(nextWall[oppositeAngle === "start" ? "end" : "start"])
+            .sub(cornerPos)
+            .normalize();
+          let nextNormal = nextWall[nextWallOppositeEnd]
+            .clone()
+            ?.sub(cornerPos)
             .normalize();
 
-          // let angle = current.angleTo(nextAngle);
-          let angle = angleBetweenVectorsWithOrientation(current, nextAngle);
+          if (currentNormal && nextNormal) {
+            let angle = angleBetweenVectorsWithOrientation(
+              currentNormal,
+              nextNormal
+            );
 
-          wall.startAngle = -angle / 2;
-          nextWall.endAngle = angle / 2;
-        }
-        // let middleCorner = array[(index + 1) % array.length];
-        // let nextCorner = array[(index + 2) % array.length];
+            if (wallOppositeEnd === "end") {
+              wall.endAngle = Math.PI / 2 - angle / 2;
+            } else {
+              wall.startAngle = Math.PI / 2 - angle / 2;
+            }
+          }
+        });
       }
     });
   }

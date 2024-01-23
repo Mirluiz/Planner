@@ -10,8 +10,8 @@ class Wall {
     {
       name: "One Wall",
       ends: [
-        { x: 0, y: 0, z: 0 },
-        { x: 10, y: 0, z: 0 },
+        { x: -2, y: 0, z: -2 },
+        { x: 2, y: 0, z: 2 },
       ],
     },
     {
@@ -49,11 +49,8 @@ class Wall {
           cornerData.ends[1].z
         ),
       });
-      if (index === 1) {
-        wall.endAngle = 45;
-      } else {
-        wall.startAngle = -45;
-      }
+      wall.startAngle = Math.PI / 4;
+      wall.endAngle = Math.PI / 4;
 
       // wall.endAngle = Math.PI / 2;
       this.app.sceneController.model.addObject(wall);

@@ -98,11 +98,6 @@ class Wall implements Object3D, Geometry.Line {
       threeMesh.add(txtMesh);
     }
 
-    let angleMesh = this.getAngle();
-    if (angleMesh) {
-      threeMesh.add(...angleMesh);
-    }
-
     this.mesh?.render(threeMesh);
 
     threeMesh.updateMatrix();
@@ -148,11 +143,6 @@ class Wall implements Object3D, Geometry.Line {
 
     if (textMesh) {
       mesh.add(textMesh);
-    }
-
-    let angleMesh = this.getAngle();
-    if (angleMesh) {
-      mesh.add(...angleMesh);
     }
 
     this.mesh?.render(mesh);
@@ -268,8 +258,8 @@ class Wall implements Object3D, Geometry.Line {
       ),
     ];
 
-    // const vertices = [...front, ...up, ...right, ...bottom, ...back, ...left];
-    const vertices = [...front, ...right, ...back, ...left];
+    const vertices = [...front, ...up, ...right, ...bottom, ...back, ...left];
+    // const vertices = [...front, ...right, ...back, ...left];
 
     return new THREE.BoxGeometry().setFromPoints(vertices);
   }
@@ -327,25 +317,25 @@ class Wall implements Object3D, Geometry.Line {
     let ret = [];
     {
       const geometry = new THREE.BoxGeometry(1, 2, 0.05);
-      const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+      const material = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // red
       const cube = new THREE.Mesh(geometry, material);
 
-      cube.rotateY(this.endAngle);
+      cube.rotateY(-this.getEndAngle());
 
-      cube.position.set(ln / 2 - 0.2, 2, 0);
+      cube.position.set(-ln / 2, 2, 0);
       ret.push(cube);
     }
 
-    {
-      const geometry = new THREE.BoxGeometry(1, 2, 0.05);
-      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // green start
-      const cube = new THREE.Mesh(geometry, material);
-
-      cube.rotateY(this.startAngle);
-
-      cube.position.set(-ln / 2 + 0.2, 2, 0);
-      ret.push(cube);
-    }
+    // {
+    //   const geometry = new THREE.BoxGeometry(1, 2, 0.05);
+    //   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // green start
+    //   const cube = new THREE.Mesh(geometry, material);
+    //
+    //   cube.rotateY(-this.getStartAngle());
+    //
+    //   cube.position.set(-ln / 2 + 0.2, 2, 0);
+    //   ret.push(cube);
+    // }
 
     return ret;
   }
