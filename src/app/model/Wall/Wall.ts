@@ -229,10 +229,10 @@ class Wall implements Object3D, Geometry.Line {
 
     let up = [
       new THREE.Vector3(0, h, depth / 2).add(
-        new THREE.Vector3(ln / 2 - endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 + endCrop, 0, 0)
       ),
       new THREE.Vector3(0, h, depth / 2).add(
-        new THREE.Vector3(-ln / 2 - startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 + startCrop, 0, 0)
       ),
       new THREE.Vector3(0, h, -depth / 2).add(
         new THREE.Vector3(ln / 2 - endCrop, 0, 0)
@@ -244,20 +244,21 @@ class Wall implements Object3D, Geometry.Line {
 
     let bottom = [
       new THREE.Vector3(0, 0, depth / 2).add(
-        new THREE.Vector3(-ln / 2 - startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 + startCrop, 0, 0)
       ),
       new THREE.Vector3(0, 0, depth / 2).add(
-        new THREE.Vector3(ln / 2 - endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 + endCrop, 0, 0)
       ),
-
       new THREE.Vector3(0, 0, -depth / 2).add(
         new THREE.Vector3(-ln / 2 - startCrop, 0, 0)
       ),
+
       new THREE.Vector3(0, 0, -depth / 2).add(
         new THREE.Vector3(ln / 2 - endCrop, 0, 0)
       ),
     ];
 
+    // const vertices = [...front, ...up, ...right, ...bottom, ...back, ...left];
     const vertices = [...front, ...up, ...right, ...bottom, ...back, ...left];
     // const vertices = [...front, ...right, ...back, ...left];
 

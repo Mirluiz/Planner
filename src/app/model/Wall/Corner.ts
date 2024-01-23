@@ -33,30 +33,30 @@ class Corner implements Object3D {
 
   update() {
     if (!this.mesh) return;
-    const threeMesh = this.mesh.returnTHREE();
-
-    if (!threeMesh) return;
-
-    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 32);
-
-    threeMesh.geometry.dispose(); // Dispose of the old geometry to free up memory
-    threeMesh.geometry = geometry;
-
-    let textMesh = threeMesh.children[0];
-    if (textMesh instanceof THREE.Mesh) {
-      textMesh.geometry.dispose();
-      textMesh.material.dispose();
-      textMesh.removeFromParent();
-    }
-
-    let txtMesh = this.getText();
-    if (txtMesh) {
-      threeMesh.add(txtMesh);
-    }
-
-    threeMesh.position.set(this.position.x, this.position.y, this.position.z);
-
-    threeMesh.updateMatrix();
+    // const threeMesh = this.mesh.returnTHREE();
+    //
+    // if (!threeMesh) return;
+    //
+    // const geometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 32);
+    //
+    // threeMesh.geometry.dispose(); // Dispose of the old geometry to free up memory
+    // threeMesh.geometry = geometry;
+    //
+    // let textMesh = threeMesh.children[0];
+    // if (textMesh instanceof THREE.Mesh) {
+    //   textMesh.geometry.dispose();
+    //   textMesh.material.dispose();
+    //   textMesh.removeFromParent();
+    // }
+    //
+    // let txtMesh = this.getText();
+    // if (txtMesh) {
+    //   threeMesh.add(txtMesh);
+    // }
+    //
+    // threeMesh.position.set(this.position.x, this.position.y, this.position.z);
+    //
+    // threeMesh.updateMatrix();
   }
 
   destroy() {
@@ -64,28 +64,28 @@ class Corner implements Object3D {
   }
 
   render() {
-    this.mesh?.destroy();
-
-    const geometry = new THREE.CylinderGeometry(
-      this.dimension.width,
-      this.dimension.width,
-      this.dimension.height,
-      32,
-    );
-    const material = new THREE.MeshBasicMaterial({ color: 0x00 });
-    const mesh = new THREE.Mesh(geometry, material);
-
-    mesh.position.set(this.position.x, this.position.y, this.position.z);
-
-    mesh.userData.object = this;
-    mesh.name = "Fitting";
-
-    let txtMesh = this.getText();
-    if (txtMesh) {
-      mesh.add(txtMesh);
-    }
-
-    this.mesh?.render(mesh);
+    // this.mesh?.destroy();
+    //
+    // const geometry = new THREE.CylinderGeometry(
+    //   this.dimension.width,
+    //   this.dimension.width,
+    //   this.dimension.height,
+    //   32,
+    // );
+    // const material = new THREE.MeshBasicMaterial({ color: 0x00 });
+    // const mesh = new THREE.Mesh(geometry, material);
+    //
+    // mesh.position.set(this.position.x, this.position.y, this.position.z);
+    //
+    // mesh.userData.object = this;
+    // mesh.name = "Fitting";
+    //
+    // let txtMesh = this.getText();
+    // if (txtMesh) {
+    //   mesh.add(txtMesh);
+    // }
+    //
+    // this.mesh?.render(mesh);
 
     return this.mesh;
   }
