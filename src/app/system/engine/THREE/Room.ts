@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import { Storage } from "./../../";
-import { Mesh } from "./Mesh";
+import { Mesh, BaseMesh } from "./Mesh";
 import { Room as RoomModel } from "./../../../model/Room";
 import { ColorManager } from "../../utils/Color";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 
-class Room extends Mesh {
+class Room extends BaseMesh implements Mesh {
   model: RoomModel;
 
   constructor(props: { model: RoomModel }) {
@@ -59,6 +59,8 @@ class Room extends Mesh {
     mesh.userData.object = this;
 
     this.mesh = mesh;
+
+    return this.mesh;
   }
 
   private getGeometry() {

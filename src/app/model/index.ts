@@ -1,5 +1,5 @@
 export * from "./Fitting";
-export * from "./Pipe/PipeEnd";
+
 export * from "./Pipe/Pipe";
 export * from "./Radiator";
 

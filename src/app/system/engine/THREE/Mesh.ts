@@ -1,6 +1,13 @@
 import * as THREE from "three";
+import { Engine } from "../../interfaces";
 
-class Mesh {
+interface Mesh {
+  render: () => THREE.Mesh<any, any> | null;
+  update: () => void;
+  destroy: () => void;
+}
+
+class BaseMesh implements Mesh {
   private _mesh: THREE.Mesh<any, any> | null = null;
 
   get mesh() {
@@ -26,6 +33,11 @@ class Mesh {
     this.mesh?.removeFromParent();
     this.mesh?.remove();
   }
+
+  render() {
+    return this._mesh;
+  }
+  update() {}
 }
 
-export { Mesh };
+export { Mesh, BaseMesh };

@@ -1,10 +1,10 @@
 import { Storage } from "./../../";
 import * as THREE from "three";
 import { Wall as WallModel } from "./../../../model/Wall/Wall";
-import { Mesh } from "./Mesh";
+import { Mesh, BaseMesh } from "./Mesh";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 
-class Wall extends Mesh {
+class Wall extends BaseMesh implements Mesh {
   model: WallModel;
 
   constructor(props: { model: WallModel }) {

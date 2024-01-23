@@ -53,8 +53,6 @@ interface Schema {
 }
 
 interface Object3D {
-  mesh: Engine.Mesh | null;
-
   position: {
     x: number;
     y: number;
@@ -74,10 +72,6 @@ interface Object3D {
     height: number;
     depth: number;
   };
-
-  render: () => Engine.Mesh | null;
-  update: () => void;
-  destroy: () => void;
 
   toJson: () => Schema;
 }
