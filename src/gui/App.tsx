@@ -29,16 +29,16 @@ const App = () => {
         // const corner = new Corner({ app });
         const wall = new Wall({ app });
 
-        let start = new Vector3(2, 0, 0);
-        let end = new Vector3(5, 0, 4);
-        let line = new Line({ start, end });
-        app.sceneController.view?.engine.scene.add(line.render());
+        // let start = new Vector3(2, 0, 0);
+        // let end = new Vector3(5, 0, 4);
+        // let line = new Line({ start, end });
+        // app.sceneController.view?.engine.scene.add(line.render());
 
-        // demo.run();
+        demo.run();
         // corner.run();
         // wall.run();
 
-        // app.sceneController.event.emit("scene_update");
+        app.sceneController.event.emit("scene_update");
       });
 
       // @ts-ignore

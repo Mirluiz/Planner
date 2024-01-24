@@ -1,8 +1,15 @@
 import { Scene as SceneModel } from "../model/Scene";
 import { Corner, Fitting, Pipe, Radiator, Wall } from "../model";
-import { EventSystem, Drawing, Entity, Object3DSchema } from "../system";
+import {
+  EventSystem,
+  Drawing,
+  Entity,
+  Object3DSchema,
+  Object3D,
+} from "../system";
 import { Scene as SceneView } from "../scene/Scene";
 import { Room } from "../model/Room";
+import { Vector3 } from "three";
 
 class Scene {
   model: SceneModel;
@@ -16,7 +23,9 @@ class Scene {
 
     if (props.canvas) {
       this.view = new SceneView({ canvas: props.canvas, controller: this });
-      this.view.onRender = (intersections) => {
+
+      this.view.engine.onRender = (intersections) => {
+        // console.log("===");
         this.updateIntersection(intersections);
       };
     }
@@ -73,16 +82,42 @@ class Scene {
   }
 
   private updateIntersection(intersects: THREE.Intersection[]) {
-    this.model.intersects = [];
+    this.model.intersects.map((intersect) => {
+      if (intersect.object) {
+        intersect.object.hovered = false;
+      }
+    });
+
+    let intersections: Array<{
+      position: Vector3;
+      object: Object3D;
+    }> = [];
 
     intersects.map((intersect) => {
+      if (
+        this.activeController?.active?.uuid ===
+        intersect.object.userData.object?.model?.uuid
+      ) {
+        return;
+      }
+
       if (intersect.object.userData.object) {
-        this.model.intersects.push({
-          object: intersect.object.userData.object,
+        intersections.push({
+          object: intersect.object.userData.object.model,
           position: intersect.point,
         });
       }
     });
+
+    let intersect = intersects[0];
+    if (
+      intersect &&
+      this.isObject3D(intersect.object.userData?.object?.model)
+    ) {
+      intersect.object.userData.object.model.hovered = true;
+    }
+
+    this.model.intersects = intersections;
   }
 
   loadFromSchemas(schemas: Array<Object3DSchema>) {
@@ -117,6 +152,10 @@ class Scene {
           break;
       }
     });
+  }
+
+  isObject3D(object: any): object is Object3D {
+    return object && "uuid" in object;
   }
 }
 

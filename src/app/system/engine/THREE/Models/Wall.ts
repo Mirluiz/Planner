@@ -31,7 +31,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
     if (this.mesh instanceof THREE.Mesh) {
       this.mesh.geometry = geometry;
       this.mesh.material = new THREE.MeshStandardMaterial({
-        color: this.model.focused ? 0x6e90ff : 0xefd0b5,
+        color: this.model.hovered ? 0x6e90ff : 0xefd0b5,
       });
       this.mesh.geometry.needsUpdate = true;
     }
@@ -85,7 +85,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
   private getGeometry() {
     let depth = 0.2;
     let ln = this.model.start.distanceTo(this.model.end);
-    let h = 1.6;
+    let h = this.model.dimension.height;
 
     let endAngle = this.model.endAngle; // is angle
     let endCrop = (depth / 2) * Math.tan(endAngle);
