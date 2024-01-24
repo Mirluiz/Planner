@@ -3,11 +3,13 @@ import {
   Wall as WallModel,
   Pipe as PipeModel,
   Room as RoomModel,
+  Corner as CornerModel,
 } from "../../../model";
 import { Mesh, BaseMesh } from "./Mesh";
 import { Wall } from "./Models/Wall";
 import { Pipe } from "./Models/Pipe";
 import { Room } from "./Models/Room";
+import { Corner } from "./Models/Corner";
 
 class Renderer {
   static threeJS(model: Object3D): Mesh | undefined {
@@ -23,8 +25,10 @@ class Renderer {
       case Entity.ROOM:
         ret = new Room(<RoomModel>model);
         break;
-      case Entity.FITTING:
       case Entity.CORNER:
+        ret = new Corner(<CornerModel>model);
+        break;
+      case Entity.FITTING:
       case Entity.RADIATOR:
         break;
     }

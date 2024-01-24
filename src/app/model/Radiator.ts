@@ -32,6 +32,12 @@ class Radiator implements Object3D {
     }
   }
 
+  destroy() {
+    for (const observer of this.observers) {
+      observer.destroy();
+    }
+  }
+
   toJson() {
     return {
       uuid: this.uuid,

@@ -34,7 +34,7 @@ class Scene {
 
       if (this.model.drawMode) {
         this.activeController?.startDraw({
-          ...this.view?.engine.groundIntersNet,
+          ...this.view?.engine.groundInters,
         });
       } else {
         this.model.objects.map((element) => {
@@ -57,7 +57,7 @@ class Scene {
       if (!this.view) return;
 
       if (this.model.drawMode) {
-        this.activeController?.draw(this.view?.engine.groundIntersNet);
+        this.activeController?.draw(this.view?.engine.groundInters);
       }
 
       this.activeController?.active?.notifyObservers();

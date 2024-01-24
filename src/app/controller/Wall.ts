@@ -41,13 +41,11 @@ class Wall implements Drawing {
     const corner = newWall?.start ? this.getClosestObject(newWall.start) : null;
     const closest = newWall?.start ? this.getClosestWall(newWall.start) : null;
 
-    // console.log("");
-    // console.log("corner", corner);
-    // console.log("");
-
     if (corner) {
       corner.walls.push(newWall);
       newWall.connections.start = corner;
+      newWall.start.x = corner.position.x;
+      newWall.start.z = corner.position.z;
     } else if (closest && closest?.distance < 1) {
       this.connect(newWall, closest.object);
     }
@@ -68,6 +66,8 @@ class Wall implements Drawing {
       if (corner) {
         corner.walls.push(this.active);
         this.active.connections.end = corner;
+        this.active.end.x = corner.position.x;
+        this.active.end.z = corner.position.z;
       } else if (closest && closest?.distance < 0.5) {
         this.connect(this.active, closest.object);
       }
@@ -176,15 +176,19 @@ class Wall implements Drawing {
 
     const snapPos = intersection.position;
 
-    const snapPosNet = Math2D.NetAlgorithms.netBind(
-      new Vector3(snapPos.x, snapPos.y, snapPos.z)
-    );
+    if (this.scene.view?.engine.netBinding) {
+      const snapPosNet = Math2D.NetAlgorithms.netBind(
+        new Vector3(snapPos.x, snapPos.y, snapPos.z)
+      );
+
+      snapPos.set(snapPosNet.x, snapPosNet.y, snapPosNet.z);
+    }
 
     let end = this.isItWallEnd(wallToConnect, snapPos);
 
     if (end) {
       let corner = new Corner({
-        position: { ...snapPosNet },
+        position: { ...snapPos },
       });
 
       corner.walls.push(wall);
@@ -196,7 +200,7 @@ class Wall implements Drawing {
       this.addObject(corner);
     } else {
       let corner = new Corner({
-        position: { ...snapPosNet },
+        position: { ...snapPos },
       });
 
       /**
@@ -209,14 +213,14 @@ class Wall implements Drawing {
        */
       let dividedWallFromPrevCorner = new WallModel({
         start: wallToConnect.start.clone(),
-        end: new Vector3(snapPosNet.x, snapPosNet.y, snapPosNet.z),
+        end: new Vector3(snapPos.x, snapPos.y, snapPos.z),
       });
       dividedWallFromPrevCorner.connections.start =
         wallToConnect.connections.start;
       dividedWallFromPrevCorner.connections.end = corner;
 
       let dividedWallToNextCorner = new WallModel({
-        start: new Vector3(snapPosNet.x, snapPosNet.y, snapPosNet.z),
+        start: new Vector3(snapPos.x, snapPos.y, snapPos.z),
         end: wallToConnect.end.clone(),
       });
       dividedWallToNextCorner.connections.start = corner;
@@ -259,9 +263,9 @@ class Wall implements Drawing {
 
       this.scene.model.removeObject(wallToConnect.uuid);
 
-      // wallToConnect.destroy();
+      wallToConnect.destroy();
 
-      this.active?.end.set(snapPosNet.x, snapPosNet.y, snapPosNet.z);
+      this.active?.end.set(snapPos.x, snapPos.y, snapPos.z);
     }
   }
 

@@ -82,8 +82,9 @@ interface Object3D {
   toJson: () => Schema;
 
   addObserver: (observer: Observer) => void;
-
   notifyObservers: () => void;
+
+  destroy: () => void;
 }
 
 export { Object3D, Object3DProps, Schema as Object3DSchema };

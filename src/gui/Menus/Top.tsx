@@ -3,12 +3,14 @@ import { Button, Grid } from "@mui/material";
 import UndoOutlinedIcon from "@mui/icons-material/UndoOutlined";
 import RedoOutlinedIcon from "@mui/icons-material/RedoOutlined";
 import ThreeDRotationOutlinedIcon from "@mui/icons-material/ThreeDRotationOutlined";
+import BorderClearIcon from "@mui/icons-material/BorderClear";
 import { useSceneContext } from "../System/PiperContext";
 
 const Top = () => {
   const { app } = useSceneContext();
 
   const [camera, setCamera] = useState<"3D" | "2D">("3D");
+  const [netBinding, setNetBinding] = useState<boolean>(false);
 
   return (
     <Grid
@@ -46,13 +48,13 @@ const Top = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          gap: 2,
         }}
       >
         <ThreeDRotationOutlinedIcon
           color={camera === "3D" ? "info" : "disabled"}
           fontSize={"small"}
           onClick={() => {
-            console.log("=", app);
             if (!app) {
               return;
             }
@@ -63,6 +65,21 @@ const Top = () => {
 
             if (app.sceneController.view)
               setCamera(app.sceneController.view?.engine.cameraMode);
+          }}
+        />
+        <BorderClearIcon
+          color={netBinding ? "info" : "disabled"}
+          fontSize={"small"}
+          onClick={() => {
+            if (!app) {
+              return;
+            }
+
+            app.sceneController.view?.engine.updateGrid(
+              !app.sceneController.view?.engine.netBinding
+            );
+
+            setNetBinding(app.sceneController.view?.engine.netBinding ?? false);
           }}
         />
       </Grid>

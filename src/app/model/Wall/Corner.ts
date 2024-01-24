@@ -39,6 +39,12 @@ class Corner implements Object3D {
     }
   }
 
+  destroy() {
+    for (const observer of this.observers) {
+      observer.destroy();
+    }
+  }
+
   static fromJson(schema: Omit<Object3DSchema, "type">) {
     return new Corner({ ...schema });
   }

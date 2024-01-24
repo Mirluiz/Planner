@@ -58,6 +58,12 @@ class Pipe implements Object3D, Geometry.Line {
     }
   }
 
+  destroy() {
+    for (const observer of this.observers) {
+      observer.destroy();
+    }
+  }
+
   static fromJson(schema: Object3DSchema) {
     if (!schema.start || !schema.end || !schema.flow) return;
 

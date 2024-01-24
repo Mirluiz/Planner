@@ -16,8 +16,13 @@ class Scene {
   controls: OrbitControls;
   intersected: boolean = false;
   pointer: THREE.Vector3;
+
+  netBinding: boolean = false;
+  netStep: number = 10;
+
+  ground: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
   groundInters: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
-  groundIntersNet: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
+
   raycaster: THREE.Raycaster;
   htmlElement: HTMLElement | null;
   cameraMode: "2D" | "3D";
@@ -68,9 +73,11 @@ class Scene {
 
     this.scene.add(axis);
 
-    const netSize = 50;
-    // const helper = new THREE.GridHelper(netSize, netSize);
-    // this.scene.add(helper);
+    if (this.netBinding) {
+      const netSize = 50;
+      const helper = new THREE.GridHelper(netSize, netSize);
+      this.scene.add(helper);
+    }
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
     this.scene.add(ambientLight);
@@ -258,14 +265,22 @@ class Scene {
       this.raycaster.ray.clone()
     ).clone();
 
-    this.groundInters = {
+    this.ground = {
       x: planeIntersect.x,
       y: 0,
       z: planeIntersect.z,
     };
 
-    this.groundIntersNet.x = +(this.groundInters.x / 10).toFixed(1) * 10;
-    this.groundIntersNet.z = +(this.groundInters.z / 10).toFixed(1) * 10;
+    // this.groundIntersNet.x = +(this.groundInters.x / 10).toFixed(1) * 10;
+    // this.groundIntersNet.z = +(this.groundInters.z / 10).toFixed(1) * 10;
+
+    if (this.netBinding) {
+      this.groundInters.x = +(this.ground.x / 10).toFixed(1) * 10;
+      this.groundInters.z = +(this.ground.z / 10).toFixed(1) * 10;
+    } else {
+      this.groundInters.x = this.ground.x;
+      this.groundInters.z = this.ground.z;
+    }
 
     this.snapHighLight?.run();
 
@@ -291,6 +306,24 @@ class Scene {
       zoom: this.camera.zoom,
       mode: this.cameraMode,
     };
+  }
+
+  updateGrid(nB: boolean) {
+    this.netBinding = nB;
+
+    if (this.netBinding) {
+      const netSize = 50;
+      const helper = new THREE.GridHelper(netSize, netSize);
+      this.scene.add(helper);
+    } else {
+      this.scene.children.map((child) => {
+        if (child instanceof THREE.GridHelper) {
+          child.dispose();
+          child.material.dispose();
+          child.removeFromParent();
+        }
+      });
+    }
   }
 }
 
