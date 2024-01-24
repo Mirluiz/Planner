@@ -7,6 +7,7 @@ import {
   Object3DSchema,
 } from "../../system";
 import { Vector3 } from "three";
+import { Observer } from "../../system/interfaces/Observer";
 
 class Wall implements Object3D, Geometry.Line {
   isWall = true;
@@ -15,6 +16,8 @@ class Wall implements Object3D, Geometry.Line {
   dimension;
   rotation;
   position;
+
+  private observers: Observer[] = [];
 
   type = Entity.WALL;
 
@@ -42,6 +45,16 @@ class Wall implements Object3D, Geometry.Line {
     this.dimension = { width: 1, height: 1, depth: 1 };
     this.rotation = props.rotation ?? { w: 0, x: 0, y: 0, z: 0 };
     this.position = props.position ?? { x: 0, y: 0, z: 0 };
+  }
+
+  addObserver(observer: Observer) {
+    this.observers.push(observer);
+  }
+
+  notifyObservers() {
+    for (const observer of this.observers) {
+      observer.update();
+    }
   }
 
   static fromJson(schema: Object3DSchema) {

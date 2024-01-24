@@ -1,5 +1,6 @@
 import { Engine } from "./Engine";
 import { Entity } from "./Entity";
+import { Observer } from "./Observer";
 
 interface Object3DProps {
   uuid?: string;
@@ -76,6 +77,10 @@ interface Object3D {
   type: Entity;
 
   toJson: () => Schema;
+
+  addObserver: (observer: Observer) => void;
+
+  notifyObservers: () => void;
 }
 
 export { Object3D, Object3DProps, Schema as Object3DSchema };

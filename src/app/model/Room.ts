@@ -15,6 +15,7 @@ import { Vector3, ShapeUtils } from "three";
 import { Polygon } from "../system/utils/Polygon";
 import { Color, ColorManager } from "../system/utils/Color";
 import { Vertex } from "../controller";
+import { Observer } from "../system/interfaces/Observer";
 
 class Room implements Object3D {
   hovered: boolean = false;
@@ -27,6 +28,8 @@ class Room implements Object3D {
   rotation;
   position;
 
+  private observers: Observer[] = [];
+
   type = Entity.ROOM;
 
   constructor(props: Object3DProps) {
@@ -34,6 +37,16 @@ class Room implements Object3D {
     this.dimension = props.dimension ?? { width: 0.1, depth: 1, height: 1 };
     this.rotation = props.rotation ?? { w: 0, x: 0, y: 0, z: 0 };
     this.position = props.position ?? { x: 0, y: 0, z: 0 };
+  }
+
+  addObserver(observer: Observer) {
+    this.observers.push(observer);
+  }
+
+  notifyObservers() {
+    for (const observer of this.observers) {
+      observer.update();
+    }
   }
 
   toJson() {

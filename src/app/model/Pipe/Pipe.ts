@@ -9,9 +9,11 @@ import {
 } from "../../system";
 import * as THREE from "three";
 import { Vector3 } from "three";
+import { Observer } from "../../system/interfaces/Observer";
 
 class Pipe implements Object3D, Geometry.Line {
   isPipe = true;
+  private observers: Array<Observer> = [];
 
   flow: "red" | "blue";
 
@@ -41,6 +43,16 @@ class Pipe implements Object3D, Geometry.Line {
     this.position = props.position ?? { x: 0, y: 0, z: 0 };
 
     this.flow = props?.flow ?? "blue";
+  }
+
+  addObserver(observer: Observer) {
+    this.observers.push(observer);
+  }
+
+  notifyObservers() {
+    for (const observer of this.observers) {
+      observer.update();
+    }
   }
 
   static fromJson(schema: Object3DSchema) {

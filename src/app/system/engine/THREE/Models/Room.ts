@@ -4,10 +4,13 @@ import { Mesh, BaseMesh } from "../Mesh";
 import { Room as RoomModel } from "../../../../model/Room";
 import { ColorManager } from "../../../utils/Color";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { Observer } from "../../../interfaces/Observer";
 
-class Room extends BaseMesh implements Mesh {
+class Room extends BaseMesh implements Mesh, Observer {
   constructor(private model: RoomModel) {
     super();
+
+    model.addObserver(this);
   }
 
   update() {

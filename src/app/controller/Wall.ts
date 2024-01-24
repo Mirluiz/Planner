@@ -370,40 +370,6 @@ class Wall implements Drawing {
   }
 
   private updateWallAngles() {
-    // this.corners.map((corner, index, array) => {
-    //   if (wall.connections.end instanceof Corner) {
-    //     let nextWalls: WallModel[] = [];
-    //
-    //     let corner = wall.connections.end;
-    //
-    //     corner.walls.map((cornerWall) => {
-    //       if (cornerWall.uuid !== wall.uuid) {
-    //         nextWalls.push(cornerWall);
-    //       }
-    //     });
-    //
-    //     if (nextWalls.length === 1) {
-    //       let nextWall = nextWalls[0];
-    //       let oppositeAngle: "start" | "end" = nextWall.connections.end
-    //         ? "start"
-    //         : "end";
-    //
-    //       let current = wall.end.clone().sub(wall.start).normalize();
-    //       let nextAngle = nextWall[oppositeAngle]
-    //         .clone()
-    //         .sub(nextWall[oppositeAngle === "start" ? "end" : "start"])
-    //         .normalize();
-    //
-    //       // let angle = current.angleTo(nextAngle);
-    //       let angle = angleBetweenVectorsWithOrientation(current, nextAngle);
-    //
-    //       // wall.startAngle = angle / 2;
-    //       wall.endAngle = angle / 2;
-    //       // nextWall.endAngle = angle / 2;
-    //       // nextWall.startAngle = angle / 2;
-    //     }
-    //   }
-    // });
     this.corners.map((corner, index, array) => {
       if (corner.walls.length > 1) {
         corner.walls.map((wall, index, array) => {
@@ -421,13 +387,11 @@ class Wall implements Drawing {
             wall.connections.end instanceof Corner &&
             wall.connections.end.uuid === corner.uuid
           ) {
-            // wallOppositeEnd = wall.start.clone();
             wallOppositeEnd = "start";
           } else if (
             wall.connections.start instanceof Corner &&
             wall.connections.start.uuid === corner.uuid
           ) {
-            // wallOppositeEnd = wall.end.clone();
             wallOppositeEnd = "end";
           }
 
@@ -435,13 +399,11 @@ class Wall implements Drawing {
             nextWall.connections.end instanceof Corner &&
             nextWall.connections.end.uuid === corner.uuid
           ) {
-            // nextWallOppositeEnd = nextWall.start.clone();
             nextWallOppositeEnd = "start";
           } else if (
             nextWall.connections.start instanceof Corner &&
             nextWall.connections.start.uuid === corner.uuid
           ) {
-            // nextWallOppositeEnd = nextWall.end.clone();
             nextWallOppositeEnd = "end";
           }
 
@@ -493,11 +455,7 @@ function angleBetweenVectorsWithOrientation(
   const crossProduct = vectorA.x * vectorB.z - vectorA.z * vectorB.x;
   const dotProduct = vectorA.x * vectorB.x + vectorA.z * vectorB.z;
 
-  // Calculate the angle in radians using atan2
   const angleRadians = Math.atan2(crossProduct, dotProduct);
-
-  // Convert the angle to degrees
-  const angleDegrees = angleRadians * (180 / Math.PI);
 
   return angleRadians;
 }

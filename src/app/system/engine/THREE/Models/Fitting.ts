@@ -1,14 +1,13 @@
 import * as THREE from "three";
 import { BaseMesh, Mesh } from "../Mesh";
 import { Fitting as FittingModel } from "../../../../model";
+import { Observer } from "../../../interfaces/Observer";
 
-class Fitting extends BaseMesh implements Mesh {
-  model: FittingModel;
-
-  constructor(props: { model: FittingModel }) {
+class Fitting extends BaseMesh implements Mesh, Observer {
+  constructor(private model: FittingModel) {
     super();
 
-    this.model = props.model;
+    model.addObserver(this);
   }
 
   update() {

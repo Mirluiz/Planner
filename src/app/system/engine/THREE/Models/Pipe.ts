@@ -1,10 +1,13 @@
 import * as THREE from "three";
 import { BaseMesh, Mesh } from "../Mesh";
 import { Pipe as PipeModel } from "../../../../model";
+import { Observer } from "../../../interfaces/Observer";
 
-class Pipe extends BaseMesh implements Mesh {
+class Pipe extends BaseMesh implements Mesh, Observer {
   constructor(private model: PipeModel) {
     super();
+
+    model.addObserver(this);
   }
 
   update() {

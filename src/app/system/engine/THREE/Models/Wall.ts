@@ -3,10 +3,13 @@ import * as THREE from "three";
 import { Wall as WallModel } from "../../../../model/Wall/Wall";
 import { Mesh, BaseMesh } from "../Mesh";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { Observer } from "../../../interfaces/Observer";
 
-class Wall extends BaseMesh implements Mesh {
+class Wall extends BaseMesh implements Mesh, Observer {
   constructor(private model: WallModel) {
     super();
+
+    model.addObserver(this);
   }
 
   update() {

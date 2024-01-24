@@ -1,7 +1,7 @@
-import { Geometry } from "./../";
+import { Geometry, Object3D } from "./../";
 
 interface Drawing {
-  active: Geometry.Line | null;
+  active: Object3D | null;
   reset: () => void;
   startDraw: (props: { x: number; y: number; z: number }) => void;
   draw: (props: { x: number; y: number; z: number }) => void;

@@ -60,9 +60,7 @@ class Scene {
         this.activeController?.draw(this.view?.engine.groundIntersNet);
       }
 
-      if (this.activeController?.active instanceof Wall) {
-        this.event.emit("scene_update_element", this.activeController?.active);
-      }
+      this.activeController?.active?.notifyObservers();
     });
 
     this.view?.engine.htmlElement?.addEventListener("keydown", (event) => {
