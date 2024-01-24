@@ -3,6 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { LocalStorage, SnapHighlight, Math2D } from "../../../system";
 import { Scene as SceneController } from "../../../controller/Scene";
 import { Vector3 } from "three";
+import { Relation } from "./Relation";
 
 class Scene {
   controller: SceneController;
@@ -170,11 +171,11 @@ class Scene {
       // @ts-ignore
       runDelete(this.scene.children);
 
-      // this.controller.model.objects.map((object) => {
-      //   let mesh = object.render()?.returnTHREE();
-      //
-      //   if (mesh) this.scene.add(mesh);
-      // });
+      this.controller.model.objects.map((object) => {
+        let renderModel = Relation(object);
+        let mesh = renderModel?.render();
+        if (mesh) this.scene.add(mesh);
+      });
     });
 
     this.controller.event.subscribe("scene_update_element", (object) => {

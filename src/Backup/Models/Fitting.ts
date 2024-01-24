@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { BaseMesh, Mesh } from "./Mesh";
-import { Fitting as FittingModel } from "../../../model";
+import { BaseMesh, Mesh } from "../Mesh";
+import { Fitting as FittingModel } from "../../../../model";
 
 class Fitting extends BaseMesh implements Mesh {
   model: FittingModel;

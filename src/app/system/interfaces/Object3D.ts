@@ -73,6 +73,8 @@ interface Object3D {
     depth: number;
   };
 
+  type: Entity;
+
   toJson: () => Schema;
 }
 

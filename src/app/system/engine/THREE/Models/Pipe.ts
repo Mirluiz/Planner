@@ -1,15 +1,10 @@
 import * as THREE from "three";
-import { Vector3 } from "three";
-import { BaseMesh, Mesh } from "./Mesh";
-import { Pipe as PipeModel } from "../../../model";
+import { BaseMesh, Mesh } from "../Mesh";
+import { Pipe as PipeModel } from "../../../../model";
 
 class Pipe extends BaseMesh implements Mesh {
-  model: PipeModel;
-
-  constructor(props: { model: PipeModel }) {
+  constructor(private model: PipeModel) {
     super();
-
-    this.model = props.model;
   }
 
   update() {

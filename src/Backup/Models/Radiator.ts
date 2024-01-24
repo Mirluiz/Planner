@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { Radiator as RadiatorModel } from "./../../../model";
-import { BaseMesh, Mesh } from "./Mesh";
+import { Radiator as RadiatorModel } from "../../../../model";
+import { BaseMesh, Mesh } from "../Mesh";
 
 class Radiator extends BaseMesh implements Mesh {
   model: RadiatorModel;

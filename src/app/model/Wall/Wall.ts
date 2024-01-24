@@ -16,6 +16,8 @@ class Wall implements Object3D, Geometry.Line {
   rotation;
   position;
 
+  type = Entity.WALL;
+
   start;
   end;
 

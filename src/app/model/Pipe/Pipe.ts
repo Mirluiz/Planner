@@ -23,6 +23,8 @@ class Pipe implements Object3D, Geometry.Line {
   start: Vector3;
   end: Vector3;
 
+  type = Entity.PIPE;
+
   constructor(
     props: {
       start: Vector3;

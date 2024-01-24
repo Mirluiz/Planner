@@ -1,16 +1,12 @@
-import { Storage } from "./../../";
+import { Storage } from "../../../";
 import * as THREE from "three";
-import { Wall as WallModel } from "./../../../model/Wall/Wall";
-import { Mesh, BaseMesh } from "./Mesh";
+import { Wall as WallModel } from "../../../../model/Wall/Wall";
+import { Mesh, BaseMesh } from "../Mesh";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 
 class Wall extends BaseMesh implements Mesh {
-  model: WallModel;
-
-  constructor(props: { model: WallModel }) {
+  constructor(private model: WallModel) {
     super();
-
-    this.model = props.model;
   }
 
   update() {

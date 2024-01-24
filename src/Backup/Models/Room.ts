@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import { Storage } from "./../../";
-import { Mesh, BaseMesh } from "./Mesh";
-import { Room as RoomModel } from "./../../../model/Room";
-import { ColorManager } from "../../utils/Color";
+import { Storage } from "./../../../";
+import { Mesh, BaseMesh } from "../Mesh";
+import { Room as RoomModel } from "../../../../model/Room";
+import { ColorManager } from "../../../utils/Color";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 
 class Room extends BaseMesh implements Mesh {

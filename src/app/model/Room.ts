@@ -27,6 +27,8 @@ class Room implements Object3D {
   rotation;
   position;
 
+  type = Entity.ROOM;
+
   constructor(props: Object3DProps) {
     this.uuid = props.uuid ?? Helpers.uuid();
     this.dimension = props.dimension ?? { width: 0.1, depth: 1, height: 1 };
