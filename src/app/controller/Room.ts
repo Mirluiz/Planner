@@ -24,7 +24,7 @@ class Room {
   updateByCorners(corners: Array<Array<Corner>>) {
     this.scene.model.objects.map((obj) => {
       if (obj instanceof RoomModel) {
-        obj.destroy();
+        // obj.destroy();
       }
     });
 

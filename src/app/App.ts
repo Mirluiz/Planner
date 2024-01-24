@@ -1,5 +1,4 @@
 import { Scene as SceneController } from "./controller/Scene";
-import { Pipe as PipeController } from "../app/controller/Pipe";
 import { Wall as WallController } from "../app/controller/Wall";
 import { Room as RoomController } from "../app/controller/Room";
 import { Graph as GraphController } from "../app/controller/Graph";
@@ -14,7 +13,7 @@ class App {
   graphController: GraphController;
   sceneController: SceneController;
   wallController: WallController;
-  pipeController: PipeController;
+  // pipeController: PipeController;
   roomController: RoomController;
 
   constructor(props: { canvas: HTMLElement | null }) {
@@ -27,9 +26,9 @@ class App {
       graph: this.graphController,
     });
 
-    this.pipeController = new PipeController({
-      scene: this.sceneController,
-    });
+    // this.pipeController = new PipeController({
+    //   scene: this.sceneController,
+    // });
 
     this.wallController = new WallController({
       scene: this.sceneController,
@@ -52,7 +51,7 @@ class App {
   }
 
   run() {
-    this.sceneController.view?.animate();
+    this.sceneController.view?.engine.animate();
   }
 
   save() {

@@ -29,7 +29,7 @@ class SnapHighlight {
     this.mesh = new Engine.Mesh();
 
     let threeMesh = this.render()?.returnTHREE();
-    if (threeMesh) this.sceneView?.scene.add(threeMesh);
+    if (threeMesh) this.sceneView?.engine.scene.add(threeMesh);
   }
 
   destroy() {
@@ -80,12 +80,9 @@ class SnapHighlight {
       this.show = true;
 
       this.start.set(
-        // this.sceneView.app.pipeController.active.end.pos.x,
-        // this.sceneView.app.pipeController.active.end.pos.y,
-        // this.sceneView.app.pipeController.active.end.pos.z
-        this.sceneView.groundInters.x,
-        this.sceneView.groundInters.y,
-        this.sceneView.groundInters.z
+        this.sceneView.engine.groundInters.x,
+        this.sceneView.engine.groundInters.y,
+        this.sceneView.engine.groundInters.z
       );
       this.end.set(
         closestPipe.position.x,

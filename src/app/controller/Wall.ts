@@ -259,7 +259,7 @@ class Wall implements Drawing {
 
       this.scene.model.removeObject(wallToConnect.uuid);
 
-      wallToConnect.destroy();
+      // wallToConnect.destroy();
 
       this.active?.end.set(snapPosNet.x, snapPosNet.y, snapPosNet.z);
     }
@@ -285,7 +285,7 @@ class Wall implements Drawing {
 
       if (corner.walls.length < 2) {
         this.scene.model.removeObject(corner.uuid);
-        corner.destroy();
+        // corner.destroy();
       }
     }
   }
@@ -478,7 +478,7 @@ class Wall implements Drawing {
       this.clearTempCorner();
 
       this.scene.model.removeObject(this.active.uuid);
-      this.active?.destroy();
+      // this.active?.destroy();
       this.active = null;
     }
 

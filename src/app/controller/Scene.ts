@@ -1,5 +1,5 @@
 import { Scene as SceneModel } from "../model/Scene";
-import { Corner, Fitting, Pipe, PipeEnd, Radiator, Wall } from "../model";
+import { Corner, Fitting, Pipe, Radiator, Wall } from "../model";
 import { EventSystem, Drawing, Entity, Object3DSchema } from "../system";
 import { Scene as SceneView } from "../scene/Scene";
 import { Room } from "../model/Room";
@@ -29,11 +29,13 @@ class Scene {
   }
 
   private initListeners() {
-    this.view?.htmlElement?.addEventListener("click", (event) => {
+    this.view?.engine.htmlElement?.addEventListener("click", (event) => {
       if (!this.view) return;
 
       if (this.model.drawMode) {
-        this.activeController?.startDraw({ ...this.view.groundIntersNet });
+        this.activeController?.startDraw({
+          ...this.view?.engine.groundIntersNet,
+        });
       } else {
         this.model.objects.map((element) => {
           if (element instanceof Room) {
@@ -51,11 +53,11 @@ class Scene {
       this.event.emit("scene_update");
     });
 
-    this.view?.htmlElement?.addEventListener("mousemove", (event) => {
+    this.view?.engine.htmlElement?.addEventListener("mousemove", (event) => {
       if (!this.view) return;
 
       if (this.model.drawMode) {
-        this.activeController?.draw(this.view.groundIntersNet);
+        this.activeController?.draw(this.view?.engine.groundIntersNet);
       }
 
       if (this.activeController?.active instanceof Wall) {
@@ -63,7 +65,7 @@ class Scene {
       }
     });
 
-    this.view?.htmlElement?.addEventListener("keydown", (event) => {
+    this.view?.engine.htmlElement?.addEventListener("keydown", (event) => {
       if (event.code == "Escape") {
         this.setDrawMode(null);
       }

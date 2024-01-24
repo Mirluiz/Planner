@@ -57,12 +57,12 @@ const Top = () => {
               return;
             }
 
-            app.sceneController.view?.setCamera(
-              app.sceneController.view.cameraMode === "3D" ? "2D" : "3D"
+            app.sceneController.view?.engine.setCamera(
+              app.sceneController.view?.engine.cameraMode === "3D" ? "2D" : "3D"
             );
 
             if (app.sceneController.view)
-              setCamera(app.sceneController.view.cameraMode);
+              setCamera(app.sceneController.view?.engine.cameraMode);
           }}
         />
       </Grid>
