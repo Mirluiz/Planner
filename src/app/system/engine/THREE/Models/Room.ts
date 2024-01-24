@@ -29,9 +29,9 @@ class Room extends BaseMesh implements Mesh, Observer {
       textMesh.removeFromParent();
     }
 
-    this.mesh.geometry.dispose();
-    this.mesh.geometry = geometry;
-    this.mesh.material = material;
+    // this.mesh.geometry.dispose();
+    // this.mesh.geometry = geometry;
+    // this.mesh.material = material;
 
     let txtMesh = this.getText();
     if (txtMesh) {

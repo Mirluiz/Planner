@@ -12,6 +12,9 @@ import { Observer } from "../../system/interfaces/Observer";
 class Wall implements Object3D, Geometry.Line {
   isWall = true;
 
+  hovered = false;
+  focused = false;
+
   uuid;
   dimension;
   rotation;

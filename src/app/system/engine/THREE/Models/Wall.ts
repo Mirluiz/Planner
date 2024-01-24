@@ -4,6 +4,7 @@ import { Wall as WallModel } from "../../../../model/Wall/Wall";
 import { Mesh, BaseMesh } from "../Mesh";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Observer } from "../../../interfaces/Observer";
+import { ColorManager } from "../../../utils/Color";
 
 class Wall extends BaseMesh implements Mesh, Observer {
   constructor(private model: WallModel) {
@@ -27,11 +28,13 @@ class Wall extends BaseMesh implements Mesh, Observer {
       textMesh.removeFromParent();
     }
 
-    this.mesh.geometry.dispose();
-    this.mesh.geometry = geometry;
-    this.mesh.material = new THREE.MeshStandardMaterial({ color: 0xefd0b5 });
-
-    this.mesh.geometry.needsUpdate = true;
+    if (this.mesh instanceof THREE.Mesh) {
+      this.mesh.geometry = geometry;
+      this.mesh.material = new THREE.MeshStandardMaterial({
+        color: this.model.focused ? 0x6e90ff : 0xefd0b5,
+      });
+      this.mesh.geometry.needsUpdate = true;
+    }
 
     const midPoint = new THREE.Vector3();
     midPoint.addVectors(this.model.start, this.model.end).multiplyScalar(0.5);
@@ -53,8 +56,6 @@ class Wall extends BaseMesh implements Mesh, Observer {
     this.destroy();
 
     let geometry = this.getGeometry();
-
-    let ln = this.model.start.distanceTo(this.model.end);
 
     const material = new THREE.MeshStandardMaterial({ color: 0xefd0b5 });
     const mesh = new THREE.Mesh(geometry, material);

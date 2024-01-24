@@ -8,6 +8,8 @@ import { Right } from "./Menus/Right";
 import { Top } from "./Menus/Top";
 import { Room } from "../Demo/Room/Room";
 import { Wall } from "../Demo/Wall";
+import { Vector3 } from "three";
+import { Line } from "../app/system/engine/THREE/Indicator/Line";
 
 const App = () => {
   const canvasRef = useRef<HTMLDivElement | null>(null);
@@ -27,11 +29,16 @@ const App = () => {
         // const corner = new Corner({ app });
         const wall = new Wall({ app });
 
-        demo.run();
+        let start = new Vector3(2, 0, 0);
+        let end = new Vector3(5, 0, 4);
+        let line = new Line({ start, end });
+        app.sceneController.view?.engine.scene.add(line.render());
+
+        // demo.run();
         // corner.run();
         // wall.run();
 
-        app.sceneController.event.emit("scene_update");
+        // app.sceneController.event.emit("scene_update");
       });
 
       // @ts-ignore

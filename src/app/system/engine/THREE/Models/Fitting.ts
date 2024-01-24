@@ -17,8 +17,8 @@ class Fitting extends BaseMesh implements Mesh, Observer {
 
     const geometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 32);
 
-    this.mesh.geometry.dispose(); // Dispose of the old geometry to free up memory
-    this.mesh.geometry = geometry;
+    // this.mesh.geometry.dispose(); // Dispose of the old geometry to free up memory
+    // this.mesh.geometry = geometry;
 
     this.mesh.position.set(
       this.model.position.x,

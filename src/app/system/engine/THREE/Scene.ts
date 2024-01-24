@@ -4,6 +4,7 @@ import { LocalStorage, SnapHighlight, Math2D } from "../../../system";
 import { Scene as SceneController } from "../../../controller/Scene";
 import { Vector3 } from "three";
 import { Renderer } from "./Renderer";
+import { Line } from "./Indicator/Line";
 
 class Scene {
   controller: SceneController;
@@ -68,8 +69,8 @@ class Scene {
     this.scene.add(axis);
 
     const netSize = 50;
-    const helper = new THREE.GridHelper(netSize, netSize);
-    this.scene.add(helper);
+    // const helper = new THREE.GridHelper(netSize, netSize);
+    // this.scene.add(helper);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
     this.scene.add(ambientLight);

@@ -11,6 +11,8 @@ class Pipe extends BaseMesh implements Mesh, Observer {
   }
 
   update() {
+    this.destroy();
+
     if (!this.mesh) return;
 
     let ln = this.model.start.distanceTo(this.model.end);
@@ -20,8 +22,7 @@ class Pipe extends BaseMesh implements Mesh, Observer {
       color: this.model.flow === "red" ? 0xff0000 : 0x0000ff,
     });
 
-    this.mesh.geometry.dispose(); // Dispose of the old geometry to free up memory
-    this.mesh.geometry = geometry;
+    if (this.mesh instanceof THREE.Mesh) this.mesh.geometry = geometry;
 
     const midPoint = new THREE.Vector3();
     midPoint.addVectors(this.model.start, this.model.end).multiplyScalar(0.5);

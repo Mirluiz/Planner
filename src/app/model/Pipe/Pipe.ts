@@ -12,6 +12,9 @@ import { Vector3 } from "three";
 import { Observer } from "../../system/interfaces/Observer";
 
 class Pipe implements Object3D, Geometry.Line {
+  hovered = false;
+  focused = false;
+
   isPipe = true;
   private observers: Array<Observer> = [];
 
