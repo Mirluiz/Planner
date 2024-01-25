@@ -41,7 +41,7 @@ class Corner implements Object3D {
     }
   }
 
-  update() {
+  onUpdate() {
     this.walls.map((wall) => {
       if (
         wall.connections.end instanceof Corner &&

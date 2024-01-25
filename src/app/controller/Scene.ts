@@ -84,7 +84,7 @@ class Scene {
         this.draggedObject.position.y = this.view.engine.groundInters.y;
         this.draggedObject.position.z = this.view.engine.groundInters.z;
 
-        this.draggedObject.update();
+        this.draggedObject.onUpdate();
         this.draggedObject.notifyObservers();
       }
 

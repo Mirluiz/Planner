@@ -40,6 +40,10 @@ class Fitting implements Object3D {
     }
   }
 
+  onUpdate() {
+    console.log("=");
+  }
+
   destroy() {
     for (const observer of this.observers) {
       observer.destroy();

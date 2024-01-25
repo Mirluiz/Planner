@@ -58,6 +58,10 @@ class Pipe implements Object3D, Geometry.Line {
     }
   }
 
+  onUpdate() {
+    console.log("2");
+  }
+
   destroy() {
     for (const observer of this.observers) {
       observer.destroy();

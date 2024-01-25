@@ -60,6 +60,10 @@ class Wall implements Object3D, Geometry.Line {
     }
   }
 
+  onUpdate() {
+    console.log("==");
+  }
+
   destroy() {
     for (const observer of this.observers) {
       observer.destroy();

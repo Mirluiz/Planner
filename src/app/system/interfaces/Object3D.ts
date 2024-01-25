@@ -84,7 +84,7 @@ interface Object3D {
   addObserver: (observer: Observer) => void;
   notifyObservers: () => void;
 
-  update: () => void;
+  onUpdate: () => void;
   destroy: () => void;
 }
 
