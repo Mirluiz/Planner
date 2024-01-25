@@ -17,6 +17,7 @@ class Scene {
   event: EventSystem = new EventSystem();
 
   activeController: Drawing | null = null;
+  draggedObject: Object3D | null = null;
 
   constructor(props: { canvas: HTMLElement | null }) {
     this.model = new SceneModel();
@@ -38,7 +39,7 @@ class Scene {
   }
 
   private initListeners() {
-    this.view?.engine.htmlElement?.addEventListener("click", (event) => {
+    this.view?.engine.htmlElement?.addEventListener("mousedown", (event) => {
       if (!this.view) return;
 
       if (this.model.drawMode) {
@@ -48,18 +49,26 @@ class Scene {
       } else {
         this.model.objects.map((element) => {
           if (element instanceof Room) {
-            element.hovered = false;
+            element.focused = false;
           }
         });
 
         this.model.intersects.map((intersect) => {
           if (intersect.object instanceof Room) {
-            intersect.object.hovered = true;
+            intersect.object.focused = true;
           }
         });
+
+        this.draggedObject = this.model.intersects[0]?.object ?? null;
       }
 
       this.event.emit("scene_update");
+    });
+
+    this.view?.engine.htmlElement?.addEventListener("mouseup", () => {
+      if (this.draggedObject) {
+        this.draggedObject = null;
+      }
     });
 
     this.view?.engine.htmlElement?.addEventListener("mousemove", (event) => {
@@ -67,6 +76,16 @@ class Scene {
 
       if (this.model.drawMode) {
         this.activeController?.draw(this.view?.engine.groundInters);
+      }
+
+      // console.log("this.draggedObject", this.draggedObject);
+      if (this.draggedObject) {
+        this.draggedObject.position.x = this.view.engine.groundInters.x;
+        this.draggedObject.position.y = this.view.engine.groundInters.y;
+        this.draggedObject.position.z = this.view.engine.groundInters.z;
+
+        this.draggedObject.update();
+        this.draggedObject.notifyObservers();
       }
 
       this.activeController?.active?.notifyObservers();

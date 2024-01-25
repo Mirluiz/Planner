@@ -28,6 +28,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
       this.mesh.geometry = geometry;
       this.mesh.material = material;
     }
+    console.log("===", this.model.position.x);
 
     this.mesh.position.set(
       this.model.position.x,
