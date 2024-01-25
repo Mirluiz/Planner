@@ -11,6 +11,7 @@ import { Observer } from "../../system/interfaces/Observer";
 class Corner implements Object3D {
   hovered = false;
   focused = false;
+  active = false;
 
   walls: Array<Wall> = [];
   private observers: Observer[] = [];
@@ -35,8 +36,6 @@ class Corner implements Object3D {
 
   notifyObservers() {
     for (const observer of this.observers) {
-      // observer.update.call(this);
-      console.log("====");
       observer.update();
     }
   }

@@ -36,10 +36,10 @@ const House = () => {
           onClick={() => {
             handleClose();
 
-            if (!app) return;
+            if (!app?.sceneController.view) return;
 
-            app.sceneController.setDrawMode("wall");
-            app.sceneController.activeController = app.wallController;
+            app.sceneController.view.mode = "draw";
+            app.sceneController.view.activeController = app.wallController;
           }}
         >
           Wall
@@ -58,7 +58,9 @@ const House = () => {
         <MenuItem
           onClick={() => {
             handleClose();
-            app?.sceneController.setDrawMode("object");
+            if (!app?.sceneController.view) return;
+
+            app.sceneController.view.mode = "draw";
           }}
         >
           Window

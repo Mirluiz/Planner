@@ -56,6 +56,7 @@ interface Schema {
 interface Object3D {
   hovered: boolean;
   focused: boolean;
+  active: boolean;
 
   position: {
     x: number;

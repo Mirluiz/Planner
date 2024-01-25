@@ -18,8 +18,6 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
     let geometry = this.getGeometry();
 
-    if (!this.mesh) return;
-
     let textMesh = this.mesh.children[0];
 
     if (textMesh instanceof THREE.Mesh) {

@@ -14,6 +14,7 @@ class Wall implements Object3D, Geometry.Line {
 
   hovered = false;
   focused = false;
+  active = false;
 
   uuid;
   dimension;
@@ -61,7 +62,7 @@ class Wall implements Object3D, Geometry.Line {
   }
 
   onUpdate() {
-    console.log("==");
+    // console.log("==");
   }
 
   destroy() {

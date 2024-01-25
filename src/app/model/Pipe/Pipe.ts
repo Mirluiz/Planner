@@ -14,6 +14,7 @@ import { Observer } from "../../system/interfaces/Observer";
 class Pipe implements Object3D, Geometry.Line {
   hovered = false;
   focused = false;
+  active = false;
 
   isPipe = true;
   private observers: Array<Observer> = [];

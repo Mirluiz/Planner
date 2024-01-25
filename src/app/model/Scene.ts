@@ -5,7 +5,6 @@ import { Vector3 } from "three";
 import { Room } from "./Room";
 
 class Scene {
-  drawMode: "wall" | "pipe" | "object" | null = null;
   event: EventSystem = new EventSystem();
 
   _intersects: Array<{

@@ -2,8 +2,8 @@ import { Scene as SceneController } from "./controller/Scene";
 import { Wall as WallController } from "../app/controller/Wall";
 import { Room as RoomController } from "../app/controller/Room";
 import { Graph as GraphController } from "../app/controller/Graph";
+import { Pipe as PipeController } from "../app/controller/Pipe";
 import { EventSystem, Database, Object3D, Storage } from "./system";
-import { Corner } from "./model";
 
 class App {
   database: Database = new Database();
@@ -13,26 +13,23 @@ class App {
   graphController: GraphController;
   sceneController: SceneController;
   wallController: WallController;
-  // pipeController: PipeController;
+  pipeController: PipeController;
   roomController: RoomController;
 
   constructor(props: { canvas: HTMLElement | null }) {
     this.sceneController = new SceneController(props);
 
     this.graphController = new GraphController();
-
-    this.roomController = new RoomController({
-      scene: this.sceneController,
-      graph: this.graphController,
+    this.pipeController = new PipeController({
+      scene: this.sceneController.model,
     });
 
-    // this.pipeController = new PipeController({
-    //   scene: this.sceneController,
-    // });
+    this.roomController = new RoomController({
+      scene: this.sceneController.model,
+    });
 
     this.wallController = new WallController({
-      scene: this.sceneController,
-      roomController: this.roomController,
+      scene: this.sceneController.model,
     });
   }
 

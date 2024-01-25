@@ -20,6 +20,7 @@ import { Observer } from "../system/interfaces/Observer";
 class Room implements Object3D {
   hovered = false;
   focused = false;
+  active = false;
 
   corners: Array<Corner> = [];
   triangulation: Array<Vertex> = [];

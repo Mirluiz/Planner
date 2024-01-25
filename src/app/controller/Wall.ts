@@ -1,25 +1,34 @@
 import { Wall as WallModel, Corner } from "./../model/";
-import { Scene as SceneController } from "../controller/Scene";
-import { Room as RoomController } from "../controller/Room";
-import { Drawing, Geometry, Math2D } from "../system";
+import { Scene as SceneModel } from "../model/Scene";
+import { Math2D } from "../system";
 import { Vector3 } from "three";
+import { Controller } from "./Controller";
 
-class Wall implements Drawing {
-  readonly scene: SceneController;
-  roomController: RoomController;
+class Wall implements Controller {
+  readonly scene: SceneModel;
 
-  active: WallModel | null = null;
+  activeModel: WallModel | null = null;
 
-  constructor(props: {
-    scene: SceneController;
-    roomController: RoomController;
-  }) {
+  constructor(props: { scene: SceneModel }) {
     this.scene = props.scene;
-    this.roomController = props.roomController;
   }
 
+  create(props: { x: number; y: number; z: number }) {
+    this.startDraw(props);
+
+    return this.activeModel;
+  }
+
+  update(props: { x: number; y: number; z: number }) {
+    this.draw(props);
+
+    return this.activeModel;
+  }
+
+  remove() {}
+
   get walls() {
-    return this.scene.model.objects.filter((obj): obj is WallModel => {
+    return this.scene.objects.filter((obj): obj is WallModel => {
       if (obj instanceof WallModel) {
         return Math2D.Line.isLine(obj);
       } else return false;
@@ -27,7 +36,7 @@ class Wall implements Drawing {
   }
 
   get corners() {
-    return this.scene.model.objects.filter((obj): obj is Corner => {
+    return this.scene.objects.filter((obj): obj is Corner => {
       return obj instanceof Corner;
     });
   }
@@ -50,30 +59,36 @@ class Wall implements Drawing {
       this.connect(newWall, closest.object);
     }
 
+    newWall.active = true;
     this.addObject(newWall);
-    this.active = newWall;
+    this.activeModel = newWall;
   }
 
   end(pos: { x: number; y: number; z: number }) {
-    if (!this.active) return;
+    if (!this.activeModel) return;
 
-    this.moveEnd(this.active, "end", { ...pos });
+    this.moveEnd(this.activeModel, "end", { ...pos });
 
-    const corner = this.active ? this.getClosestObject(this.active.end) : null;
-    const closest = this.active ? this.getClosestWall(this.active.end) : null;
+    const corner = this.activeModel
+      ? this.getClosestObject(this.activeModel.end)
+      : null;
+    const closest = this.activeModel
+      ? this.getClosestWall(this.activeModel.end)
+      : null;
 
-    if (this.active) {
+    if (this.activeModel) {
       if (corner) {
-        corner.walls.push(this.active);
-        this.active.connections.end = corner;
-        this.active.end.x = corner.position.x;
-        this.active.end.z = corner.position.z;
+        corner.walls.push(this.activeModel);
+        this.activeModel.connections.end = corner;
+        this.activeModel.end.x = corner.position.x;
+        this.activeModel.end.z = corner.position.z;
       } else if (closest && closest?.distance < 0.5) {
-        this.connect(this.active, closest.object);
+        this.connect(this.activeModel, closest.object);
       }
     }
 
-    this.active = null;
+    this.activeModel.active = false;
+    this.activeModel = null;
   }
 
   moveEnd(
@@ -85,7 +100,7 @@ class Wall implements Drawing {
   }
 
   private getClosestObject(coord: Vector3) {
-    let corners = this.scene.model.objects.filter(
+    let corners = this.scene.objects.filter(
       (obj): obj is Corner => obj instanceof Corner
     );
 
@@ -115,7 +130,7 @@ class Wall implements Drawing {
     let snapsByDistance = Math2D.Line.seekSnap(this.walls, coord);
 
     let excludeItself = snapsByDistance.filter(
-      (snap) => snap.object.uuid !== this.active?.uuid
+      (snap) => snap.object.uuid !== this.activeModel?.uuid
     );
 
     const closest = excludeItself[0];
@@ -176,13 +191,13 @@ class Wall implements Drawing {
 
     const snapPos = intersection.position;
 
-    if (this.scene.view?.engine.netBinding) {
-      const snapPosNet = Math2D.NetAlgorithms.netBind(
-        new Vector3(snapPos.x, snapPos.y, snapPos.z)
-      );
-
-      snapPos.set(snapPosNet.x, snapPosNet.y, snapPosNet.z);
-    }
+    // if (this.scene.view?.engine.netBinding) {
+    //   const snapPosNet = Math2D.NetAlgorithms.netBind(
+    //     new Vector3(snapPos.x, snapPos.y, snapPos.z)
+    //   );
+    //
+    //   snapPos.set(snapPosNet.x, snapPosNet.y, snapPosNet.z);
+    // }
 
     let end = this.isItWallEnd(wallToConnect, snapPos);
 
@@ -261,11 +276,11 @@ class Wall implements Drawing {
         wallToConnect.connections.end.walls.push(dividedWallToNextCorner);
       }
 
-      this.scene.model.removeObject(wallToConnect.uuid);
+      this.scene.removeObject(wallToConnect.uuid);
 
       wallToConnect.destroy();
 
-      this.active?.end.set(snapPos.x, snapPos.y, snapPos.z);
+      this.activeModel?.end.set(snapPos.x, snapPos.y, snapPos.z);
     }
   }
 
@@ -274,103 +289,47 @@ class Wall implements Drawing {
   }
 
   clearTempCorner() {
-    let corner = this.scene.model.objects.find(
+    let corner = this.scene.objects.find(
       (obj): obj is Corner =>
         obj instanceof Corner &&
-        obj.walls.some((w) => w.uuid === this.active?.uuid)
+        obj.walls.some((w) => w.uuid === this.activeModel?.uuid)
     );
 
     if (corner) {
-      const index = corner.walls.findIndex((w) => this.active?.uuid === w.uuid);
+      const index = corner.walls.findIndex(
+        (w) => this.activeModel?.uuid === w.uuid
+      );
 
       if (index > -1) {
         corner.walls.splice(index, 1);
       }
 
       if (corner.walls.length < 2) {
-        this.scene.model.removeObject(corner.uuid);
+        this.scene.removeObject(corner.uuid);
         // corner.destroy();
       }
     }
   }
 
   private addObject(object: WallModel | Corner) {
-    this.scene.model.addObject(object);
+    this.scene.addObject(object);
   }
 
   startDraw(props: { x: number; y: number; z: number }) {
-    if (this.active) {
+    if (this.activeModel) {
       this.end({ ...props });
       this.start({ ...props });
     } else {
       this.start({ ...props });
     }
 
-    this.updateGraph();
+    // this.roomController.updateGraph();
   }
 
   draw(props: { x: number; y: number; z: number }) {
-    if (this.active) {
-      this.moveEnd(this.active, "end", { ...props });
+    if (this.activeModel) {
+      this.moveEnd(this.activeModel, "end", { ...props });
     }
-  }
-
-  private updateGraph() {
-    this.roomController.graph.graph = {};
-    this.roomController.graph.vertices = {};
-
-    let walls = this.scene.model.objects.filter(
-      (obj): obj is WallModel => obj instanceof WallModel
-    );
-
-    let corners = this.scene.model.objects.filter(
-      (obj): obj is Corner => obj instanceof Corner
-    );
-
-    walls.map((wall) => {
-      let from: Corner | undefined = corners.find((obj): obj is Corner =>
-        obj.walls.some((w) => w.uuid === wall.uuid)
-      );
-      let to: Corner | undefined = corners.find(
-        (obj): obj is Corner =>
-          obj.walls.some((w) => w.uuid === wall.uuid) && obj.uuid !== from?.uuid
-      );
-
-      if (from && to) {
-        this.roomController.graph?.addEdge(
-          { uuid: from.uuid, position: from.position },
-          { uuid: to.uuid, position: to.position }
-        );
-      }
-    });
-
-    if (!this.roomController.graph) return;
-
-    let cycles = this.roomController.graph.getCycles();
-
-    let roomCorners: Array<Array<Corner>> = [];
-
-    cycles.map((cycle) => {
-      let _corners: Array<Corner> = [];
-      let vectors: Array<Vector3> = [];
-
-      cycle.map((uuid) => {
-        let corner: Corner | undefined = corners.find(
-          (obj): obj is Corner => obj.uuid === uuid
-        );
-
-        if (corner) {
-          _corners.push(corner);
-          vectors.push(
-            new Vector3(corner.position.x, corner.position.y, corner.position.z)
-          );
-        }
-      });
-
-      roomCorners.push(_corners);
-    });
-
-    this.roomController.updateByCorners(roomCorners);
   }
 
   private updateWallAngles() {
@@ -440,12 +399,12 @@ class Wall implements Drawing {
   }
 
   reset() {
-    if (this.active) {
+    if (this.activeModel) {
       this.clearTempCorner();
 
-      this.scene.model.removeObject(this.active.uuid);
-      // this.active?.destroy();
-      this.active = null;
+      this.scene.removeObject(this.activeModel.uuid);
+      this.activeModel.active = false;
+      this.activeModel = null;
     }
 
     this.updateWallAngles();

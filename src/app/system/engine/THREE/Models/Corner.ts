@@ -17,7 +17,6 @@ class Corner extends BaseMesh implements Mesh, Observer {
     const material = new THREE.MeshBasicMaterial({
       color: this.model.hovered ? 0x6e90ff : 0x000000,
     });
-    //this.model.hovered ? 0x6e90ff
 
     let highestPoint = this.model.walls.sort(
       (a, b) => b.dimension.height - a.dimension.height
@@ -28,7 +27,6 @@ class Corner extends BaseMesh implements Mesh, Observer {
       this.mesh.geometry = geometry;
       this.mesh.material = material;
     }
-    console.log("===", this.model.position.x);
 
     this.mesh.position.set(
       this.model.position.x,

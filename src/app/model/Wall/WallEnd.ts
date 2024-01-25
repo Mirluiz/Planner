@@ -1,0 +1,3 @@
+class WallEnd {}
+
+export { WallEnd };

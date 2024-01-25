@@ -5,6 +5,7 @@ import { Scene as SceneController } from "../../../controller/Scene";
 import { Vector3 } from "three";
 import { Renderer } from "./Renderer";
 import { Line } from "./Indicator/Line";
+import { Room } from "../../../model";
 
 class Scene {
   controller: SceneController;
@@ -27,11 +28,10 @@ class Scene {
   htmlElement: HTMLElement | null;
   cameraMode: "2D" | "3D";
 
-  onRender: ((intersection: THREE.Intersection[]) => void) | null = null;
-
   localStorage: LocalStorage;
 
   snapHighLight: SnapHighlight | null = null;
+  intersects: THREE.Intersection[] = [];
 
   constructor(props: { canvas: HTMLElement; controller: SceneController }) {
     const { canvas, controller } = props;
@@ -95,12 +95,11 @@ class Scene {
     this.renderer.domElement.setAttribute("tabindex", "0");
     this.renderer.domElement.focus();
 
-    // this.snapHighLight = new SnapHighlight({ scene: this });
+    this.initEvents();
     this.subscribeEvents();
-    this.initListeners();
   }
 
-  private onPointerMove(event: MouseEvent) {
+  onPointerMove(event: MouseEvent) {
     if (!this.htmlElement) return;
 
     if (this.pointer) {
@@ -133,18 +132,9 @@ class Scene {
     }
   }
 
-  private initListeners() {
-    this.htmlElement?.addEventListener("mousemove", (event) => {
-      this.onPointerMove(event);
-    });
-
-    this.htmlElement?.addEventListener("keydown", (event) => {
-      if (event.code == "Escape") {
-        this.controller.activeController?.reset();
-        this.controller.activeController = null;
-        this.controls.enabled = true;
-        this.controller.event.emit("scene_update");
-      }
+  private initEvents() {
+    this.htmlElement?.addEventListener("mousemove", () => {
+      this.mouseMove();
     });
   }
 
@@ -260,6 +250,12 @@ class Scene {
       this.camera
     );
 
+    this.snapHighLight?.run();
+
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  mouseMove() {
     const planeIntersect = Math2D.NetAlgorithms.planeIntersection(
       new Vector3(0, 0, 0),
       this.raycaster.ray.clone()
@@ -271,9 +267,6 @@ class Scene {
       z: planeIntersect.z,
     };
 
-    // this.groundIntersNet.x = +(this.groundInters.x / 10).toFixed(1) * 10;
-    // this.groundIntersNet.z = +(this.groundInters.z / 10).toFixed(1) * 10;
-
     if (this.netBinding) {
       this.groundInters.x = +(this.ground.x / 10).toFixed(1) * 10;
       this.groundInters.z = +(this.ground.z / 10).toFixed(1) * 10;
@@ -282,13 +275,7 @@ class Scene {
       this.groundInters.z = this.ground.z;
     }
 
-    this.snapHighLight?.run();
-
-    this.renderer.render(this.scene, this.camera);
-
-    let intersects = this.raycaster.intersectObjects(this.scene.children);
-
-    if (this.onRender) this.onRender(intersects);
+    this.intersects = this.raycaster.intersectObjects(this.scene.children);
   }
 
   private updateCameraData() {
