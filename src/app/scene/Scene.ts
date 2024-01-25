@@ -116,12 +116,9 @@ class Scene {
       }
     });
 
-    let intersect = intersects[0];
-    if (
-      intersect &&
-      this.isObject3D(intersect.object.userData?.object?.model)
-    ) {
-      intersect.object.userData.object.model.hovered = true;
+    let intersect = intersections[0];
+    if (intersect) {
+      intersect.object.hovered = true;
     }
 
     this.model.intersects = intersections;
