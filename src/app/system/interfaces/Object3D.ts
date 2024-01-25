@@ -47,8 +47,8 @@ interface Schema {
 
   type: Entity;
 
-  start?: { x: number; y: number; z: number };
-  end?: { x: number; y: number; z: number };
+  start?: { x: number; y: number; z: number; object: Object3D | null };
+  end?: { x: number; y: number; z: number; object: Object3D | null };
 
   flow?: "blue" | "red";
 }
@@ -85,7 +85,6 @@ interface Object3D {
   addObserver: (observer: Observer) => void;
   notifyObservers: () => void;
 
-  onUpdate: () => void;
   destroy: () => void;
 }
 

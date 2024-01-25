@@ -8,6 +8,7 @@ import {
 } from "../../system";
 import { Vector3 } from "three";
 import { Observer } from "../../system/interfaces/Observer";
+import { WallEnd } from "./WallEnd";
 
 class Wall implements Object3D, Geometry.Line {
   isWall = true;
@@ -25,16 +26,16 @@ class Wall implements Object3D, Geometry.Line {
 
   type = Entity.WALL;
 
-  start;
-  end;
+  start: WallEnd;
+  end: WallEnd;
 
   startAngle: number = 0;
   endAngle: number = 0;
 
-  connections: {
-    start: Object | null;
-    end: Object | null;
-  } = { start: null, end: null };
+  // connections: {
+  //   start: Object | null;
+  //   end: Object | null;
+  // } = { start: null, end: null };
 
   constructor(
     props: {
@@ -42,8 +43,8 @@ class Wall implements Object3D, Geometry.Line {
       end: Geometry.Vector3;
     } & Object3DProps
   ) {
-    this.start = new Vector3(props.start.x, props.start.y, props.start.z);
-    this.end = new Vector3(props.end.x, props.end.y, props.end.z);
+    this.start = new WallEnd(props.start.x, props.start.y, props.start.z);
+    this.end = new WallEnd(props.end.x, props.end.y, props.end.z);
 
     this.uuid = props.uuid ?? Helpers.uuid();
     this.dimension = { width: 1, height: 1, depth: 1 };
@@ -94,8 +95,18 @@ class Wall implements Object3D, Geometry.Line {
       rotation: this.rotation,
       position: this.position,
 
-      start: { x: this.start.x, y: this.start.y, z: this.start.z },
-      end: { x: this.end.x, y: this.end.y, z: this.end.z },
+      start: {
+        x: this.start.x,
+        y: this.start.y,
+        z: this.start.z,
+        object: this.start.object,
+      },
+      end: {
+        x: this.end.x,
+        y: this.end.y,
+        z: this.end.z,
+        object: this.end.object,
+      },
       type: Entity.WALL,
     };
   }

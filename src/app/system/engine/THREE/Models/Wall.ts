@@ -5,9 +5,11 @@ import { Mesh, BaseMesh } from "../Mesh";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Observer } from "../../../interfaces/Observer";
 import { ColorManager } from "../../../utils/Color";
+import { Scene } from "../../../../controller";
+import { App } from "../../../../App";
 
 class Wall extends BaseMesh implements Mesh, Observer {
-  constructor(private model: WallModel) {
+  constructor(private model: WallModel, private app: App) {
     super();
 
     model.addObserver(this);
@@ -27,10 +29,13 @@ class Wall extends BaseMesh implements Mesh, Observer {
     }
 
     if (this.mesh instanceof THREE.Mesh) {
-      this.mesh.geometry = geometry;
-      this.mesh.material = new THREE.MeshStandardMaterial({
-        color: this.model.hovered ? 0x6e90ff : 0xefd0b5,
-      });
+      // this.mesh.geometry.dispose();
+      // this.mesh.material.dispose();
+
+      this.mesh.geometry.setFromPoints(geometry);
+      // this.mesh.material = new THREE.MeshStandardMaterial({
+      //   color: this.model.hovered ? 0x6e90ff : 0xefd0b5,
+      // });
       this.mesh.geometry.needsUpdate = true;
     }
 
@@ -53,7 +58,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
   render() {
     this.destroy();
 
-    let geometry = this.getGeometry();
+    let geometry = new THREE.BoxGeometry().setFromPoints(this.getGeometry());
 
     const material = new THREE.MeshStandardMaterial({ color: 0xefd0b5 });
     const mesh = new THREE.Mesh(geometry, material);
@@ -86,7 +91,8 @@ class Wall extends BaseMesh implements Mesh, Observer {
     let h = this.model.dimension.height;
 
     let endAngle = this.model.endAngle; // is angle
-    let endCrop = (depth / 2) * Math.tan(endAngle);
+    let endCrop = Math.min(15, (depth / 2) * Math.tan(endAngle));
+
     let endSideEdgeLn =
       Math.sqrt(endCrop * endCrop + (depth / 2) * (depth / 2)) * 2;
 
@@ -106,7 +112,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
     ];
 
     let startAngle = this.model.startAngle; // is angle
-    let startCrop = (depth / 2) * Math.tan(startAngle);
+    let startCrop = Math.min(15, (depth / 2) * Math.tan(startAngle));
 
     let startSideEdgeLn =
       Math.sqrt(startCrop * startCrop + (depth / 2) * (depth / 2)) * 2;
@@ -189,7 +195,8 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
     const vertices = [...front, ...up, ...right, ...bottom, ...back, ...left];
 
-    return new THREE.BoxGeometry().setFromPoints(vertices);
+    return vertices;
+    // return new THREE.BoxGeometry().setFromPoints(vertices);
   }
 
   private angle(start: THREE.Vector3, end: THREE.Vector3) {

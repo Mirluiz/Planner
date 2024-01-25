@@ -3,6 +3,7 @@ import { Scene as SceneModel } from "../model/Scene";
 import { Math2D } from "../system";
 import { Vector3 } from "three";
 import { Controller } from "./Controller";
+import { WallEnd } from "../model/Wall/WallEnd";
 
 class Wall implements Controller {
   readonly scene: SceneModel;
@@ -21,7 +22,7 @@ class Wall implements Controller {
 
   update(props: { x: number; y: number; z: number }) {
     this.draw(props);
-
+    this.updateWallAngles();
     return this.activeModel;
   }
 
@@ -52,9 +53,8 @@ class Wall implements Controller {
 
     if (corner) {
       corner.walls.push(newWall);
-      newWall.connections.start = corner;
-      newWall.start.x = corner.position.x;
-      newWall.start.z = corner.position.z;
+      newWall.start = new WallEnd(corner.position.x, 0, corner.position.z);
+      newWall.start.object = corner;
     } else if (closest && closest?.distance < 1) {
       this.connect(newWall, closest.object);
     }
@@ -79,7 +79,7 @@ class Wall implements Controller {
     if (this.activeModel) {
       if (corner) {
         corner.walls.push(this.activeModel);
-        this.activeModel.connections.end = corner;
+        this.activeModel.end.object = corner;
         this.activeModel.end.x = corner.position.x;
         this.activeModel.end.z = corner.position.z;
       } else if (closest && closest?.distance < 0.5) {
@@ -138,46 +138,46 @@ class Wall implements Controller {
     return closest ?? null;
   }
 
-  private getWallsIntersectionSnap(
+  private getWallSnap(
     wall1: WallModel,
     wall2: WallModel
   ): {
     distance: number;
     position: Vector3;
-    end: "start" | "end";
+    end: WallEnd;
   } | null {
     let ret: {
       distance: number;
       position: Vector3;
-      end: "start" | "end";
+      end: WallEnd;
     } | null = null;
 
-    let wallStart = wall1.start;
-    let wallEnd = wall1.end;
+    let pipeStart = wall1.start;
+    let pipeEnd = wall1.end;
 
-    let startDistance = Math2D.Line.getSnap(wallStart, wall2);
-    let endDistance = Math2D.Line.getSnap(wallEnd, wall2);
+    let startDistance = Math2D.Line.getSnap(pipeStart, wall2);
+    let endDistance = Math2D.Line.getSnap(pipeEnd, wall2);
 
     if (startDistance !== null && endDistance !== null) {
       ret =
         startDistance.distance > endDistance.distance
           ? {
               ...endDistance,
-              end: "end",
+              end: wall1.end,
             }
           : {
               ...startDistance,
-              end: "start",
+              end: wall1.start,
             };
     } else if (startDistance !== null) {
       ret = {
         ...startDistance,
-        end: "start",
+        end: wall1.start,
       };
     } else if (endDistance !== null) {
       ret = {
         ...endDistance,
-        end: "end",
+        end: wall1.end,
       };
     }
 
@@ -185,37 +185,28 @@ class Wall implements Controller {
   }
 
   private connect(wall: WallModel, wallToConnect: WallModel) {
-    const intersection = this.getWallsIntersectionSnap(wall, wallToConnect);
+    const snap = this.getWallSnap(wall, wallToConnect);
 
-    if (!intersection || intersection.distance > 1) return;
+    if (!snap || snap.distance > 1) return;
 
-    const snapPos = intersection.position;
+    const { position } = snap;
+    const wallToConnectEnd = this.isItWallEnd(wallToConnect, position);
 
-    // if (this.scene.view?.engine.netBinding) {
-    //   const snapPosNet = Math2D.NetAlgorithms.netBind(
-    //     new Vector3(snapPos.x, snapPos.y, snapPos.z)
-    //   );
-    //
-    //   snapPos.set(snapPosNet.x, snapPosNet.y, snapPosNet.z);
-    // }
-
-    let end = this.isItWallEnd(wallToConnect, snapPos);
-
-    if (end) {
+    if (wallToConnectEnd) {
       let corner = new Corner({
-        position: { ...snapPos },
+        position: { ...position },
       });
 
       corner.walls.push(wall);
       corner.walls.push(wallToConnect);
 
-      wall.connections[intersection.end] = corner;
-      wallToConnect.connections[end] = corner;
+      snap.end.object = corner;
+      wallToConnectEnd.object = corner;
 
       this.addObject(corner);
     } else {
       let corner = new Corner({
-        position: { ...snapPos },
+        position: { ...position },
       });
 
       /**
@@ -228,64 +219,62 @@ class Wall implements Controller {
        */
       let dividedWallFromPrevCorner = new WallModel({
         start: wallToConnect.start.clone(),
-        end: new Vector3(snapPos.x, snapPos.y, snapPos.z),
+        end: new Vector3(position.x, position.y, position.z),
       });
-      dividedWallFromPrevCorner.connections.start =
-        wallToConnect.connections.start;
-      dividedWallFromPrevCorner.connections.end = corner;
+      dividedWallFromPrevCorner.start = wallToConnect.start;
+      dividedWallFromPrevCorner.end.object = corner;
 
       let dividedWallToNextCorner = new WallModel({
-        start: new Vector3(snapPos.x, snapPos.y, snapPos.z),
+        start: new Vector3(position.x, position.y, position.z),
         end: wallToConnect.end.clone(),
       });
-      dividedWallToNextCorner.connections.start = corner;
-      dividedWallToNextCorner.connections.end = wallToConnect.connections.end;
+      dividedWallToNextCorner.start.object = corner;
+      dividedWallToNextCorner.end = wallToConnect.end;
 
-      corner.walls.push(dividedWallFromPrevCorner);
       corner.walls.push(dividedWallFromPrevCorner);
       corner.walls.push(dividedWallToNextCorner);
       corner.walls.push(wall);
 
-      wall.connections.end = corner;
+      wall.end.object = corner;
 
       this.addObject(dividedWallFromPrevCorner);
       this.addObject(dividedWallToNextCorner);
       this.addObject(corner);
 
-      if (wallToConnect.connections.start instanceof Corner) {
-        let wallIndex = wallToConnect.connections.start.walls.findIndex(
+      if (wallToConnect.start.object) {
+        let wallIndex = wallToConnect.start.object.walls.findIndex(
           (wall) => wall.uuid === wallToConnect.uuid
         );
 
         if (wallIndex !== -1) {
-          wallToConnect.connections.start.walls.splice(wallIndex, 1);
+          wallToConnect.start.object.walls.splice(wallIndex, 1);
         }
 
-        wallToConnect.connections.start.walls.push(dividedWallFromPrevCorner);
+        wallToConnect.start.object.walls.push(dividedWallFromPrevCorner);
       }
 
-      if (wallToConnect.connections.end instanceof Corner) {
-        let wallIndex = wallToConnect.connections.end.walls.findIndex(
+      if (wallToConnect.end.object) {
+        let wallIndex = wallToConnect.end.object.walls.findIndex(
           (wall) => wall.uuid === wallToConnect.uuid
         );
 
         if (wallIndex !== -1) {
-          wallToConnect.connections.end.walls.splice(wallIndex, 1);
+          wallToConnect.end.object.walls.splice(wallIndex, 1);
         }
 
-        wallToConnect.connections.end.walls.push(dividedWallToNextCorner);
+        wallToConnect.end.object.walls.push(dividedWallToNextCorner);
       }
 
       this.scene.removeObject(wallToConnect.uuid);
 
       wallToConnect.destroy();
 
-      this.activeModel?.end.set(snapPos.x, snapPos.y, snapPos.z);
+      this.activeModel?.end.set(position.x, position.y, position.z);
     }
   }
 
-  private isItWallEnd(wall: WallModel, pos: Vector3): "start" | "end" | null {
-    return Math2D.Line.isEnd(wall, pos);
+  private isItWallEnd(wall: WallModel, pos: Vector3): WallEnd | null {
+    return Math2D.Line.isEnd(wall, pos) === "start" ? wall.start : wall.end;
   }
 
   clearTempCorner() {
@@ -332,54 +321,126 @@ class Wall implements Controller {
     }
   }
 
+  // private updateWallAngles() {
+  //   this.corners.map((corner, index, array) => {
+  //     if (corner.walls.length > 1) {
+  //       corner.walls.map((wall, index, array) => {
+  //         let cornerPos = new Vector3(
+  //           corner.position.x,
+  //           corner.position.y,
+  //           corner.position.z
+  //         );
+  //         let nextWall = array[(index + 1) % array.length];
+  //
+  //         let wallOppositeEnd: undefined | "start" | "end";
+  //         let nextWallOppositeEnd: undefined | "start" | "end";
+  //
+  //         if (
+  //           wall.connections.end instanceof Corner &&
+  //           wall.connections.end.uuid === corner.uuid
+  //         ) {
+  //           wallOppositeEnd = "start";
+  //         } else if (
+  //           wall.connections.start instanceof Corner &&
+  //           wall.connections.start.uuid === corner.uuid
+  //         ) {
+  //           wallOppositeEnd = "end";
+  //         }
+  //
+  //         if (
+  //           nextWall.connections.end instanceof Corner &&
+  //           nextWall.connections.end.uuid === corner.uuid
+  //         ) {
+  //           nextWallOppositeEnd = "start";
+  //         } else if (
+  //           nextWall.connections.start instanceof Corner &&
+  //           nextWall.connections.start.uuid === corner.uuid
+  //         ) {
+  //           nextWallOppositeEnd = "end";
+  //         }
+  //
+  //         if (!nextWallOppositeEnd || !wallOppositeEnd) return;
+  //
+  //         let currentNormal = wall[wallOppositeEnd]
+  //           .clone()
+  //           .sub(cornerPos)
+  //           .normalize();
+  //         let nextNormal = nextWall[nextWallOppositeEnd]
+  //           .clone()
+  //           ?.sub(cornerPos)
+  //           .normalize();
+  //
+  //         if (currentNormal && nextNormal) {
+  //           let angle = angleBetweenVectorsWithOrientation(
+  //             currentNormal,
+  //             nextNormal
+  //           );
+  //
+  //           if (wallOppositeEnd === "end") {
+  //             wall.endAngle = Math.PI / 2 - angle / 2;
+  //           } else {
+  //             wall.startAngle = Math.PI / 2 - angle / 2;
+  //           }
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
+  onCornerUpdate(corner: Corner) {
+    this.walls.map((wall) => {
+      if (wall.end.object?.uuid === corner.uuid) {
+        wall.end.set(corner.position.x, corner.position.y, corner.position.z);
+      }
+
+      if (wall.start.object?.uuid === corner.uuid) {
+        wall.start.set(corner.position.x, corner.position.y, corner.position.z);
+      }
+    });
+
+    this.updateWallAngles();
+
+    this.walls.map((wall) => {
+      wall.notifyObservers();
+    });
+  }
+
   private updateWallAngles() {
-    this.corners.map((corner, index, array) => {
-      if (corner.walls.length > 1) {
-        corner.walls.map((wall, index, array) => {
-          let cornerPos = new Vector3(
-            corner.position.x,
-            corner.position.y,
-            corner.position.z
-          );
-          let nextWall = array[(index + 1) % array.length];
+    this.walls.map((wall) => {
+      let startWalls = wall.start.object?.walls.filter(
+        (_w) => _w.uuid !== wall.uuid
+      );
+      let endWalls = wall.end.object?.walls.filter(
+        (_w) => _w.uuid !== wall.uuid
+      );
 
-          let wallOppositeEnd: undefined | "start" | "end";
-          let nextWallOppositeEnd: undefined | "start" | "end";
+      let prevWall: WallModel | undefined;
+      let nextWall: WallModel | undefined;
 
-          if (
-            wall.connections.end instanceof Corner &&
-            wall.connections.end.uuid === corner.uuid
-          ) {
-            wallOppositeEnd = "start";
-          } else if (
-            wall.connections.start instanceof Corner &&
-            wall.connections.start.uuid === corner.uuid
-          ) {
-            wallOppositeEnd = "end";
-          }
+      if (startWalls) {
+        prevWall = startWalls.sort(
+          (a, b) => this.calculateTheta(a) - this.calculateTheta(b)
+        )[0];
+      }
 
-          if (
-            nextWall.connections.end instanceof Corner &&
-            nextWall.connections.end.uuid === corner.uuid
-          ) {
-            nextWallOppositeEnd = "start";
-          } else if (
-            nextWall.connections.start instanceof Corner &&
-            nextWall.connections.start.uuid === corner.uuid
-          ) {
-            nextWallOppositeEnd = "end";
-          }
+      if (endWalls) {
+        nextWall = endWalls.sort(
+          (a, b) => this.calculateTheta(a) - this.calculateTheta(b)
+        )[0];
+      }
 
-          if (!nextWallOppositeEnd || !wallOppositeEnd) return;
-
-          let currentNormal = wall[wallOppositeEnd]
+      {
+        if (prevWall) {
+          let nextWallOppositeEnd =
+            prevWall.start.object?.uuid === wall.start.object?.uuid
+              ? prevWall.end
+              : prevWall.start;
+          let currentNormal = nextWallOppositeEnd
             .clone()
-            .sub(cornerPos)
+            .sub(wall.start)
             .normalize();
-          let nextNormal = nextWall[nextWallOppositeEnd]
-            .clone()
-            ?.sub(cornerPos)
-            .normalize();
+
+          let nextNormal = wall.end.clone()?.sub(wall.start).normalize();
 
           if (currentNormal && nextNormal) {
             let angle = angleBetweenVectorsWithOrientation(
@@ -387,15 +448,38 @@ class Wall implements Controller {
               nextNormal
             );
 
-            if (wallOppositeEnd === "end") {
-              wall.endAngle = Math.PI / 2 - angle / 2;
-            } else {
-              wall.startAngle = Math.PI / 2 - angle / 2;
-            }
+            wall.endAngle = angle / 2 - Math.PI / 2;
           }
-        });
+        }
+      }
+
+      {
+        if (nextWall) {
+          let prevWallOppositeEnd =
+            nextWall.start.object?.uuid === wall.end.object?.uuid
+              ? nextWall.end
+              : nextWall.start;
+          let currentNormal = prevWallOppositeEnd
+            .clone()
+            .sub(wall.end)
+            .normalize();
+          let nextNormal = wall.start.clone()?.sub(wall.end).normalize();
+
+          if (currentNormal && nextNormal) {
+            let angle = angleBetweenVectorsWithOrientation(
+              currentNormal,
+              nextNormal
+            );
+
+            wall.startAngle = angle / 2 - Math.PI / 2;
+          }
+        }
       }
     });
+  }
+
+  private calculateTheta(vector: WallModel): number {
+    return Math.atan2(vector.position.z, vector.position.x) * (180 / Math.PI);
   }
 
   reset() {

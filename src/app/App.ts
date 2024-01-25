@@ -17,7 +17,7 @@ class App {
   roomController: RoomController;
 
   constructor(props: { canvas: HTMLElement | null }) {
-    this.sceneController = new SceneController(props);
+    this.sceneController = new SceneController(props, this);
 
     this.graphController = new GraphController();
     this.pipeController = new PipeController({

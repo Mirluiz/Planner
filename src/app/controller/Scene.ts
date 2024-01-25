@@ -3,6 +3,7 @@ import { Corner, Fitting, Pipe, Wall } from "../model";
 import { EventSystem, Entity, Object3DSchema, Object3D } from "../system";
 import { Scene as SceneView } from "../scene/Scene";
 import { Room } from "../model/Room";
+import { App } from "../App";
 
 class Scene {
   model: SceneModel;
@@ -11,7 +12,7 @@ class Scene {
 
   active: Object3D | null = null;
 
-  constructor(props: { canvas: HTMLElement | null }) {
+  constructor(props: { canvas: HTMLElement | null }, readonly app: App) {
     this.model = new SceneModel();
 
     if (props.canvas) {

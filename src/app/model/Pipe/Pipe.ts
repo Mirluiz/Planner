@@ -10,6 +10,7 @@ import {
 import * as THREE from "three";
 import { Vector3 } from "three";
 import { Observer } from "../../system/interfaces/Observer";
+import { PipeEnd } from "./PipeEnd";
 
 class Pipe implements Object3D, Geometry.Line {
   hovered = false;
@@ -26,8 +27,8 @@ class Pipe implements Object3D, Geometry.Line {
   rotation;
   position;
 
-  start: Vector3;
-  end: Vector3;
+  start: PipeEnd;
+  end: PipeEnd;
 
   type = Entity.PIPE;
 
@@ -38,8 +39,8 @@ class Pipe implements Object3D, Geometry.Line {
       flow: "red" | "blue";
     } & Object3DProps
   ) {
-    this.start = new Vector3(props.start.x, props.start.y, props.start.z);
-    this.end = new Vector3(props.end.x, props.end.y, props.end.z);
+    this.start = new PipeEnd(props.start.x, props.start.y, props.start.z);
+    this.end = new PipeEnd(props.end.x, props.end.y, props.end.z);
 
     this.uuid = props.uuid ?? Helpers.uuid();
     this.dimension = { width: 1, height: 1, depth: 1 };
@@ -93,7 +94,7 @@ class Pipe implements Object3D, Geometry.Line {
       rotation: this.rotation,
       position: this.position,
 
-      start: { ...this.start },
+      start: { ...this.start, object: this.start.object },
       end: { ...this.end },
       type: Entity.PIPE,
       flow: this.flow,

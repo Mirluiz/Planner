@@ -2,9 +2,11 @@ import * as THREE from "three";
 import { Corner as CornerModel } from "../../../../model";
 import { BaseMesh, Mesh } from "../Mesh";
 import { Observer } from "../../../interfaces/Observer";
+import { Vector3 } from "three";
+import { App } from "../../../../App";
 
 class Corner extends BaseMesh implements Mesh, Observer {
-  constructor(private model: CornerModel) {
+  constructor(private model: CornerModel, private app: App) {
     super();
 
     model.addObserver(this);
@@ -34,7 +36,15 @@ class Corner extends BaseMesh implements Mesh, Observer {
       this.model.position.z
     );
 
+    if (this.model.focused) {
+      this.mesh.scale.set(2, 1, 2);
+    } else {
+      this.mesh.scale.set(1, 1, 1);
+    }
+
     this.mesh.updateMatrix();
+
+    this.app.wallController.onCornerUpdate(this.model);
   }
 
   render() {

@@ -99,14 +99,14 @@ const Right = () => {
           {walls.map((wall) => {
             let secondary: string = "";
 
-            if (wall.connections.start instanceof Corner) {
-              secondary += `start ${wall.connections.start.uuid.slice(0, 3)}`;
+            if (wall.start.object) {
+              secondary += `start ${wall.start.object.uuid.slice(0, 3)}`;
             }
 
             secondary += " ";
 
-            if (wall.connections.end instanceof Corner) {
-              secondary += `end ${wall.connections.end.uuid.slice(0, 3)}`;
+            if (wall.end.object) {
+              secondary += `end ${wall.end.object.uuid.slice(0, 3)}`;
             }
 
             return (

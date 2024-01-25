@@ -170,7 +170,7 @@ class Scene {
       runDelete(this.scene.children);
 
       this.controller.model.objects.map((object) => {
-        let renderModel = Renderer.threeJS(object);
+        let renderModel = Renderer.threeJS(object, this.controller.app);
         let mesh = renderModel?.render();
         if (mesh) this.scene.add(mesh);
       });

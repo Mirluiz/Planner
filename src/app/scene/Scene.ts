@@ -49,6 +49,7 @@ class Scene {
         });
 
         this.dragElement = this.model.intersects[0]?.object ?? null;
+        if (this.dragElement) this.dragElement.focused = true;
       }
 
       this.controller.event.emit("scene_update");
@@ -56,8 +57,9 @@ class Scene {
 
     this.engine.htmlElement?.addEventListener("mouseup", () => {
       if (this.dragElement) {
+        this.dragElement.focused = false;
         this.dragElement.notifyObservers();
-        this.dragElement.onUpdate();
+        // this.dragElement.onUpdate();
         this.dragElement = null;
       }
     });
@@ -72,7 +74,7 @@ class Scene {
           this.dragElement.position.y = this.engine.groundInters.y;
           this.dragElement.position.z = this.engine.groundInters.z;
 
-          this.dragElement.onUpdate();
+          // this.dragElement.onUpdate();
           this.dragElement.notifyObservers();
         }
       } else {

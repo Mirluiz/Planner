@@ -10,6 +10,7 @@ import { Room } from "../Demo/Room/Room";
 import { Wall } from "../Demo/Wall";
 import { Vector3 } from "three";
 import { Line } from "../app/system/engine/THREE/Indicator/Line";
+import { Angle } from "../Demo/Angle";
 
 const App = () => {
   const canvasRef = useRef<HTMLDivElement | null>(null);
@@ -26,6 +27,7 @@ const App = () => {
       app.init().then(() => {
         app.run();
         const demo = new Room({ app });
+        const angle = new Angle({ app });
         // const corner = new Corner({ app });
         const wall = new Wall({ app });
 
@@ -35,6 +37,7 @@ const App = () => {
         // app.sceneController.view?.engine.scene.add(line.render());
 
         demo.run();
+        // angle.run();
         // corner.run();
         // wall.run();
 

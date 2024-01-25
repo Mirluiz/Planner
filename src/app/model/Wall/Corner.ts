@@ -40,26 +40,6 @@ class Corner implements Object3D {
     }
   }
 
-  onUpdate() {
-    this.walls.map((wall) => {
-      if (
-        wall.connections.end instanceof Corner &&
-        wall.connections.end.uuid === this.uuid
-      ) {
-        wall.end.set(this.position.x, this.position.y, this.position.z);
-      }
-
-      if (
-        wall.connections.start instanceof Corner &&
-        wall.connections.start.uuid === this.uuid
-      ) {
-        wall.start.set(this.position.x, this.position.y, this.position.z);
-      }
-
-      wall.notifyObservers();
-    });
-  }
-
   destroy() {
     for (const observer of this.observers) {
       observer.destroy();
