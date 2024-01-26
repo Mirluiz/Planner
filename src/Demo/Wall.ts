@@ -3,6 +3,7 @@ import { App } from "../app/App";
 import { Helpers, Object3DProps } from "../app/system";
 import { Wall as WallModel } from "../app/model/Wall/Wall";
 import * as THREE from "three";
+import { WallEnd } from "../app/model/Wall/WallEnd";
 
 class Wall {
   readonly app: App;
@@ -38,12 +39,12 @@ class Wall {
     this.examples.map((cornerData, index) => {
       let wall = new WallModel({
         ...cornerProps,
-        start: new THREE.Vector3(
+        start: new WallEnd(
           cornerData.ends[0].x,
           cornerData.ends[0].y,
           cornerData.ends[0].z
         ),
-        end: new THREE.Vector3(
+        end: new WallEnd(
           cornerData.ends[1].x,
           cornerData.ends[1].y,
           cornerData.ends[1].z

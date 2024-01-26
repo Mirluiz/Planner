@@ -32,11 +32,6 @@ class Wall implements Object3D, Geometry.Line {
   startAngle: number = 0;
   endAngle: number = 0;
 
-  // connections: {
-  //   start: Object | null;
-  //   end: Object | null;
-  // } = { start: null, end: null };
-
   constructor(
     props: {
       start: Geometry.Vector3;
@@ -58,17 +53,48 @@ class Wall implements Object3D, Geometry.Line {
 
   notifyObservers() {
     for (const observer of this.observers) {
-      observer.update();
+      observer.trigger();
     }
   }
 
-  onUpdate() {
-    // console.log("==");
+  update(props: Partial<Object3DProps>) {
+    if (props.position) {
+      let reservedPosition = { ...this.position };
+      this.position = { ...props.position };
+
+      let ln = this.start.distanceTo(this.end);
+
+      let reservedCenterVector = new Vector3(
+        reservedPosition.x,
+        reservedPosition.y,
+        reservedPosition.z
+      );
+
+      let centerVector = new Vector3(
+        this.position.x,
+        this.position.y,
+        this.position.z
+      );
+
+      let fromCenterToStart = this.start.clone().sub(reservedCenterVector);
+      let fromCenterToEnd = this.end.clone().sub(reservedCenterVector);
+
+      let startVector = centerVector
+        .clone()
+        .sub(fromCenterToStart.normalize().multiplyScalar(ln * 0.5));
+
+      let endVector = centerVector
+        .clone()
+        .sub(fromCenterToEnd.normalize().multiplyScalar(ln * 0.5));
+
+      this.start.set(startVector.x, startVector.y, startVector.z);
+      this.end.set(endVector.x, endVector.y, endVector.z);
+    }
   }
 
   destroy() {
     for (const observer of this.observers) {
-      observer.destroy();
+      observer.trigger();
     }
   }
 
@@ -76,8 +102,8 @@ class Wall implements Object3D, Geometry.Line {
     if (!schema.start || !schema.end) return;
 
     const wall = new Wall({
-      start: new Vector3(schema.start.x, schema.start.y, schema.start.z),
-      end: new Vector3(schema.end.x, schema.end.y, schema.end.z),
+      start: new WallEnd(schema.start.x, schema.start.y, schema.start.z),
+      end: new WallEnd(schema.end.x, schema.end.y, schema.end.z),
     });
 
     wall.position = schema.position;

@@ -16,6 +16,9 @@ interface Object3DProps {
     z: number;
   };
 
+  start?: { x: number; y: number; z: number; object: Object3D | null };
+  end?: { x: number; y: number; z: number; object: Object3D | null };
+
   rotation?: {
     w: number;
     x: number;

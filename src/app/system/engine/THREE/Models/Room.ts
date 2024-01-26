@@ -7,13 +7,17 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Observer } from "../../../interfaces/Observer";
 
 class Room extends BaseMesh implements Mesh, Observer {
-  constructor(private model: RoomModel) {
-    super();
+  constructor(readonly model: RoomModel) {
+    super(model);
 
     model.addObserver(this);
   }
 
-  update() {
+  trigger() {
+    this.reRender();
+  }
+
+  reRender() {
     if (!this.mesh) return;
 
     const geometry = this.getGeometry();

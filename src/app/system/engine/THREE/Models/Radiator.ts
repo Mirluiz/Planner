@@ -4,10 +4,14 @@ import { BaseMesh, Mesh } from "../Mesh";
 import { Observer } from "../../../interfaces/Observer";
 
 class Radiator extends BaseMesh implements Mesh, Observer {
-  constructor(private model: RadiatorModel) {
-    super();
+  constructor(readonly model: RadiatorModel) {
+    super(model);
 
     model.addObserver(this);
+  }
+
+  trigger() {
+    this.reRender();
   }
 
   update() {}

@@ -4,13 +4,17 @@ import { Pipe as PipeModel } from "../../../../model";
 import { Observer } from "../../../interfaces/Observer";
 
 class Pipe extends BaseMesh implements Mesh, Observer {
-  constructor(private model: PipeModel) {
-    super();
+  constructor(readonly model: PipeModel) {
+    super(model);
 
     model.addObserver(this);
   }
 
-  update() {
+  trigger() {
+    this.reRender();
+  }
+
+  reRender() {
     this.destroy();
 
     if (!this.mesh) return;

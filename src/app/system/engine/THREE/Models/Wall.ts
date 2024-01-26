@@ -1,4 +1,4 @@
-import { Storage } from "../../../";
+import { Object3DProps, Storage } from "../../../";
 import * as THREE from "three";
 import { Wall as WallModel } from "../../../../model/Wall/Wall";
 import { Mesh, BaseMesh } from "../Mesh";
@@ -9,13 +9,27 @@ import { Scene } from "../../../../controller";
 import { App } from "../../../../App";
 
 class Wall extends BaseMesh implements Mesh, Observer {
-  constructor(private model: WallModel, private app: App) {
-    super();
+  constructor(readonly model: WallModel, private app: App) {
+    super(model);
 
     model.addObserver(this);
   }
 
-  update() {
+  trigger() {
+    this.reRender();
+  }
+
+  update(props: { position?: { x: number; y: number; z: number } }) {
+    let { position } = props;
+
+    if (position) {
+      this.model.position = { ...position };
+
+      console.log("=");
+    }
+  }
+
+  reRender() {
     if (!this.mesh) return;
 
     let geometry = this.getGeometry();
@@ -29,18 +43,18 @@ class Wall extends BaseMesh implements Mesh, Observer {
     }
 
     if (this.mesh instanceof THREE.Mesh) {
-      // this.mesh.geometry.dispose();
-      // this.mesh.material.dispose();
-
       this.mesh.geometry.setFromPoints(geometry);
-      // this.mesh.material = new THREE.MeshStandardMaterial({
-      //   color: this.model.hovered ? 0x6e90ff : 0xefd0b5,
-      // });
+      this.mesh.material = new THREE.MeshStandardMaterial({
+        color: this.model.hovered ? 0x6e90ff : 0xefd0b5,
+      });
       this.mesh.geometry.needsUpdate = true;
     }
 
-    const midPoint = new THREE.Vector3();
-    midPoint.addVectors(this.model.start, this.model.end).multiplyScalar(0.5);
+    const midPoint = new THREE.Vector3(
+      this.model.position.x,
+      this.model.position.y,
+      this.model.position.z
+    );
 
     this.mesh.position.copy(midPoint);
 

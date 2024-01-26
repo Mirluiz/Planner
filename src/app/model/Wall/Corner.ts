@@ -36,13 +36,13 @@ class Corner implements Object3D {
 
   notifyObservers() {
     for (const observer of this.observers) {
-      observer.update();
+      observer.trigger();
     }
   }
 
   destroy() {
     for (const observer of this.observers) {
-      observer.destroy();
+      observer.trigger();
     }
   }
 

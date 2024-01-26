@@ -6,13 +6,17 @@ import { Vector3 } from "three";
 import { App } from "../../../../App";
 
 class Corner extends BaseMesh implements Mesh, Observer {
-  constructor(private model: CornerModel, private app: App) {
-    super();
+  constructor(readonly model: CornerModel, private app: App) {
+    super(model);
 
     model.addObserver(this);
   }
 
-  update() {
+  trigger() {
+    this.reRender();
+  }
+
+  reRender() {
     if (!this.mesh) return;
 
     const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);

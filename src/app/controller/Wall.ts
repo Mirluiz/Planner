@@ -44,8 +44,8 @@ class Wall implements Controller {
 
   start(pos: { x: number; y: number; z: number }) {
     const newWall = new WallModel({
-      start: new Vector3(pos.x, pos.y, pos.z),
-      end: new Vector3(pos.x, pos.y, pos.z),
+      start: new WallEnd(pos.x, pos.y, pos.z),
+      end: new WallEnd(pos.x, pos.y, pos.z),
     });
 
     const corner = newWall?.start ? this.getClosestObject(newWall.start) : null;
@@ -97,6 +97,16 @@ class Wall implements Controller {
     pos: { x: number; y: number; z: number }
   ) {
     wall[end].set(pos.x, pos.y, pos.z);
+
+    let wallStart = wall.start;
+    let wallEnd = wall.end;
+    let midPoint = new Vector3();
+
+    midPoint.addVectors(wallStart, wallEnd).multiplyScalar(0.5);
+
+    wall.position.x = midPoint.x;
+    wall.position.y = midPoint.y;
+    wall.position.z = midPoint.z;
   }
 
   private getClosestObject(coord: Vector3) {
@@ -219,13 +229,13 @@ class Wall implements Controller {
        */
       let dividedWallFromPrevCorner = new WallModel({
         start: wallToConnect.start.clone(),
-        end: new Vector3(position.x, position.y, position.z),
+        end: new WallEnd(position.x, position.y, position.z),
       });
       dividedWallFromPrevCorner.start = wallToConnect.start;
       dividedWallFromPrevCorner.end.object = corner;
 
       let dividedWallToNextCorner = new WallModel({
-        start: new Vector3(position.x, position.y, position.z),
+        start: new WallEnd(position.x, position.y, position.z),
         end: wallToConnect.end.clone(),
       });
       dividedWallToNextCorner.start.object = corner;
@@ -321,72 +331,6 @@ class Wall implements Controller {
     }
   }
 
-  // private updateWallAngles() {
-  //   this.corners.map((corner, index, array) => {
-  //     if (corner.walls.length > 1) {
-  //       corner.walls.map((wall, index, array) => {
-  //         let cornerPos = new Vector3(
-  //           corner.position.x,
-  //           corner.position.y,
-  //           corner.position.z
-  //         );
-  //         let nextWall = array[(index + 1) % array.length];
-  //
-  //         let wallOppositeEnd: undefined | "start" | "end";
-  //         let nextWallOppositeEnd: undefined | "start" | "end";
-  //
-  //         if (
-  //           wall.connections.end instanceof Corner &&
-  //           wall.connections.end.uuid === corner.uuid
-  //         ) {
-  //           wallOppositeEnd = "start";
-  //         } else if (
-  //           wall.connections.start instanceof Corner &&
-  //           wall.connections.start.uuid === corner.uuid
-  //         ) {
-  //           wallOppositeEnd = "end";
-  //         }
-  //
-  //         if (
-  //           nextWall.connections.end instanceof Corner &&
-  //           nextWall.connections.end.uuid === corner.uuid
-  //         ) {
-  //           nextWallOppositeEnd = "start";
-  //         } else if (
-  //           nextWall.connections.start instanceof Corner &&
-  //           nextWall.connections.start.uuid === corner.uuid
-  //         ) {
-  //           nextWallOppositeEnd = "end";
-  //         }
-  //
-  //         if (!nextWallOppositeEnd || !wallOppositeEnd) return;
-  //
-  //         let currentNormal = wall[wallOppositeEnd]
-  //           .clone()
-  //           .sub(cornerPos)
-  //           .normalize();
-  //         let nextNormal = nextWall[nextWallOppositeEnd]
-  //           .clone()
-  //           ?.sub(cornerPos)
-  //           .normalize();
-  //
-  //         if (currentNormal && nextNormal) {
-  //           let angle = angleBetweenVectorsWithOrientation(
-  //             currentNormal,
-  //             nextNormal
-  //           );
-  //
-  //           if (wallOppositeEnd === "end") {
-  //             wall.endAngle = Math.PI / 2 - angle / 2;
-  //           } else {
-  //             wall.startAngle = Math.PI / 2 - angle / 2;
-  //           }
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
-
   onCornerUpdate(corner: Corner) {
     this.walls.map((wall) => {
       if (wall.end.object?.uuid === corner.uuid) {
@@ -396,12 +340,6 @@ class Wall implements Controller {
       if (wall.start.object?.uuid === corner.uuid) {
         wall.start.set(corner.position.x, corner.position.y, corner.position.z);
       }
-    });
-
-    this.updateWallAngles();
-
-    this.walls.map((wall) => {
-      wall.notifyObservers();
     });
   }
 

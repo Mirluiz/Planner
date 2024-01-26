@@ -4,23 +4,29 @@ import { BaseMesh, Mesh } from "../Mesh";
 import { Storage } from "../../../service";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Vector3 } from "three";
+import { Pipe } from "../../../../model";
 
 class Line extends BaseMesh implements Mesh, Observer {
   start: Vector3;
   end: Vector3;
 
-  constructor(props: { start: Vector3; end: Vector3 }) {
-    super();
+  constructor(readonly model: Pipe, props: { start: Vector3; end: Vector3 }) {
+    super(model);
 
     this.start = props.start;
     this.end = props.end;
   }
 
-  update() {
+  trigger() {
+    this.reRender();
+  }
+
+  reRender() {
     this.destroy();
 
     return this.mesh;
   }
+
   render() {
     const group = new THREE.Group();
 

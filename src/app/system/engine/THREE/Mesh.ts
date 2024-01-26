@@ -1,14 +1,18 @@
 import * as THREE from "three";
-import { Engine } from "../../interfaces";
+import { Engine, Object3D, Object3DProps } from "../../interfaces";
 
 interface Mesh {
+  model: Object3D;
   render: () => THREE.Object3D | null;
-  update: () => void;
+  reRender: () => void;
+  update: (props: Partial<Object3DProps>) => void;
   destroy: () => void;
 }
 
 class BaseMesh implements Mesh {
   private _mesh: THREE.Object3D | null = null;
+
+  constructor(readonly model: Object3D) {}
 
   get mesh() {
     return this._mesh;
@@ -36,10 +40,12 @@ class BaseMesh implements Mesh {
     }
   }
 
+  reRender() {}
+
   render() {
-    return this._mesh;
+    return this.mesh;
   }
-  update() {}
+  update(props: Partial<Object3DProps>) {}
 }
 
 export { Mesh, BaseMesh };

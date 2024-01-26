@@ -3,13 +3,14 @@ import { Object3D, Geometry, EventSystem } from "../system";
 import { Fitting } from "./Fitting";
 import { Vector3 } from "three";
 import { Room } from "./Room";
+import { Mesh } from "../system/engine/THREE/Mesh";
 
 class Scene {
   event: EventSystem = new EventSystem();
 
   _intersects: Array<{
     position: Vector3;
-    object: Object3D;
+    object: Mesh;
   }> = [];
   objects: Array<Object3D> = [];
 
@@ -17,7 +18,7 @@ class Scene {
 
   set intersects(i) {
     this._intersects.map((value, index, array) => {
-      value.object?.notifyObservers();
+      value.object?.model.notifyObservers();
     });
 
     this._intersects = i;

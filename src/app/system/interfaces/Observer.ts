@@ -1,6 +1,5 @@
 interface Observer {
-  update(): void;
-  destroy(): void;
+  trigger(): void;
 }
 
 export { Observer };

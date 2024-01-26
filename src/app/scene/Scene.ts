@@ -1,11 +1,12 @@
 import * as THREE from "three";
 import { Scene as SceneController } from "./../controller/Scene";
 import { Scene as THREEScene } from "./../system/engine/THREE/Scene";
-import { Room } from "../model";
+import { Room, Wall } from "../model";
 import { App } from "../App";
 import { Object3D } from "../system";
 import { Controller } from "../controller/Controller";
 import { Vector3 } from "three";
+import { Mesh } from "../system/engine/THREE/Mesh";
 
 class Scene {
   controller: App["sceneController"];
@@ -15,7 +16,11 @@ class Scene {
   activeController: Controller | null = null;
 
   engine: THREEScene;
-  dragElement: Object3D | null = null;
+  dragElement: {
+    position: Vector3;
+    object: Mesh;
+    initialData: { position: Vector3 };
+  } | null = null;
 
   constructor(props: { canvas: HTMLElement; controller: SceneController }) {
     this.model = props.controller.model;
@@ -43,13 +48,43 @@ class Scene {
         });
 
         this.model.intersects.map((intersect) => {
-          if (intersect.object instanceof Room) {
-            intersect.object.focused = true;
+          if (intersect.object.model instanceof Room) {
+            intersect.object.model.focused = true;
           }
         });
 
-        this.dragElement = this.model.intersects[0]?.object ?? null;
-        if (this.dragElement) this.dragElement.focused = true;
+        this.dragElement =
+          {
+            object: this.model.intersects[0]?.object,
+            position: this.model.intersects[0].position.clone(),
+            initialData: {
+              position: new Vector3(
+                this.engine.groundInters.x,
+                this.engine.groundInters.y,
+                this.engine.groundInters.z
+              ),
+            },
+          } ?? null;
+
+        if (this.dragElement?.object?.model) {
+          this.dragElement.object.model.focused = true;
+        }
+
+        // this.dragElement =
+        //   {
+        //     ...this.model.intersects[0],
+        //     initialData: {
+        //       position: new Vector3(
+        //         this.engine.groundInters.x,
+        //         this.engine.groundInters.y,
+        //         this.engine.groundInters.z
+        //       ),
+        //     },
+        //   } ?? null;
+        //
+        // if (this.dragElement?.object?.userData?.model) {
+        //   this.dragElement.object.userData.model.focused = true;
+        // }
       }
 
       this.controller.event.emit("scene_update");
@@ -57,8 +92,8 @@ class Scene {
 
     this.engine.htmlElement?.addEventListener("mouseup", () => {
       if (this.dragElement) {
-        this.dragElement.focused = false;
-        this.dragElement.notifyObservers();
+        // this.dragElement.object.focused = false;
+        // this.dragElement.object.notifyObservers();
         // this.dragElement.onUpdate();
         this.dragElement = null;
       }
@@ -70,12 +105,17 @@ class Scene {
 
       if (!this.mode) {
         if (this.dragElement) {
-          this.dragElement.position.x = this.engine.groundInters.x;
-          this.dragElement.position.y = this.engine.groundInters.y;
-          this.dragElement.position.z = this.engine.groundInters.z;
+          let diff = new Vector3(
+            this.engine.mouseDownPosition.x - this.engine.groundInters.x,
+            this.engine.mouseDownPosition.y - this.engine.groundInters.y,
+            this.engine.mouseDownPosition.z - this.engine.groundInters.z
+          );
 
-          // this.dragElement.onUpdate();
-          this.dragElement.notifyObservers();
+          let updatedPosition = this.dragElement.initialData.position
+            .clone()
+            .sub(diff);
+
+          this.dragElement.object.update({ position: updatedPosition });
         }
       } else {
         let object = this.activeController?.update({
@@ -102,7 +142,7 @@ class Scene {
 
     let intersections: Array<{
       position: Vector3;
-      object: Object3D;
+      object: Mesh;
     }> = [];
 
     intersects.map((intersect) => {
@@ -120,7 +160,7 @@ class Scene {
 
     let intersect = intersections[0];
     if (intersect) {
-      intersect.object.hovered = true;
+      intersect.object.model.hovered = true;
     }
 
     this.model.intersects = intersections;

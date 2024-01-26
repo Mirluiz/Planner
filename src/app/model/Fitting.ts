@@ -37,7 +37,7 @@ class Fitting implements Object3D {
 
   notifyObservers() {
     for (const observer of this.observers) {
-      observer.update();
+      observer.trigger();
     }
   }
 
@@ -47,7 +47,7 @@ class Fitting implements Object3D {
 
   destroy() {
     for (const observer of this.observers) {
-      observer.destroy();
+      observer.trigger();
     }
   }
 

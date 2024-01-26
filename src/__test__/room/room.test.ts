@@ -3,14 +3,15 @@ import { Math2D } from "../../app/system";
 import { Wall } from "./../../app/model/Wall/Wall";
 import * as THREE from "three";
 import { App } from "../../app/App";
+import { WallEnd } from "../../app/model/Wall/WallEnd";
 
 describe("Wall controller processes", () => {
   function createWall(
     startPos: { x: number; y: number; z: number },
     endPos: { x: number; y: number; z: number }
   ) {
-    let start = new THREE.Vector3(startPos.x, startPos.y, startPos.z);
-    let end = new THREE.Vector3(endPos.x, endPos.y, endPos.z);
+    let start = new WallEnd(startPos.x, startPos.y, startPos.z);
+    let end = new WallEnd(endPos.x, endPos.y, endPos.z);
 
     return new Wall({ start, end, position: { x: 0, y: 0, z: 0 } });
   }

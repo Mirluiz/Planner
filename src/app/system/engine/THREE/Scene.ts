@@ -23,6 +23,7 @@ class Scene {
 
   ground: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
   groundInters: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
+  mouseDownPosition: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
 
   raycaster: THREE.Raycaster;
   htmlElement: HTMLElement | null;
@@ -135,6 +136,23 @@ class Scene {
   private initEvents() {
     this.htmlElement?.addEventListener("mousemove", () => {
       this.mouseMove();
+    });
+
+    this.htmlElement?.addEventListener("mousedown", () => {
+      const planeIntersect = Math2D.NetAlgorithms.planeIntersection(
+        new Vector3(0, 0, 0),
+        this.raycaster.ray.clone()
+      ).clone();
+
+      this.ground = {
+        x: planeIntersect.x,
+        y: 0,
+        z: planeIntersect.z,
+      };
+
+      this.mouseDownPosition.x = this.ground.x;
+      this.mouseDownPosition.y = this.ground.y;
+      this.mouseDownPosition.z = this.ground.z;
     });
   }
 

@@ -56,7 +56,7 @@ class Pipe implements Object3D, Geometry.Line {
 
   notifyObservers() {
     for (const observer of this.observers) {
-      observer.update();
+      observer.trigger();
     }
   }
 
@@ -66,7 +66,7 @@ class Pipe implements Object3D, Geometry.Line {
 
   destroy() {
     for (const observer of this.observers) {
-      observer.destroy();
+      observer.trigger();
     }
   }
 
@@ -74,8 +74,8 @@ class Pipe implements Object3D, Geometry.Line {
     if (!schema.start || !schema.end || !schema.flow) return;
 
     const pipe = new Pipe({
-      start: new Vector3(schema.start.x, schema.start.y, schema.start.z),
-      end: new Vector3(schema.end.x, schema.end.y, schema.end.z),
+      start: new PipeEnd(schema.start.x, schema.start.y, schema.start.z),
+      end: new PipeEnd(schema.end.x, schema.end.y, schema.end.z),
       flow: schema.flow,
     });
 

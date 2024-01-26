@@ -4,13 +4,17 @@ import { Fitting as FittingModel } from "../../../../model";
 import { Observer } from "../../../interfaces/Observer";
 
 class Fitting extends BaseMesh implements Mesh, Observer {
-  constructor(private model: FittingModel) {
-    super();
+  constructor(readonly model: FittingModel) {
+    super(model);
 
     model.addObserver(this);
   }
 
-  update() {
+  trigger() {
+    this.reRender();
+  }
+
+  reRender() {
     if (!this.mesh) return;
 
     if (!this.mesh) return;
