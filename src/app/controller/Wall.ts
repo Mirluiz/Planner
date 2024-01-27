@@ -327,18 +327,24 @@ class Wall implements Controller {
     corner.walls.map((wall) => {
       if (wall.end.object?.uuid === corner.uuid) {
         wall.end.set(corner.position.x, corner.position.y, corner.position.z);
+      } else {
+        wall.end.object?.walls.map((w) => {
+          this.updateWallAngle(w);
+          w.notifyObservers();
+        });
       }
 
       if (wall.start.object?.uuid === corner.uuid) {
         wall.start.set(corner.position.x, corner.position.y, corner.position.z);
+      } else {
+        wall.start.object?.walls.map((w) => {
+          this.updateWallAngle(w);
+          w.notifyObservers();
+        });
       }
 
       wall.updateCenter();
-    });
-
-    this.updateWallAngles();
-
-    this.walls.map((wall) => {
+      this.updateWallAngle(wall);
       wall.notifyObservers();
     });
   }
@@ -368,8 +374,11 @@ class Wall implements Controller {
           }
 
           wall.updateCenter();
+          wall.notifyObservers();
         }
       });
+
+      startCorner.notifyObservers();
     }
 
     if (endCorner) {
@@ -393,92 +402,97 @@ class Wall implements Controller {
           }
 
           wall.updateCenter();
+          wall.notifyObservers();
         }
       });
+
+      endCorner.notifyObservers();
     }
 
     this.updateWallAngles();
 
-    this.corners.map((corner) => {
-      corner.notifyObservers();
-    });
-
-    this.walls.map((wall) => {
-      wall.notifyObservers();
-    });
+    // this.corners.map((corner) => {
+    //   corner.notifyObservers();
+    // });
+    //
+    // this.walls.map((wall) => {
+    //   wall.notifyObservers();
+    // });
   }
 
   private updateWallAngles() {
     this.walls.map((wall) => {
-      let startWalls = wall.start.object?.walls.filter(
-        (_w) => _w.uuid !== wall.uuid
-      );
-      let endWalls = wall.end.object?.walls.filter(
-        (_w) => _w.uuid !== wall.uuid
-      );
-
-      let prevWall: WallModel | undefined;
-      let nextWall: WallModel | undefined;
-
-      if (startWalls) {
-        prevWall = startWalls.sort(
-          (a, b) => this.calculateTheta(a) - this.calculateTheta(b)
-        )[0];
-      }
-
-      if (endWalls) {
-        nextWall = endWalls.sort(
-          (a, b) => this.calculateTheta(a) - this.calculateTheta(b)
-        )[0];
-      }
-
-      {
-        if (prevWall) {
-          let nextWallOppositeEnd =
-            prevWall.start.object?.uuid === wall.start.object?.uuid
-              ? prevWall.end
-              : prevWall.start;
-          let currentNormal = nextWallOppositeEnd
-            .clone()
-            .sub(wall.start)
-            .normalize();
-
-          let nextNormal = wall.end.clone()?.sub(wall.start).normalize();
-
-          if (currentNormal && nextNormal) {
-            let angle = angleBetweenVectorsWithOrientation(
-              currentNormal,
-              nextNormal
-            );
-
-            wall.endAngle = angle / 2 - Math.PI / 2;
-          }
-        }
-      }
-
-      {
-        if (nextWall) {
-          let prevWallOppositeEnd =
-            nextWall.start.object?.uuid === wall.end.object?.uuid
-              ? nextWall.end
-              : nextWall.start;
-          let currentNormal = prevWallOppositeEnd
-            .clone()
-            .sub(wall.end)
-            .normalize();
-          let nextNormal = wall.start.clone()?.sub(wall.end).normalize();
-
-          if (currentNormal && nextNormal) {
-            let angle = angleBetweenVectorsWithOrientation(
-              currentNormal,
-              nextNormal
-            );
-
-            wall.startAngle = angle / 2 - Math.PI / 2;
-          }
-        }
-      }
+      this.updateWallAngle(wall);
     });
+  }
+
+  private updateWallAngle(wall: WallModel) {
+    let startWalls = wall.start.object?.walls.filter(
+      (_w) => _w.uuid !== wall.uuid
+    );
+    let endWalls = wall.end.object?.walls.filter((_w) => _w.uuid !== wall.uuid);
+
+    let prevWall: WallModel | undefined;
+    let nextWall: WallModel | undefined;
+
+    if (startWalls) {
+      prevWall = startWalls.sort(
+        (a, b) => this.calculateTheta(a) - this.calculateTheta(b)
+      )[0];
+    }
+
+    if (endWalls) {
+      nextWall = endWalls.sort(
+        (a, b) => this.calculateTheta(a) - this.calculateTheta(b)
+      )[0];
+    }
+
+    {
+      if (prevWall) {
+        let nextWallOppositeEnd =
+          prevWall.start.object?.uuid === wall.start.object?.uuid
+            ? prevWall.end
+            : prevWall.start;
+        let currentNormal = nextWallOppositeEnd
+          .clone()
+          .sub(wall.start)
+          .normalize();
+
+        let nextNormal = wall.end.clone()?.sub(wall.start).normalize();
+
+        if (currentNormal && nextNormal) {
+          let angle = angleBetweenVectorsWithOrientation(
+            currentNormal,
+            nextNormal
+          );
+
+          wall.endAngle = angle / 2 - Math.PI / 2;
+        }
+      }
+    }
+
+    {
+      if (nextWall) {
+        let prevWallOppositeEnd =
+          nextWall.start.object?.uuid === wall.end.object?.uuid
+            ? nextWall.end
+            : nextWall.start;
+        let currentNormal = prevWallOppositeEnd
+          .clone()
+          .sub(wall.end)
+          .normalize();
+        let nextNormal = wall.start.clone()?.sub(wall.end).normalize();
+
+        if (currentNormal && nextNormal) {
+          let angle = angleBetweenVectorsWithOrientation(
+            currentNormal,
+            nextNormal
+          );
+
+          wall.startAngle = angle / 2 - Math.PI / 2;
+        }
+      }
+    }
   }
 
   private calculateTheta(vector: WallModel): number {

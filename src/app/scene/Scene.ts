@@ -17,6 +17,7 @@ class Scene {
 
   engine: THREEScene;
   dragElement: {
+    centerOffset: Vector3;
     position: Vector3;
     object: Mesh;
     initialData: { position: Vector3 };
@@ -42,52 +43,42 @@ class Scene {
         object?.notifyObservers();
       } else {
         this.model.objects.map((element) => {
-          if (element instanceof Room) {
-            element.focused = false;
-          }
+          element.active = false;
         });
 
         this.model.intersects.map((intersect) => {
-          if (intersect.object.model instanceof Room) {
-            intersect.object.model.focused = true;
-          }
+          intersect.object.model.focused = false;
         });
 
         let intersection = this.model.intersects[0];
+        let ground = new Vector3(
+          this.engine.groundInters.x,
+          this.engine.groundInters.y,
+          this.engine.groundInters.z
+        );
 
         if (intersection) {
           this.dragElement =
             {
+              centerOffset: ground
+                .clone()
+                .sub(
+                  new Vector3(
+                    intersection.object.model.position.x,
+                    intersection.object.model.position.y,
+                    intersection.object.model.position.z
+                  )
+                ),
               object: intersection.object,
               position: intersection.position.clone(),
               initialData: {
-                position: new Vector3(
-                  this.engine.groundInters.x,
-                  this.engine.groundInters.y,
-                  this.engine.groundInters.z
-                ),
+                position: ground,
               },
             } ?? null;
         }
 
         if (this.dragElement?.object?.model) {
-          this.dragElement.object.model.focused = true;
-        }
-
-        this.dragElement =
-          {
-            ...this.model.intersects[0],
-            initialData: {
-              position: new Vector3(
-                this.engine.groundInters.x,
-                this.engine.groundInters.y,
-                this.engine.groundInters.z
-              ),
-            },
-          } ?? null;
-
-        if (this.dragElement?.object?.model) {
-          this.dragElement.object.model.focused = true;
+          this.dragElement.object.model.active = true;
         }
       }
 
@@ -118,7 +109,10 @@ class Scene {
             .clone()
             .sub(diff);
 
-          this.dragElement?.object?.update({ position: updatedPosition });
+          this.dragElement?.object?.update({
+            position: updatedPosition,
+            meshIntersectionPosition: this.dragElement.centerOffset,
+          });
           this.dragElement.object.model.notifyObservers();
         }
       } else {

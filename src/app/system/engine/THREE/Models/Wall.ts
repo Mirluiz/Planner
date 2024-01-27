@@ -20,34 +20,79 @@ class Wall extends BaseMesh implements Mesh, Observer {
     this.reRender();
   }
 
-  update(props: { position?: { x: number; y: number; z: number } }) {
-    let { position } = props;
+  // update(props: {
+  //   position?: { x: number; y: number; z: number };
+  //   meshIntersectionPosition?: { x: number; y: number; z: number };
+  // }) {
+  //   let { position, meshIntersectionPosition } = props;
+  //
+  //   if (position && meshIntersectionPosition) {
+  //     let mousePos = new Vector3(position.x, position.y, position.z);
+  //
+  //     let meshInPos = new Vector3(
+  //       meshIntersectionPosition.x,
+  //       meshIntersectionPosition.y,
+  //       meshIntersectionPosition.z
+  //     );
+  //
+  //     let reservedPosition = new Vector3(
+  //       this.model.position.x,
+  //       this.model.position.y,
+  //       this.model.position.z
+  //     );
+  //
+  //     let midPos = mousePos.clone().add(meshInPos);
+  //
+  //     let ln = this.model.start.distanceTo(
+  //       this.model.end.clone().sub(mousePos)
+  //     );
+  //     let lnToStart = meshInPos.distanceTo(this.model.start);
+  //     let lnToEnd = meshInPos.distanceTo(this.model.end);
+  //     console.log(lnToStart, lnToEnd);
+  //
+  //     let toStartVertex = this.model.start.clone().sub(meshInPos).normalize();
+  //     let toEndVertex = this.model.end.clone().sub(meshInPos).normalize();
+  //
+  //     let startVertex = toStartVertex.multiplyScalar(lnToStart);
+  //     let endVertex = toEndVertex.multiplyScalar(lnToEnd);
+  //
+  //     let startModelPos = startVertex.clone().add(midPos);
+  //     let endModelPos = endVertex.clone().add(midPos);
+  //
+  //     this.model.start.set(startModelPos.x, startModelPos.y, startModelPos.z);
+  //     this.model.end.set(endModelPos.x, endModelPos.y, endModelPos.z);
+  //
+  //     this.model.updateCenter();
+  //
+  //     this.app.wallController.onWallUpdate(this.model);
+  //   }
+  // }
 
-    if (position) {
-      let reservedPosition = new Vector3(
-        this.model.position.x,
-        this.model.position.y,
-        this.model.position.z
+  update(props: {
+    position?: { x: number; y: number; z: number };
+    meshIntersectionPosition?: { x: number; y: number; z: number };
+  }) {
+    let { position, meshIntersectionPosition } = props;
+
+    if (position && meshIntersectionPosition) {
+      let meshIPVec = new Vector3(
+        meshIntersectionPosition.x,
+        meshIntersectionPosition.y,
+        meshIntersectionPosition.z
       );
-      let ln = this.model.start.distanceTo(this.model.end);
-      let toStartVertex = this.model.start
-        .clone()
-        .sub(reservedPosition)
-        .normalize();
-      let toEndVertex = this.model.end
-        .clone()
-        .sub(reservedPosition)
-        .normalize();
+      let mousePos = new Vector3(position.x, position.y, position.z);
+      let newMidPosition = mousePos.clone().sub(meshIPVec);
 
-      let startVertex = toStartVertex.multiplyScalar(ln * 0.5);
-      let endVertex = toEndVertex.multiplyScalar(ln * 0.5);
+      let difference = newMidPosition.sub(
+        new Vector3(
+          this.model.position.x,
+          this.model.position.y,
+          this.model.position.z
+        )
+      );
 
-      let startModelPos = startVertex
-        .clone()
-        .add(new Vector3(position.x, position.y, position.z));
-      let endModelPos = endVertex
-        .clone()
-        .add(new Vector3(position.x, position.y, position.z));
+      let startModelPos = this.model.start.clone().add(difference);
+      let endModelPos = this.model.end.clone().add(difference);
 
       this.model.start.set(startModelPos.x, startModelPos.y, startModelPos.z);
       this.model.end.set(endModelPos.x, endModelPos.y, endModelPos.z);
@@ -63,18 +108,23 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
     let geometry = this.getGeometry();
 
-    let textMesh = this.mesh.children[0];
-
-    if (textMesh instanceof THREE.Mesh) {
-      textMesh.geometry.dispose();
-      textMesh.material.dispose();
-      textMesh.removeFromParent();
-    }
+    // let textMesh = this.mesh.children[0];
+    //
+    // if (textMesh instanceof THREE.Mesh) {
+    //   textMesh.geometry.dispose();
+    //   textMesh.material.dispose();
+    //   textMesh.removeFromParent();
+    // }
 
     if (this.mesh instanceof THREE.Mesh) {
       this.mesh.geometry.setFromPoints(geometry);
+      this.mesh.material.dispose();
+
       this.mesh.material = new THREE.MeshStandardMaterial({
-        color: this.model.hovered ? 0x6e90ff : 0xefd0b5,
+        color:
+          this.model.hovered || this.model.active
+            ? ColorManager.colors["cyan"]
+            : ColorManager.colors["black"],
       });
       this.mesh.geometry.needsUpdate = true;
     }
@@ -103,7 +153,12 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
     let geometry = new THREE.BoxGeometry().setFromPoints(this.getGeometry());
 
-    const material = new THREE.MeshStandardMaterial({ color: 0xefd0b5 });
+    const material = new THREE.MeshStandardMaterial({
+      color:
+        this.model.hovered || this.model.active
+          ? ColorManager.colors["cyan"]
+          : ColorManager.colors["black"],
+    });
     const mesh = new THREE.Mesh(geometry, material);
 
     const midPoint = new THREE.Vector3();

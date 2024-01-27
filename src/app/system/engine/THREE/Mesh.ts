@@ -5,7 +5,13 @@ interface Mesh {
   model: Object3D;
   render: () => THREE.Object3D | null;
   reRender: () => void;
-  update: (props: Partial<Object3DProps>) => void;
+  update: (
+    props: Partial<
+      Object3DProps & {
+        meshIntersectionPosition: { x: number; y: number; z: number };
+      }
+    >
+  ) => void;
   destroy: () => void;
 }
 

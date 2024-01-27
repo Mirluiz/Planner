@@ -5,6 +5,7 @@ import { Observer } from "../../../interfaces/Observer";
 import { Vector3 } from "three";
 import { App } from "../../../../App";
 import { Object3DProps } from "../../../interfaces";
+import { ColorManager } from "../../../utils/Color";
 
 class Corner extends BaseMesh implements Mesh, Observer {
   constructor(readonly model: CornerModel, private app: App) {
@@ -30,9 +31,12 @@ class Corner extends BaseMesh implements Mesh, Observer {
   reRender() {
     if (!this.mesh) return;
 
-    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);
+    // const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);
     const material = new THREE.MeshBasicMaterial({
-      color: this.model.hovered ? 0x6e90ff : 0x000000,
+      color:
+        this.model.hovered || this.model.active
+          ? ColorManager.colors["lime"]
+          : ColorManager.colors["beige"],
     });
 
     let highestPoint = this.model.walls.sort(
@@ -40,8 +44,10 @@ class Corner extends BaseMesh implements Mesh, Observer {
     )[0];
 
     if (this.mesh instanceof THREE.Mesh) {
-      this.mesh.geometry.dispose(); // Dispose of the old geometry to free up memory
-      this.mesh.geometry = geometry;
+      // this.mesh.geometry.dispose(); // Dispose of the old geometry to free up memory
+      // this.mesh.geometry.setIndex(geometry.getIndex());
+      // this.mesh.geometry = geometry;
+      this.mesh.material.dispose();
       this.mesh.material = material;
     }
 
@@ -65,7 +71,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
 
     const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);
     const material = new THREE.MeshBasicMaterial({
-      color: 0x000000,
+      color: ColorManager.colors["beige"],
     });
     const mesh = new THREE.Mesh(geometry, material);
 

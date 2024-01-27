@@ -1,5 +1,6 @@
 import { App } from "../../app/App";
 import { Hole } from "./Hole";
+import { Vector3 } from "three";
 
 class Room {
   readonly roomsWithHole: Hole;
@@ -192,6 +193,48 @@ class Room {
         null,
       ],
     },
+    {
+      name: "Large",
+      corners: [
+        { pos: { x: -10, y: 0, z: 0 } },
+        { pos: { x: -8, y: 0, z: 0 } },
+        { pos: { x: -6, y: 0, z: 0 } },
+        { pos: { x: -2, y: 0, z: 0 } },
+        { pos: { x: 2, y: 0, z: 0 } },
+        { pos: { x: 6, y: 0, z: 0 } },
+        { pos: { x: 10, y: 0, z: 0 } },
+        { pos: { x: 10, y: 0, z: 4 } },
+        { pos: { x: 10, y: 0, z: 8 } },
+        { pos: { x: 10, y: 0, z: 12 } },
+        { pos: { x: 8, y: 0, z: 12 } },
+        { pos: { x: 4, y: 0, z: 12 } },
+        { pos: { x: 0, y: 0, z: 12 } },
+        { pos: { x: -4, y: 0, z: 12 } },
+        { pos: { x: -8, y: 0, z: 12 } },
+        { pos: { x: -8, y: 0, z: 8 } },
+        { pos: { x: -4, y: 0, z: 8 } },
+        { pos: { x: 0, y: 0, z: 8 } },
+        { pos: { x: 4, y: 0, z: 8 } },
+        { pos: { x: 8, y: 0, z: 8 } },
+        { pos: { x: 8, y: 0, z: 4 } },
+        { pos: { x: 4, y: 0, z: 4 } },
+        { pos: { x: 0, y: 0, z: 4 } },
+        { pos: { x: -4, y: 0, z: 4 } },
+        { pos: { x: -8, y: 0, z: 4 } },
+        { pos: { x: -12, y: 0, z: 4 } },
+        { pos: { x: -14, y: 0, z: 4 } },
+        { pos: { x: -14, y: 0, z: 8 } },
+        { pos: { x: -12, y: 0, z: 8 } },
+        { pos: { x: -12, y: 0, z: 10 } },
+        { pos: { x: -12, y: 0, z: 12 } },
+        { pos: { x: -12, y: 0, z: 14 } },
+        { pos: { x: -12, y: 0, z: 16 } },
+        { pos: { x: -8, y: 0, z: 20 } },
+        { pos: { x: 0, y: 0, z: 20 } },
+
+        null,
+      ],
+    },
   ];
 
   constructor(props: { app: App }) {
@@ -200,8 +243,9 @@ class Room {
   }
 
   run() {
+    // this.runAll();
     let wallController = this.app.wallController;
-    let { corners } = this.examples[3];
+    let { corners } = this.examples[12];
 
     corners.map((cornerData, index) => {
       if (!cornerData) {
@@ -210,7 +254,7 @@ class Room {
         wallController.startDraw({
           x: cornerData.pos.x,
           y: cornerData.pos.y,
-          z: cornerData.pos.z,
+          z: cornerData.pos.z - 8,
         });
       }
     });

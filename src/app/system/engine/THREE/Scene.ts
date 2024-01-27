@@ -4,11 +4,12 @@ import { LocalStorage, SnapHighlight, Math2D } from "../../../system";
 import { Scene as SceneController } from "../../../controller/Scene";
 import { Vector3 } from "three";
 import { Renderer } from "./Renderer";
-import { Line } from "./Indicator/Line";
-import { Room } from "../../../model";
+import Stats from "three/examples/jsm/libs/stats.module";
 
 class Scene {
   controller: SceneController;
+
+  stats: Stats;
 
   camera: THREE.OrthographicCamera | THREE.PerspectiveCamera;
   scene: THREE.Scene;
@@ -98,6 +99,9 @@ class Scene {
 
     this.initEvents();
     this.subscribeEvents();
+
+    this.stats = new Stats();
+    document.body.appendChild(this.stats.dom);
   }
 
   onPointerMove(event: MouseEvent) {
@@ -173,9 +177,9 @@ class Scene {
 
           if (child.userData.object) {
             if (child instanceof THREE.Mesh) {
+              child?.geometry?.dispose();
               child?.material?.dispose();
               child?.material?.map?.dispose();
-              child?.geometry?.dispose();
             }
 
             child?.removeFromParent();
@@ -271,6 +275,7 @@ class Scene {
     this.snapHighLight?.run();
 
     this.renderer.render(this.scene, this.camera);
+    this.stats.update();
   }
 
   mouseMove() {
