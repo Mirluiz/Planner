@@ -118,8 +118,8 @@ class Scene {
             .clone()
             .sub(diff);
 
-          // console.log("diff", diff);
           this.dragElement?.object?.update({ position: updatedPosition });
+          this.dragElement.object.model.notifyObservers();
         }
       } else {
         let object = this.activeController?.update({
