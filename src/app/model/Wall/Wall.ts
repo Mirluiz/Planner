@@ -99,11 +99,11 @@ class Wall implements Object3D, Geometry.Line {
   }
 
   updateCenter() {
-    let wallStart = this.start;
-    let wallEnd = this.end;
     let midPoint = new Vector3();
 
-    midPoint.addVectors(wallStart, wallEnd).multiplyScalar(0.5);
+    midPoint
+      .addVectors(this.start.clone(), this.end.clone())
+      .multiplyScalar(0.5);
 
     this.position.x = midPoint.x;
     this.position.y = midPoint.y;

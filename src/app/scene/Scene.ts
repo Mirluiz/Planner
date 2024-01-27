@@ -118,6 +118,7 @@ class Scene {
             .clone()
             .sub(diff);
 
+          // console.log("diff", diff);
           this.dragElement?.object?.update({ position: updatedPosition });
         }
       } else {

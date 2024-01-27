@@ -7,6 +7,7 @@ import { Observer } from "../../../interfaces/Observer";
 import { ColorManager } from "../../../utils/Color";
 import { Scene } from "../../../../controller";
 import { App } from "../../../../App";
+import { Vector3 } from "three";
 
 class Wall extends BaseMesh implements Mesh, Observer {
   constructor(readonly model: WallModel, private app: App) {
@@ -23,7 +24,37 @@ class Wall extends BaseMesh implements Mesh, Observer {
     let { position } = props;
 
     if (position) {
-      this.model.position = { ...position };
+      let reservedPosition = new Vector3(
+        this.model.position.x,
+        this.model.position.y,
+        this.model.position.z
+      );
+      let ln = this.model.start.distanceTo(this.model.end);
+      let toStartVertex = this.model.start
+        .clone()
+        .sub(reservedPosition)
+        .normalize();
+      let toEndVertex = this.model.end
+        .clone()
+        .sub(reservedPosition)
+        .normalize();
+
+      let startVertex = toStartVertex.multiplyScalar(ln * 0.5);
+      let endVertex = toEndVertex.multiplyScalar(ln * 0.5);
+
+      let startModelPos = startVertex
+        .clone()
+        .add(new Vector3(position.x, position.y, position.z));
+      let endModelPos = endVertex
+        .clone()
+        .add(new Vector3(position.x, position.y, position.z));
+
+      this.model.start.set(startModelPos.x, startModelPos.y, startModelPos.z);
+      this.model.end.set(endModelPos.x, endModelPos.y, endModelPos.z);
+
+      this.model.updateCenter();
+
+      this.app.wallController.onWallUpdate(this.model);
     }
   }
 

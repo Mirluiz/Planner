@@ -334,6 +334,76 @@ class Wall implements Controller {
       }
 
       wall.updateCenter();
+    });
+
+    this.updateWallAngles();
+
+    this.walls.map((wall) => {
+      wall.notifyObservers();
+    });
+  }
+
+  onWallUpdate(w: WallModel) {
+    let startCorner = w.start.object;
+    let endCorner = w.end.object;
+
+    if (startCorner) {
+      startCorner.position = { x: w.start.x, y: w.start.y, z: w.start.z };
+      startCorner.walls.map((wall) => {
+        if (wall.uuid !== w.uuid && startCorner) {
+          if (wall.end.object?.uuid === startCorner.uuid) {
+            wall.end.set(
+              startCorner.position.x,
+              startCorner.position.y,
+              startCorner.position.z
+            );
+          }
+
+          if (wall.start.object?.uuid === startCorner.uuid) {
+            wall.start.set(
+              startCorner.position.x,
+              startCorner.position.y,
+              startCorner.position.z
+            );
+          }
+
+          wall.updateCenter();
+        }
+      });
+    }
+
+    if (endCorner) {
+      endCorner.position = { x: w.end.x, y: w.end.y, z: w.end.z };
+      endCorner.walls.map((wall) => {
+        if (wall.uuid !== w.uuid && endCorner) {
+          if (wall.end.object?.uuid === endCorner.uuid) {
+            wall.end.set(
+              endCorner.position.x,
+              endCorner.position.y,
+              endCorner.position.z
+            );
+          }
+
+          if (wall.start.object?.uuid === endCorner.uuid) {
+            wall.start.set(
+              endCorner.position.x,
+              endCorner.position.y,
+              endCorner.position.z
+            );
+          }
+
+          wall.updateCenter();
+        }
+      });
+    }
+
+    this.updateWallAngles();
+
+    this.corners.map((corner) => {
+      corner.notifyObservers();
+    });
+
+    this.walls.map((wall) => {
       wall.notifyObservers();
     });
   }
