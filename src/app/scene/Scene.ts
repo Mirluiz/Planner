@@ -6,7 +6,7 @@ import { App } from "../App";
 import { Object3D } from "../system";
 import { Controller } from "../controller/Controller";
 import { Vector3 } from "three";
-import { Mesh } from "../system/engine/THREE/Mesh";
+import { BaseMesh, Mesh } from "../system/engine/THREE/Mesh";
 
 class Scene {
   controller: App["sceneController"];
@@ -53,10 +53,30 @@ class Scene {
           }
         });
 
+        let intersection = this.model.intersects[0];
+
+        if (intersection) {
+          this.dragElement =
+            {
+              object: intersection.object,
+              position: intersection.position.clone(),
+              initialData: {
+                position: new Vector3(
+                  this.engine.groundInters.x,
+                  this.engine.groundInters.y,
+                  this.engine.groundInters.z
+                ),
+              },
+            } ?? null;
+        }
+
+        if (this.dragElement?.object?.model) {
+          this.dragElement.object.model.focused = true;
+        }
+
         this.dragElement =
           {
-            object: this.model.intersects[0]?.object,
-            position: this.model.intersects[0].position.clone(),
+            ...this.model.intersects[0],
             initialData: {
               position: new Vector3(
                 this.engine.groundInters.x,
@@ -69,32 +89,15 @@ class Scene {
         if (this.dragElement?.object?.model) {
           this.dragElement.object.model.focused = true;
         }
-
-        // this.dragElement =
-        //   {
-        //     ...this.model.intersects[0],
-        //     initialData: {
-        //       position: new Vector3(
-        //         this.engine.groundInters.x,
-        //         this.engine.groundInters.y,
-        //         this.engine.groundInters.z
-        //       ),
-        //     },
-        //   } ?? null;
-        //
-        // if (this.dragElement?.object?.userData?.model) {
-        //   this.dragElement.object.userData.model.focused = true;
-        // }
       }
 
       this.controller.event.emit("scene_update");
     });
 
     this.engine.htmlElement?.addEventListener("mouseup", () => {
-      if (this.dragElement) {
-        // this.dragElement.object.focused = false;
-        // this.dragElement.object.notifyObservers();
-        // this.dragElement.onUpdate();
+      if (this.dragElement?.object) {
+        this.dragElement.object.model.focused = false;
+        this.dragElement.object.model.notifyObservers();
         this.dragElement = null;
       }
     });
@@ -115,7 +118,7 @@ class Scene {
             .clone()
             .sub(diff);
 
-          this.dragElement.object.update({ position: updatedPosition });
+          this.dragElement?.object?.update({ position: updatedPosition });
         }
       } else {
         let object = this.activeController?.update({
@@ -150,9 +153,9 @@ class Scene {
         return;
       }
 
-      if (intersect.object.userData.object) {
+      if (this.isBaseMesh(intersect.object?.userData?.object)) {
         intersections.push({
-          object: intersect.object.userData.object.model,
+          object: intersect.object.userData.object,
           position: intersect.point,
         });
       }
@@ -166,8 +169,8 @@ class Scene {
     this.model.intersects = intersections;
   }
 
-  isObject3D(object: any): object is Object3D {
-    return object && "uuid" in object;
+  isBaseMesh(object: any): object is Mesh {
+    return object && "isBaseMesh" in object;
   }
 }
 

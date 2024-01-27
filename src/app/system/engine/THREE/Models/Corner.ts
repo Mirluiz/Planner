@@ -4,6 +4,7 @@ import { BaseMesh, Mesh } from "../Mesh";
 import { Observer } from "../../../interfaces/Observer";
 import { Vector3 } from "three";
 import { App } from "../../../../App";
+import { Object3DProps } from "../../../interfaces";
 
 class Corner extends BaseMesh implements Mesh, Observer {
   constructor(readonly model: CornerModel, private app: App) {
@@ -14,6 +15,16 @@ class Corner extends BaseMesh implements Mesh, Observer {
 
   trigger() {
     this.reRender();
+  }
+
+  update(props: { position?: { x: number; y: number; z: number } }) {
+    const { position } = props;
+
+    if (position) {
+      this.model.position = { ...position };
+
+      this.app.wallController.onCornerUpdate(this.model);
+    }
   }
 
   reRender() {
@@ -47,8 +58,6 @@ class Corner extends BaseMesh implements Mesh, Observer {
     }
 
     this.mesh.updateMatrix();
-
-    this.app.wallController.onCornerUpdate(this.model);
   }
 
   render() {

@@ -24,8 +24,6 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
     if (position) {
       this.model.position = { ...position };
-
-      console.log("=");
     }
   }
 

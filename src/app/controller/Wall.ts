@@ -98,15 +98,7 @@ class Wall implements Controller {
   ) {
     wall[end].set(pos.x, pos.y, pos.z);
 
-    let wallStart = wall.start;
-    let wallEnd = wall.end;
-    let midPoint = new Vector3();
-
-    midPoint.addVectors(wallStart, wallEnd).multiplyScalar(0.5);
-
-    wall.position.x = midPoint.x;
-    wall.position.y = midPoint.y;
-    wall.position.z = midPoint.z;
+    wall.updateCenter();
   }
 
   private getClosestObject(coord: Vector3) {
@@ -332,7 +324,7 @@ class Wall implements Controller {
   }
 
   onCornerUpdate(corner: Corner) {
-    this.walls.map((wall) => {
+    corner.walls.map((wall) => {
       if (wall.end.object?.uuid === corner.uuid) {
         wall.end.set(corner.position.x, corner.position.y, corner.position.z);
       }
@@ -340,6 +332,9 @@ class Wall implements Controller {
       if (wall.start.object?.uuid === corner.uuid) {
         wall.start.set(corner.position.x, corner.position.y, corner.position.z);
       }
+
+      wall.updateCenter();
+      wall.notifyObservers();
     });
   }
 

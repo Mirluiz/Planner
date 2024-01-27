@@ -98,6 +98,18 @@ class Wall implements Object3D, Geometry.Line {
     }
   }
 
+  updateCenter() {
+    let wallStart = this.start;
+    let wallEnd = this.end;
+    let midPoint = new Vector3();
+
+    midPoint.addVectors(wallStart, wallEnd).multiplyScalar(0.5);
+
+    this.position.x = midPoint.x;
+    this.position.y = midPoint.y;
+    this.position.z = midPoint.z;
+  }
+
   static fromJson(schema: Object3DSchema) {
     if (!schema.start || !schema.end) return;
 

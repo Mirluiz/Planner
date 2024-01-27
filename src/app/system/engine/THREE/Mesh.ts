@@ -10,6 +10,8 @@ interface Mesh {
 }
 
 class BaseMesh implements Mesh {
+  isBaseMesh = true;
+
   private _mesh: THREE.Object3D | null = null;
 
   constructor(readonly model: Object3D) {}
