@@ -10,7 +10,10 @@ import { App } from "../../../../App";
 import { Vector3 } from "three";
 
 class Wall extends BaseMesh implements Mesh, Observer {
-  constructor(readonly model: WallModel, private app: App) {
+  constructor(
+    readonly model: WallModel,
+    private app: App,
+  ) {
     super(model);
 
     model.addObserver(this);
@@ -19,54 +22,6 @@ class Wall extends BaseMesh implements Mesh, Observer {
   trigger() {
     this.reRender();
   }
-
-  // update(props: {
-  //   position?: { x: number; y: number; z: number };
-  //   meshIntersectionPosition?: { x: number; y: number; z: number };
-  // }) {
-  //   let { position, meshIntersectionPosition } = props;
-  //
-  //   if (position && meshIntersectionPosition) {
-  //     let mousePos = new Vector3(position.x, position.y, position.z);
-  //
-  //     let meshInPos = new Vector3(
-  //       meshIntersectionPosition.x,
-  //       meshIntersectionPosition.y,
-  //       meshIntersectionPosition.z
-  //     );
-  //
-  //     let reservedPosition = new Vector3(
-  //       this.model.position.x,
-  //       this.model.position.y,
-  //       this.model.position.z
-  //     );
-  //
-  //     let midPos = mousePos.clone().add(meshInPos);
-  //
-  //     let ln = this.model.start.distanceTo(
-  //       this.model.end.clone().sub(mousePos)
-  //     );
-  //     let lnToStart = meshInPos.distanceTo(this.model.start);
-  //     let lnToEnd = meshInPos.distanceTo(this.model.end);
-  //     console.log(lnToStart, lnToEnd);
-  //
-  //     let toStartVertex = this.model.start.clone().sub(meshInPos).normalize();
-  //     let toEndVertex = this.model.end.clone().sub(meshInPos).normalize();
-  //
-  //     let startVertex = toStartVertex.multiplyScalar(lnToStart);
-  //     let endVertex = toEndVertex.multiplyScalar(lnToEnd);
-  //
-  //     let startModelPos = startVertex.clone().add(midPos);
-  //     let endModelPos = endVertex.clone().add(midPos);
-  //
-  //     this.model.start.set(startModelPos.x, startModelPos.y, startModelPos.z);
-  //     this.model.end.set(endModelPos.x, endModelPos.y, endModelPos.z);
-  //
-  //     this.model.updateCenter();
-  //
-  //     this.app.wallController.onWallUpdate(this.model);
-  //   }
-  // }
 
   update(props: {
     position?: { x: number; y: number; z: number };
@@ -78,7 +33,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
       let meshIPVec = new Vector3(
         meshIntersectionPosition.x,
         meshIntersectionPosition.y,
-        meshIntersectionPosition.z
+        meshIntersectionPosition.z,
       );
       let mousePos = new Vector3(position.x, position.y, position.z);
       let newMidPosition = mousePos.clone().sub(meshIPVec);
@@ -87,8 +42,8 @@ class Wall extends BaseMesh implements Mesh, Observer {
         new Vector3(
           this.model.position.x,
           this.model.position.y,
-          this.model.position.z
-        )
+          this.model.position.z,
+        ),
       );
 
       let startModelPos = this.model.start.clone().add(difference);
@@ -108,13 +63,13 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
     let geometry = this.getGeometry();
 
-    // let textMesh = this.mesh.children[0];
-    //
-    // if (textMesh instanceof THREE.Mesh) {
-    //   textMesh.geometry.dispose();
-    //   textMesh.material.dispose();
-    //   textMesh.removeFromParent();
-    // }
+    let textMesh = this.mesh.children[0];
+
+    if (textMesh instanceof THREE.Mesh) {
+      textMesh.geometry.dispose();
+      textMesh.material.dispose();
+      textMesh.removeFromParent();
+    }
 
     if (this.mesh instanceof THREE.Mesh) {
       this.mesh.geometry.setFromPoints(geometry);
@@ -124,7 +79,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
         color:
           this.model.hovered || this.model.active
             ? ColorManager.colors["cyan"]
-            : ColorManager.colors["black"],
+            : ColorManager.colors["brown"],
       });
       this.mesh.geometry.needsUpdate = true;
     }
@@ -132,7 +87,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
     const midPoint = new THREE.Vector3(
       this.model.position.x,
       this.model.position.y,
-      this.model.position.z
+      this.model.position.z,
     );
 
     this.mesh.position.copy(midPoint);
@@ -157,7 +112,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
       color:
         this.model.hovered || this.model.active
           ? ColorManager.colors["cyan"]
-          : ColorManager.colors["black"],
+          : ColorManager.colors["brown"],
     });
     const mesh = new THREE.Mesh(geometry, material);
 
@@ -232,62 +187,62 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
     let front = [
       new THREE.Vector3(0, h, depth / 2).add(
-        new THREE.Vector3(-ln / 2 + startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 + startCrop, 0, 0),
       ),
       new THREE.Vector3(0, h, depth / 2).add(
-        new THREE.Vector3(ln / 2 + endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 + endCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, depth / 2).add(
-        new THREE.Vector3(-ln / 2 + startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 + startCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, depth / 2).add(
-        new THREE.Vector3(ln / 2 + endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 + endCrop, 0, 0),
       ),
     ];
 
     let back = [
       new THREE.Vector3(0, h, -depth / 2).add(
-        new THREE.Vector3(ln / 2 - endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 - endCrop, 0, 0),
       ),
       new THREE.Vector3(0, h, -depth / 2).add(
-        new THREE.Vector3(-ln / 2 - startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 - startCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, -depth / 2).add(
-        new THREE.Vector3(ln / 2 - endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 - endCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, -depth / 2).add(
-        new THREE.Vector3(-ln / 2 - startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 - startCrop, 0, 0),
       ),
     ];
 
     let up = [
       new THREE.Vector3(0, h, depth / 2).add(
-        new THREE.Vector3(ln / 2 + endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 + endCrop, 0, 0),
       ),
       new THREE.Vector3(0, h, depth / 2).add(
-        new THREE.Vector3(-ln / 2 + startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 + startCrop, 0, 0),
       ),
       new THREE.Vector3(0, h, -depth / 2).add(
-        new THREE.Vector3(ln / 2 - endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 - endCrop, 0, 0),
       ),
       new THREE.Vector3(0, h, -depth / 2).add(
-        new THREE.Vector3(-ln / 2 - startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 - startCrop, 0, 0),
       ),
     ];
 
     let bottom = [
       new THREE.Vector3(0, 0, depth / 2).add(
-        new THREE.Vector3(-ln / 2 + startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 + startCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, depth / 2).add(
-        new THREE.Vector3(ln / 2 + endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 + endCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, -depth / 2).add(
-        new THREE.Vector3(-ln / 2 - startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 - startCrop, 0, 0),
       ),
 
       new THREE.Vector3(0, 0, -depth / 2).add(
-        new THREE.Vector3(ln / 2 - endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 - endCrop, 0, 0),
       ),
     ];
 

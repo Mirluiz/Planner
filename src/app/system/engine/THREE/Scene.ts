@@ -54,7 +54,7 @@ class Scene {
 
     this.renderer.setSize(
       this.htmlElement.clientWidth,
-      this.htmlElement.clientHeight
+      this.htmlElement.clientHeight,
     );
     this.htmlElement.appendChild(this.renderer.domElement);
 
@@ -64,7 +64,7 @@ class Scene {
       this.htmlElement.clientHeight / 2, // top
       this.htmlElement.clientHeight / -2, // bottom
       1,
-      1000
+      1000,
     );
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -84,12 +84,12 @@ class Scene {
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
     this.scene.add(ambientLight);
 
-    const hLight = new THREE.HemisphereLight(0xffffff, 0x000000, 0.5);
+    const hLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
     hLight.position.set(1, 2, 0);
     this.scene.add(hLight);
 
-    // this.cameraMode = this.localStorage.camera?.mode ?? "3D";
-    this.cameraMode = "2D";
+    this.cameraMode = this.localStorage.camera?.mode ?? "3D";
+    // this.cameraMode = "2D";
 
     this.initCamera();
     this.setCamera(this.cameraMode);
@@ -113,7 +113,7 @@ class Scene {
     } else {
       this.pointer = new Vector3(
         (event.offsetX / this.htmlElement.clientWidth) * 2 - 1,
-        -(event.offsetY / this.htmlElement.clientHeight) * 2 + 1
+        -(event.offsetY / this.htmlElement.clientHeight) * 2 + 1,
       );
     }
   }
@@ -123,13 +123,13 @@ class Scene {
       this?.controls?.target.set(
         this.localStorage.camera.target.x,
         this.localStorage.camera.target.y,
-        this.localStorage.camera.target.z
+        this.localStorage.camera.target.z,
       );
 
       this.camera?.position.set(
         this.localStorage.camera.pos.x,
         this.localStorage.camera.pos.y,
-        this.localStorage.camera.pos.z
+        this.localStorage.camera.pos.z,
       );
 
       this.camera.zoom = this.localStorage.camera.zoom;
@@ -138,6 +138,10 @@ class Scene {
   }
 
   private initEvents() {
+    this.controls.addEventListener("change", () => {
+      this.updateCameraData();
+    });
+
     this.htmlElement?.addEventListener("mousemove", () => {
       this.mouseMove();
     });
@@ -145,7 +149,7 @@ class Scene {
     this.htmlElement?.addEventListener("mousedown", () => {
       const planeIntersect = Math2D.NetAlgorithms.planeIntersection(
         new Vector3(0, 0, 0),
-        this.raycaster.ray.clone()
+        this.raycaster.ray.clone(),
       ).clone();
 
       this.ground = {
@@ -165,7 +169,7 @@ class Scene {
       if (!this.scene) return;
 
       const runDelete = (
-        children: Array<THREE.Mesh<any, any> | THREE.Group>
+        children: Array<THREE.Mesh<any, any> | THREE.Group>,
       ) => {
         for (let i = 0; i < children.length; i++) {
           let child = children[i];
@@ -214,7 +218,7 @@ class Scene {
           30,
           this.htmlElement.clientWidth / this.htmlElement.clientHeight,
           0.1,
-          100
+          100,
         );
 
         this.camera.position.set(pos.x, 10, pos.z);
@@ -236,7 +240,7 @@ class Scene {
           frustumSize / 2,
           frustumSize / -2,
           0.1,
-          far
+          far,
         );
 
         this.camera.position.set(0, far / 2, 0);
@@ -269,7 +273,7 @@ class Scene {
 
     this.raycaster.setFromCamera(
       new THREE.Vector2(this.pointer?.x, this.pointer?.y),
-      this.camera
+      this.camera,
     );
 
     this.snapHighLight?.run();
@@ -281,7 +285,7 @@ class Scene {
   mouseMove() {
     const planeIntersect = Math2D.NetAlgorithms.planeIntersection(
       new Vector3(0, 0, 0),
-      this.raycaster.ray.clone()
+      this.raycaster.ray.clone(),
     ).clone();
 
     this.ground = {
