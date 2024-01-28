@@ -35,13 +35,7 @@ const Right = () => {
   }, [app]);
 
   return (
-    <Grid
-      container
-      sx={{
-        height: 500,
-        overflow: "scroll",
-      }}
-    >
+    <Grid container>
       <Object3D />
       <LineType />
     </Grid>

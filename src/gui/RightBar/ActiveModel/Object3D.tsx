@@ -32,15 +32,7 @@ const Object3D = () => {
     });
   }, [app]);
 
-  return (
-    <Grid
-      container
-      sx={{
-        height: 500,
-        overflow: "scroll",
-      }}
-    ></Grid>
-  );
+  return <Grid container></Grid>;
 };
 
 export { Object3D };

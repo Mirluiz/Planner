@@ -83,6 +83,7 @@ class Scene {
       }
 
       this.controller.event.emit("scene_update");
+      this.controller.model.event.emit("objects_updated");
     });
 
     this.engine.htmlElement?.addEventListener("mouseup", () => {
