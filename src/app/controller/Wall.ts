@@ -4,18 +4,23 @@ import { Math2D } from "../system";
 import { Vector3 } from "three";
 import { Controller } from "./Controller";
 import { WallEnd } from "../model/Wall/WallEnd";
+import { Room } from "./Room";
 
 class Wall implements Controller {
   readonly scene: SceneModel;
+  readonly roomController: Room;
 
   activeModel: WallModel | null = null;
 
-  constructor(props: { scene: SceneModel }) {
+  constructor(props: { scene: SceneModel; room: Room }) {
     this.scene = props.scene;
+    this.roomController = props.room;
   }
 
   create(props: { x: number; y: number; z: number }) {
     this.startDraw(props);
+
+    this.roomController.updateGraph();
 
     return this.activeModel;
   }
@@ -318,8 +323,6 @@ class Wall implements Controller {
     } else {
       this.start({ ...props });
     }
-
-    // this.roomController.updateGraph();
   }
 
   draw(props: { x: number; y: number; z: number }) {
@@ -466,7 +469,7 @@ class Wall implements Controller {
         let nextNormal = wall.end.clone()?.sub(wall.start).normalize();
 
         if (currentNormal && nextNormal) {
-          let angle = angleBetweenVectorsWithOrientation(
+          let angle = this.angleBetweenVectorsWithOrientation(
             currentNormal,
             nextNormal
           );
@@ -489,7 +492,7 @@ class Wall implements Controller {
         let nextNormal = wall.start.clone()?.sub(wall.end).normalize();
 
         if (currentNormal && nextNormal) {
-          let angle = angleBetweenVectorsWithOrientation(
+          let angle = this.angleBetweenVectorsWithOrientation(
             currentNormal,
             nextNormal
           );
@@ -515,18 +518,18 @@ class Wall implements Controller {
 
     this.updateWallAngles();
   }
-}
 
-function angleBetweenVectorsWithOrientation(
-  vectorA: Vector3,
-  vectorB: Vector3
-) {
-  const crossProduct = vectorA.x * vectorB.z - vectorA.z * vectorB.x;
-  const dotProduct = vectorA.x * vectorB.x + vectorA.z * vectorB.z;
+  private angleBetweenVectorsWithOrientation(
+    vectorA: Vector3,
+    vectorB: Vector3
+  ) {
+    const crossProduct = vectorA.x * vectorB.z - vectorA.z * vectorB.x;
+    const dotProduct = vectorA.x * vectorB.x + vectorA.z * vectorB.z;
 
-  const angleRadians = Math.atan2(crossProduct, dotProduct);
+    const angleRadians = Math.atan2(crossProduct, dotProduct);
 
-  return angleRadians;
+    return angleRadians;
+  }
 }
 
 export { Wall };

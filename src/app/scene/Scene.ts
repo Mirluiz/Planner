@@ -71,6 +71,9 @@ class Scene {
       let intersection = this.model.intersects[0];
 
       if (this.dragElement?.object) {
+        if (this.dragElement.object.onUpdate)
+          this.dragElement.object.onUpdate();
+
         this.dragElement.object.model.focused = false;
         this.dragElement.object.model.notifyObservers();
         this.dragElement = null;

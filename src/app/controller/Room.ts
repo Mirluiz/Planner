@@ -10,11 +10,13 @@ import { Controller } from "./Controller";
 
 class Room implements Controller {
   readonly scene: SceneModel;
+  readonly graph: GraphController;
 
   activeModel: RoomModel | null = null;
 
   constructor(props: { scene: SceneModel }) {
     this.scene = props.scene;
+    this.graph = new GraphController();
   }
 
   create(props: { [key: string]: any }) {
@@ -56,142 +58,92 @@ class Room implements Controller {
         newRoom.corners.push(_c);
       });
 
-      // roomCorners.map((value, index, array) => {
-      //   let middleCorner = array[(index + 1) % array.length];
-      //   let nextCorner = array[(index + 2) % array.length];
-      //
-      //   let toMiddleWall: WallModel | undefined;
-      //   let toNextWall: WallModel | undefined;
-      //
-      //   value.walls.map((wall) => {
-      //     let _w = middleCorner.walls.find((w) => w.uuid === wall.uuid);
-      //     if (_w) {
-      //       toMiddleWall = _w;
-      //     }
-      //   });
-      //
-      //   middleCorner.walls.map((wall) => {
-      //     let _w = nextCorner.walls.find((w) => w.uuid === wall.uuid);
-      //     if (_w) {
-      //       toNextWall = _w;
-      //     }
-      //   });
-      //
-      //   if (toNextWall && toMiddleWall) {
-      //     let v0 = new Vector3(
-      //       value.position.x,
-      //       value.position.y,
-      //       value.position.z
-      //     );
-      //     let v1 = new Vector3(
-      //       middleCorner.position.x,
-      //       middleCorner.position.y,
-      //       middleCorner.position.z
-      //     );
-      //     let v2 = new Vector3(
-      //       nextCorner.position.x,
-      //       nextCorner.position.y,
-      //       nextCorner.position.z
-      //     );
-      //
-      //     let angle = angleBetweenVectorsWithOrientation(
-      //       v0.clone().sub(v1),
-      //       v2.clone().sub(v1)
-      //     );
-      //
-      //     middleCorner.walls.map((wall) => {
-      //       if (
-      //         wall.connections.start instanceof Corner &&
-      //         wall.connections.end instanceof Corner
-      //       ) {
-      //         // toMiddleWall.endAngle = -angle / 2;
-      //         if (wall.connections.end.uuid === middleCorner.uuid) {
-      //           wall.endAngle = -angle / 2;
-      //         } else if (wall.connections.start.uuid === middleCorner.uuid) {
-      //           wall.startAngle = -angle / 2;
-      //         }
-      //       }
-      //     });
-      //
-      //     // toNextWall.startAngle = -angle / 2;
-      //     console.log("toNextWall.startAngle", toNextWall.startAngle);
-      //   }
-      // });
-
-      // newRoom.triangulation = this.getTriangles(roomCorners);
+      newRoom.triangulation = this.getTriangles(roomCorners);
 
       this.scene.addObject(newRoom);
     });
   }
 
   private getTriangles(corners: Corner[]) {
-    // let vertices = corners.map((corner) => {
-    //   return {
-    //     uuid: corner.uuid,
-    //     position: { x: corner.position.x, y: 0, z: corner.position.z },
-    //     isVertex: true,
-    //   };
-    // });
-    //
-    // return Polygon.getTriangles(vertices, this.graph);
+    let vertices = corners.map((corner) => {
+      return {
+        uuid: corner.uuid,
+        position: { x: corner.position.x, y: 0, z: corner.position.z },
+        isVertex: true,
+      };
+    });
+
+    return Polygon.getTriangles(vertices, this.graph);
   }
 
   updateGraph() {
-    // this.graph.graph = {};
-    // this.graph.vertices = {};
-    //
-    // let walls = this.scene.model.objects.filter(
-    //   (obj): obj is WallModel => obj instanceof WallModel
-    // );
-    //
-    // let corners = this.scene.model.objects.filter(
-    //   (obj): obj is Corner => obj instanceof Corner
-    // );
-    //
-    // walls.map((wall) => {
-    //   let from: Corner | undefined = corners.find((obj): obj is Corner =>
-    //     obj.walls.some((w) => w.uuid === wall.uuid)
-    //   );
-    //   let to: Corner | undefined = corners.find(
-    //     (obj): obj is Corner =>
-    //       obj.walls.some((w) => w.uuid === wall.uuid) && obj.uuid !== from?.uuid
-    //   );
-    //
-    //   if (from && to) {
-    //     this.graph?.addEdge(
-    //       { uuid: from.uuid, position: from.position },
-    //       { uuid: to.uuid, position: to.position }
-    //     );
-    //   }
-    // });
-    //
-    // if (!this.graph) return;
-    //
-    // let cycles = this.graph.getCycles();
-    //
-    // let roomCorners: Array<Array<Corner>> = [];
-    //
-    // cycles.map((cycle) => {
-    //   let _corners: Array<Corner> = [];
-    //   let vectors: Array<Vector3> = [];
-    //
-    //   cycle.map((uuid) => {
-    //     let corner: Corner | undefined = corners.find(
-    //       (obj): obj is Corner => obj.uuid === uuid
-    //     );
-    //
-    //     if (corner) {
-    //       _corners.push(corner);
-    //       vectors.push(
-    //         new Vector3(corner.position.x, corner.position.y, corner.position.z)
-    //       );
-    //     }
-    //   });
-    //
-    //   roomCorners.push(_corners);
-    // });
-    //
-    // this.updateByCorners(roomCorners);
+    this.graph.graph = {};
+    this.graph.vertices = {};
+
+    let walls = this.scene.objects.filter(
+      (obj): obj is WallModel => obj instanceof WallModel
+    );
+
+    let corners = this.scene.objects.filter(
+      (obj): obj is Corner => obj instanceof Corner
+    );
+
+    walls.map((wall) => {
+      let from: Corner | undefined = corners.find((obj): obj is Corner =>
+        obj.walls.some((w) => w.uuid === wall.uuid)
+      );
+      let to: Corner | undefined = corners.find(
+        (obj): obj is Corner =>
+          obj.walls.some((w) => w.uuid === wall.uuid) && obj.uuid !== from?.uuid
+      );
+
+      if (from && to) {
+        this.graph?.addEdge(
+          { uuid: from.uuid, position: from.position },
+          { uuid: to.uuid, position: to.position }
+        );
+      }
+    });
+
+    if (!this.graph) return;
+
+    let cycles = this.graph.getCycles();
+
+    let roomCorners: Array<Array<Corner>> = [];
+
+    cycles.map((cycle) => {
+      let _corners: Array<Corner> = [];
+      let vectors: Array<Vector3> = [];
+
+      cycle.map((uuid) => {
+        let corner: Corner | undefined = corners.find(
+          (obj): obj is Corner => obj.uuid === uuid
+        );
+
+        if (corner) {
+          _corners.push(corner);
+          vectors.push(
+            new Vector3(corner.position.x, corner.position.y, corner.position.z)
+          );
+        }
+      });
+
+      roomCorners.push(_corners);
+    });
+
+    this.updateByCorners(roomCorners);
+  }
+
+  private angleBetweenVectorsWithOrientation(
+    vectorA: Vector3,
+    vectorB: Vector3
+  ) {
+    const crossProduct = vectorA.x * vectorB.z - vectorA.z * vectorB.x;
+    const dotProduct = vectorA.x * vectorB.x + vectorA.z * vectorB.z;
+
+    const angleRadians = Math.atan2(crossProduct, dotProduct);
+
+    return angleRadians;
   }
 }
 

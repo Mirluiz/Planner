@@ -82,31 +82,6 @@ class Room extends BaseMesh implements Mesh, Observer {
     return geometry;
   }
 
-  private getArea() {
-    let innerHole = [];
-    let outerPolygon = [];
-    let area = 0;
-
-    let _i = 0;
-    const n = this.model.triangulation.length;
-    while (_i < this.model.triangulation.length) {
-      const v0 = this.model.triangulation[_i];
-      const v1 = this.model.triangulation[(_i + 1) % n];
-      const v2 = this.model.triangulation[(_i + 2) % n];
-
-      area +=
-        Math.abs(
-          v0.position.x * (v1.position.y - v2.position.y) +
-            v1.position.x * (v2.position.y - v0.position.y) +
-            v2.position.x * (v0.position.y - v1.position.y)
-        ) / 2;
-
-      _i += 3;
-    }
-
-    return area;
-  }
-
   private getText(info?: string) {
     if (!Storage.debug) return null;
 

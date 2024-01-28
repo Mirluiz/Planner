@@ -55,6 +55,10 @@ class Wall extends BaseMesh implements Mesh, Observer {
     }
   }
 
+  onUpdate() {
+    this.app.roomController.updateGraph();
+  }
+
   reRender() {
     if (!this.mesh) return;
 

@@ -30,6 +30,7 @@ class App {
 
     this.wallController = new WallController({
       scene: this.sceneController.model,
+      room: this.roomController,
     });
   }
 

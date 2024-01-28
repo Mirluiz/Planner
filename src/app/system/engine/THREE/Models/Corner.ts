@@ -28,6 +28,10 @@ class Corner extends BaseMesh implements Mesh, Observer {
     }
   }
 
+  onUpdate() {
+    this.app.roomController.updateGraph();
+  }
+
   reRender() {
     if (!this.mesh) return;
 

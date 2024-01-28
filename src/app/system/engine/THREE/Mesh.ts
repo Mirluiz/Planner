@@ -12,6 +12,7 @@ interface Mesh {
       }
     >
   ) => void;
+  onUpdate?: () => void;
   destroy: () => void;
 }
 

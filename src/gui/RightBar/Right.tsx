@@ -4,6 +4,7 @@ import { useSceneContext } from "../System/PiperContext";
 import { Corner, Wall } from "../../app/model";
 import { LineType } from "./ActiveModel/LineType";
 import { Object3D } from "./ActiveModel/Object3D";
+import { Room } from "./ActiveModel/Room";
 
 const Right = () => {
   const { app } = useSceneContext();
@@ -36,6 +37,7 @@ const Right = () => {
 
   return (
     <Grid container>
+      <Room />
       <Object3D />
       <LineType />
     </Grid>

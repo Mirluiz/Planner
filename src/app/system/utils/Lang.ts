@@ -3,4 +3,5 @@ export const Lang = {
   PIPE: "Труба",
   CORNER: "Угол",
   FITTING: "Фиттинг",
+  ROOM: "Комната",
 };
