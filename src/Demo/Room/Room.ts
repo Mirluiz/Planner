@@ -245,7 +245,7 @@ class Room {
   run() {
     // this.runAll();
     let wallController = this.app.wallController;
-    let { corners } = this.examples[12];
+    let { corners } = this.examples[3];
 
     corners.map((cornerData, index) => {
       if (!cornerData) {
@@ -254,7 +254,7 @@ class Room {
         wallController.startDraw({
           x: cornerData.pos.x,
           y: cornerData.pos.y,
-          z: cornerData.pos.z - 8,
+          z: cornerData.pos.z,
         });
       }
     });

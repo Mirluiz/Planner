@@ -144,7 +144,10 @@ class Wall extends BaseMesh implements Mesh, Observer {
     let h = this.model.dimension.height;
 
     let endAngle = this.model.endAngle; // is angle
-    let endCrop = Math.min(15, (depth / 2) * Math.tan(endAngle));
+    let endCrop = Math.max(
+      Math.min(Math.PI / 4, (depth / 2) * Math.tan(endAngle)),
+      -Math.PI / 4,
+    );
 
     let endSideEdgeLn =
       Math.sqrt(endCrop * endCrop + (depth / 2) * (depth / 2)) * 2;
@@ -165,7 +168,10 @@ class Wall extends BaseMesh implements Mesh, Observer {
     ];
 
     let startAngle = this.model.startAngle; // is angle
-    let startCrop = Math.min(15, (depth / 2) * Math.tan(startAngle));
+    let startCrop = Math.max(
+      Math.min(Math.PI / 4, (depth / 2) * Math.tan(startAngle)),
+      -Math.PI / 4,
+    );
 
     let startSideEdgeLn =
       Math.sqrt(startCrop * startCrop + (depth / 2) * (depth / 2)) * 2;

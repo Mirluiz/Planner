@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import { App as PiperApp } from "./../app/App";
 import { SceneProviderContext } from "./System/PiperContext";
-import { Left } from "./Menus/Left";
-import { BottomBar } from "./Menus/BottomBar";
-import { Right } from "./Menus/Right";
-import { Top } from "./Menus/Top";
+import { Left } from "./LeftBar/Left";
+import { BottomBar } from "./BottomBar/BottomBar";
+import { Right } from "./RightBar/Right";
+import { Top } from "./TopBar/Top";
 import { Room } from "../Demo/Room/Room";
 import { Wall } from "../Demo/Wall";
 import { Vector3 } from "three";
@@ -36,7 +36,7 @@ const App = () => {
         // let line = new Line({ start, end });
         // app.sceneController.view?.engine.scene.add(line.render());
 
-        demo.run();
+        // demo.run();
         // angle.run();
         // corner.run();
         // wall.run();
