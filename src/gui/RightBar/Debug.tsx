@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Grid, ListItem } from "@mui/material";
+import { useSceneContext } from "../System/PiperContext";
 import ListSubheader from "@mui/material/ListSubheader";
 import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
-import { useSceneContext } from "../../System/PiperContext";
-import { Corner, Wall } from "../../../app/model";
+import { Corner, Wall } from "../../app/model";
 
-const Right = () => {
+const Debug = () => {
   const { app } = useSceneContext();
   const [corners, setCorners] = useState<Corner[]>([]);
   const [walls, setWalls] = useState<Wall[]>([]);
@@ -115,4 +115,4 @@ const Right = () => {
   );
 };
 
-export { Right };
+export { Debug };

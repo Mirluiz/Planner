@@ -36,7 +36,7 @@ const App = () => {
         // let line = new Line({ start, end });
         // app.sceneController.view?.engine.scene.add(line.render());
 
-        // demo.run();
+        demo.run();
         // angle.run();
         // corner.run();
         // wall.run();

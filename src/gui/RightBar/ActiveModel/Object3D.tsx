@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Grid, ListItem } from "@mui/material";
-import { useSceneContext } from "../System/PiperContext";
-import { Corner, Wall } from "../../app/model";
-import { LineType } from "./ActiveModel/LineType";
-import { Object3D } from "./ActiveModel/Object3D";
+import { useSceneContext } from "../../System/PiperContext";
+import { Corner, Wall } from "../../../app/model";
 
-const Right = () => {
+const Object3D = () => {
   const { app } = useSceneContext();
   const [corners, setCorners] = useState<Corner[]>([]);
   const [walls, setWalls] = useState<Wall[]>([]);
@@ -41,11 +39,8 @@ const Right = () => {
         height: 500,
         overflow: "scroll",
       }}
-    >
-      <Object3D />
-      <LineType />
-    </Grid>
+    ></Grid>
   );
 };
 
-export { Right };
+export { Object3D };
