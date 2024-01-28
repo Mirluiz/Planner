@@ -296,8 +296,13 @@ class Wall implements Controller {
       }
 
       if (corner.walls.length < 2) {
+        if (corner.walls[0].start.object?.uuid === corner.uuid) {
+          corner.walls[0].start.object = null;
+        } else {
+          corner.walls[0].end.object = null;
+        }
+
         this.scene.removeObject(corner.uuid);
-        // corner.destroy();
       }
     }
   }

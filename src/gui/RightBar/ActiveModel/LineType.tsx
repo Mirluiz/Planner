@@ -7,20 +7,20 @@ import { Lang } from "../../../app/system/utils/Lang";
 
 const LineType = () => {
   const { app } = useSceneContext();
-  const [active, setActive] = useState<null | Wall | Pipe>();
+  const [focused, setFocused] = useState<null | Wall | Pipe>();
 
   useEffect(() => {
     app?.sceneController.model.event.subscribe("objects_updated", () => {
-      let activeElement = null;
+      let focusedElement = null;
 
       app?.sceneController.model.objects.map((child) => {
-        if (child.active && child instanceof Wall) {
-          activeElement = child;
+        if (child.focused && child instanceof Wall) {
+          focusedElement = child;
           return;
         }
       });
 
-      setActive(activeElement);
+      setFocused(focusedElement);
     });
   }, [app]);
 
@@ -60,7 +60,7 @@ const LineType = () => {
 
   return (
     <>
-      {active && (
+      {focused && (
         <Grid
           sx={{
             display: "flex",
@@ -72,13 +72,14 @@ const LineType = () => {
           }}
         >
           <Typography>
-            Object {active?.type && getNameByType(active.type)}
+            Название {focused?.type && getNameByType(focused.type)}
           </Typography>
           <Typography>
-            Start {active?.start.object && getNameByObject(active.start.object)}
+            Начало{" "}
+            {focused?.start.object && getNameByObject(focused.start.object)}
           </Typography>
           <Typography>
-            End {active?.end.object && getNameByObject(active.end.object)}
+            Конец {focused?.end.object && getNameByObject(focused.end.object)}
           </Typography>
         </Grid>
       )}

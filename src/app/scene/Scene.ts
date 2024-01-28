@@ -15,7 +15,15 @@ class Scene {
   mode: "draw" | null = null;
   activeController: Controller | null = null;
 
+  private mousePressed: boolean = false;
+
   engine: THREEScene;
+  focusedElement: {
+    centerOffset: Vector3;
+    position: Vector3;
+    object: Mesh;
+    initialData: { position: Vector3 };
+  } | null = null;
   dragElement: {
     centerOffset: Vector3;
     position: Vector3;
@@ -34,6 +42,7 @@ class Scene {
   private initListeners() {
     this.engine.htmlElement?.addEventListener("mousedown", (event) => {
       this.engine.onPointerMove(event);
+      this.mousePressed = true;
 
       if (this.mode) {
         let object = this.activeController?.create({
@@ -43,43 +52,14 @@ class Scene {
         object?.notifyObservers();
       } else {
         this.model.objects.map((element) => {
-          element.active = false;
+          element.focused = false;
         });
 
         this.model.intersects.map((intersect) => {
           intersect.object.model.focused = false;
         });
 
-        let intersection = this.model.intersects[0];
-        let ground = new Vector3(
-          this.engine.groundInters.x,
-          this.engine.groundInters.y,
-          this.engine.groundInters.z
-        );
-
-        if (intersection) {
-          this.dragElement =
-            {
-              centerOffset: ground
-                .clone()
-                .sub(
-                  new Vector3(
-                    intersection.object.model.position.x,
-                    intersection.object.model.position.y,
-                    intersection.object.model.position.z
-                  )
-                ),
-              object: intersection.object,
-              position: intersection.position.clone(),
-              initialData: {
-                position: ground,
-              },
-            } ?? null;
-        }
-
-        if (this.dragElement?.object?.model) {
-          this.dragElement.object.model.active = true;
-        }
+        this.updateFocusedObject();
       }
 
       this.controller.event.emit("scene_update");
@@ -87,10 +67,18 @@ class Scene {
     });
 
     this.engine.htmlElement?.addEventListener("mouseup", () => {
+      this.mousePressed = false;
+      let intersection = this.model.intersects[0];
+
       if (this.dragElement?.object) {
         this.dragElement.object.model.focused = false;
         this.dragElement.object.model.notifyObservers();
         this.dragElement = null;
+      } else {
+        if (intersection && !this.mode) {
+          intersection.object.model.focused = true;
+          this.controller.model.event.emit("objects_updated");
+        }
       }
     });
 
@@ -98,24 +86,27 @@ class Scene {
       this.engine.onPointerMove(event);
       this.updateIntersection(this.engine.intersects);
 
+      if (this.mousePressed && this.focusedElement) {
+        this.updateDraggedObject();
+
+        let diff = new Vector3(
+          this.engine.mouseDownPosition.x - this.engine.groundInters.x,
+          this.engine.mouseDownPosition.y - this.engine.groundInters.y,
+          this.engine.mouseDownPosition.z - this.engine.groundInters.z
+        );
+
+        let updatedPosition = this.dragElement?.initialData.position
+          .clone()
+          .sub(diff);
+
+        this.dragElement?.object?.update({
+          position: updatedPosition,
+          meshIntersectionPosition: this.dragElement.centerOffset,
+        });
+        this.dragElement?.object.model.notifyObservers();
+      }
+
       if (!this.mode) {
-        if (this.dragElement) {
-          let diff = new Vector3(
-            this.engine.mouseDownPosition.x - this.engine.groundInters.x,
-            this.engine.mouseDownPosition.y - this.engine.groundInters.y,
-            this.engine.mouseDownPosition.z - this.engine.groundInters.z
-          );
-
-          let updatedPosition = this.dragElement.initialData.position
-            .clone()
-            .sub(diff);
-
-          this.dragElement?.object?.update({
-            position: updatedPosition,
-            meshIntersectionPosition: this.dragElement.centerOffset,
-          });
-          this.dragElement.object.model.notifyObservers();
-        }
       } else {
         let object = this.activeController?.update({
           ...this.engine.groundInters,
@@ -163,6 +154,49 @@ class Scene {
     }
 
     this.model.intersects = intersections;
+  }
+
+  private updateFocusedObject() {
+    this.focusedElement = null;
+    let intersection = this.model.intersects[0];
+    let ground = new Vector3(
+      this.engine.groundInters.x,
+      this.engine.groundInters.y,
+      this.engine.groundInters.z
+    );
+
+    if (intersection?.object?.model) {
+      this.focusedElement =
+        {
+          centerOffset: ground
+            .clone()
+            .sub(
+              new Vector3(
+                intersection.object.model.position.x,
+                intersection.object.model.position.y,
+                intersection.object.model.position.z
+              )
+            ),
+          object: intersection.object,
+          position: intersection.position.clone(),
+          initialData: {
+            position: ground,
+          },
+        } ?? null;
+    }
+  }
+
+  private updateDraggedObject() {
+    if (this.focusedElement) {
+      this.dragElement = {
+        centerOffset: this.focusedElement.centerOffset.clone(),
+        object: this.focusedElement.object,
+        position: this.focusedElement.position.clone(),
+        initialData: {
+          position: this.focusedElement.initialData.position.clone(),
+        },
+      };
+    }
   }
 
   isBaseMesh(object: any): object is Mesh {
