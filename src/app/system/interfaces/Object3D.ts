@@ -89,6 +89,7 @@ interface Object3D {
   notifyObservers: () => void;
 
   destroy: () => void;
+  clone: () => Object3D;
 }
 
 export { Object3D, Object3DProps, Schema as Object3DSchema };

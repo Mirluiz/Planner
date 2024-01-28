@@ -3,6 +3,7 @@ import {
   Wall as WallModel,
   Pipe as PipeModel,
   Room as RoomModel,
+  Door as DoorModel,
   Corner as CornerModel,
 } from "../../../model";
 import { Mesh, BaseMesh } from "./Mesh";
@@ -11,6 +12,7 @@ import { Pipe } from "./Models/Pipe";
 import { Room } from "./Models/Room";
 import { Corner } from "./Models/Corner";
 import { App } from "../../../App";
+import { Door } from "./Models/Door";
 
 class Renderer {
   static threeJS(model: Object3D, app: App): Mesh | undefined {
@@ -22,6 +24,9 @@ class Renderer {
         break;
       case Entity.WALL:
         ret = new Wall(<WallModel>model, app);
+        break;
+      case Entity.DOOR:
+        ret = new Door(<DoorModel>model, app);
         break;
       case Entity.ROOM:
         ret = new Room(<RoomModel>model);

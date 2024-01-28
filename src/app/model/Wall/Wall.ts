@@ -148,6 +148,14 @@ class Wall implements Object3D, Geometry.Line {
       type: Entity.WALL,
     };
   }
+
+  clone() {
+    return new Wall({
+      ...this.toJson(),
+      end: this.end.clone(),
+      start: this.start.clone(),
+    });
+  }
 }
 
 export { Wall };

@@ -5,6 +5,7 @@ import BedroomParentOutlinedIcon from "@mui/icons-material/BedroomParentOutlined
 import HvacOutlinedIcon from "@mui/icons-material/HvacOutlined";
 import OtherHousesOutlinedIcon from "@mui/icons-material/OtherHousesOutlined";
 import { useSceneContext } from "../../System/PiperContext";
+import { Door } from "../../../app/model/Door";
 
 const House = () => {
   const { app } = useSceneContext();
@@ -52,6 +53,7 @@ const House = () => {
 
             app.sceneController.view.mode = "draw";
             app.sceneController.view.activeController = app.object3DController;
+            app.sceneController.view.activeController.model = new Door();
           }}
         >
           Door

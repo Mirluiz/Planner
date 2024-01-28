@@ -7,3 +7,4 @@ export * from "./Wall/Wall";
 export * from "./Wall/Corner";
 
 export * from "./Room";
+export * from "./Door";

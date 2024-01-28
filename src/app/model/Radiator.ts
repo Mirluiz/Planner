@@ -52,6 +52,10 @@ class Radiator implements Object3D {
       type: Entity.RADIATOR,
     };
   }
+
+  clone() {
+    return new Radiator(this.toJson());
+  }
 }
 
 export { Radiator };

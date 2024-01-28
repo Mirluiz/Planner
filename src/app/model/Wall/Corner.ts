@@ -59,6 +59,10 @@ class Corner implements Object3D {
       type: Entity.CORNER,
     };
   }
+
+  clone() {
+    return new Corner(this.toJson());
+  }
 }
 
 export { Corner };

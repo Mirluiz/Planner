@@ -93,6 +93,10 @@ class Room implements Object3D {
   static fromJson(schema: Omit<Object3DSchema, "type">) {
     return new Room({ ...schema });
   }
+
+  clone() {
+    return new Room(this.toJson());
+  }
 }
 
 export { Room };

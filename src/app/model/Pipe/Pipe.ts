@@ -100,6 +100,14 @@ class Pipe implements Object3D, Geometry.Line {
       flow: this.flow,
     };
   }
+
+  clone() {
+    return new Pipe({
+      ...this.toJson(),
+      end: this.end.clone(),
+      start: this.start.clone(),
+    });
+  }
 }
 
 export { Pipe };

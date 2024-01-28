@@ -10,7 +10,7 @@ import {
 import * as THREE from "three";
 import { Observer } from "../system/interfaces/Observer";
 
-class Fitting implements Object3D {
+class Door implements Object3D {
   hovered = false;
   focused = false;
   temporary = false;
@@ -22,13 +22,20 @@ class Fitting implements Object3D {
   rotation;
   position;
 
-  type = Entity.FITTING;
+  type = Entity.DOOR;
 
-  constructor(props: Object3DProps) {
-    this.uuid = props.uuid ?? Helpers.uuid();
-    this.dimension = props.dimension ?? { width: 0.1, depth: 1, height: 1 };
-    this.rotation = props.rotation ?? { w: 0, x: 0, y: 0, z: 0 };
-    this.position = props.position ?? { x: 0, y: 0, z: 0 };
+  constructor(props?: Object3DProps) {
+    if (!props) {
+      this.uuid = Helpers.uuid();
+      this.dimension = { width: 0.1, depth: 1, height: 1 };
+      this.rotation = { w: 0, x: 0, y: 0, z: 0 };
+      this.position = { x: 0, y: 0, z: 0 };
+    } else {
+      this.uuid = props.uuid ?? Helpers.uuid();
+      this.dimension = props.dimension ?? { width: 0.1, depth: 1, height: 1 };
+      this.rotation = props.rotation ?? { w: 0, x: 0, y: 0, z: 0 };
+      this.position = props.position ?? { x: 0, y: 0, z: 0 };
+    }
   }
 
   addObserver(observer: Observer) {
@@ -54,20 +61,22 @@ class Fitting implements Object3D {
   toJson() {
     return {
       uuid: this.uuid,
-      dimension: this.dimension,
-      rotation: this.rotation,
-      position: this.position,
+      dimension: { ...this.dimension },
+      rotation: { ...this.rotation },
+      position: { ...this.position },
       type: Entity.FITTING,
     };
   }
 
   static fromJson(schema: Omit<Object3DSchema, "type">) {
-    return new Fitting({ ...schema });
+    return new Door({ ...schema });
   }
 
   clone() {
-    return new Fitting(this.toJson());
+    let jsonV = this.toJson();
+    jsonV.uuid = Helpers.uuid();
+    return new Door(jsonV);
   }
 }
 
-export { Fitting };
+export { Door };

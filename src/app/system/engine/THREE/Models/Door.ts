@@ -1,16 +1,11 @@
-import { Object3DProps, Storage } from "../../../";
 import * as THREE from "three";
-import { Wall as WallModel } from "../../../../model/Wall/Wall";
+import { Door as DoorModel } from "../../../../model/Door";
 import { Mesh, BaseMesh } from "../Mesh";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Observer } from "../../../interfaces/Observer";
-import { ColorManager } from "../../../utils/Color";
-import { Scene } from "../../../../controller";
 import { App } from "../../../../App";
-import { Vector3 } from "three";
 
 class Door extends BaseMesh implements Mesh, Observer {
-  constructor(readonly model: WallModel, private app: App) {
+  constructor(readonly model: DoorModel, private app: App) {
     super(model);
 
     model.addObserver(this);
@@ -45,14 +40,22 @@ class Door extends BaseMesh implements Mesh, Observer {
     this.destroy();
 
     const geometry = new THREE.PlaneGeometry(1, 1);
-    const material = new THREE.MeshBasicMaterial({
-      color: 0xffff00,
-      side: THREE.DoubleSide,
-    });
 
-    const mesh = new THREE.Mesh(geometry, material);
+    const edges = new THREE.EdgesGeometry(geometry);
+    const mesh = new THREE.LineSegments(
+      edges,
+      new THREE.LineBasicMaterial({ color: 0x000fff })
+    );
 
     mesh.rotateX(Math.PI / 2);
+
+    const midPoint = new THREE.Vector3(
+      this.model.position.x,
+      this.model.position.y,
+      this.model.position.z
+    );
+
+    mesh.position.copy(midPoint);
 
     mesh.name = "Door";
     mesh.userData.object = this;
