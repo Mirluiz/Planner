@@ -102,6 +102,11 @@ class Scene {
           .clone()
           .sub(diff);
 
+        if (this.engine.netBinding && updatedPosition) {
+          updatedPosition.x = +(updatedPosition.x / 10).toFixed(1) * 10;
+          updatedPosition.z = +(updatedPosition.z / 10).toFixed(1) * 10;
+        }
+
         this.dragElement?.object?.update({
           position: updatedPosition,
           meshIntersectionPosition: this.dragElement.centerOffset,
