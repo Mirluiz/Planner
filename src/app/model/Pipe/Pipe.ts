@@ -15,7 +15,7 @@ import { PipeEnd } from "./PipeEnd";
 class Pipe implements Object3D, Geometry.Line {
   hovered = false;
   focused = false;
-  active = false;
+  temporary = false;
 
   isPipe = true;
   private observers: Array<Observer> = [];

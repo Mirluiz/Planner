@@ -11,7 +11,7 @@ import { Observer } from "../../system/interfaces/Observer";
 class Corner implements Object3D {
   hovered = false;
   focused = false;
-  active = false;
+  temporary = false;
 
   walls: Array<Wall> = [];
   private observers: Observer[] = [];

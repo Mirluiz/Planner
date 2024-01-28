@@ -13,7 +13,7 @@ import { Observer } from "../system/interfaces/Observer";
 class Fitting implements Object3D {
   hovered = false;
   focused = false;
-  active = false;
+  temporary = false;
 
   private observers: Observer[] = [];
 

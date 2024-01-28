@@ -15,7 +15,7 @@ class Wall implements Object3D, Geometry.Line {
 
   hovered = false;
   focused = false;
-  active = false;
+  temporary = false;
 
   uuid;
   dimension;

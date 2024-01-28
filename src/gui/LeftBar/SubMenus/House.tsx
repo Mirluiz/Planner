@@ -48,9 +48,10 @@ const House = () => {
           onClick={() => {
             handleClose();
 
-            if (!app) return;
-            // app?.sceneController.setDrawMode("d");
-            // app.sceneController.activeController = app.wallController;
+            if (!app?.sceneController.view) return;
+
+            app.sceneController.view.mode = "draw";
+            app.sceneController.view.activeController = app.object3DController;
           }}
         >
           Door

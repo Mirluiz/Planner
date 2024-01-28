@@ -1,6 +1,7 @@
 import { Object3D } from "../system";
 
 interface Controller {
+  activeModel: Object3D | null;
   create: (...args: any[]) => Object3D | null;
   update: (...args: any[]) => Object3D | null;
   reset: () => void;

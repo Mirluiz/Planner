@@ -1,6 +1,7 @@
 import { Scene as SceneController } from "./controller/Scene";
 import { Wall as WallController } from "../app/controller/Wall";
 import { Room as RoomController } from "../app/controller/Room";
+import { Object3D as Object3DController } from "../app/controller/Object3D";
 import { Graph as GraphController } from "../app/controller/Graph";
 import { Pipe as PipeController } from "../app/controller/Pipe";
 import { EventSystem, Database, Object3D, Storage } from "./system";
@@ -14,6 +15,7 @@ class App {
   sceneController: SceneController;
   wallController: WallController;
   pipeController: PipeController;
+  object3DController: Object3DController;
   roomController: RoomController;
 
   constructor(props: { canvas: HTMLElement | null }) {
@@ -31,6 +33,10 @@ class App {
     this.wallController = new WallController({
       scene: this.sceneController.model,
       room: this.roomController,
+    });
+
+    this.object3DController = new Object3DController({
+      scene: this.sceneController.model,
     });
   }
 

@@ -245,6 +245,7 @@ class Room {
   run() {
     // this.runAll();
     let wallController = this.app.wallController;
+    let roomController = this.app.roomController;
     let { corners } = this.examples[3];
 
     corners.map((cornerData, index) => {
@@ -260,6 +261,7 @@ class Room {
     });
 
     wallController.reset();
+    roomController.updateGraph();
   }
 }
 
