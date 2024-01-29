@@ -13,17 +13,18 @@ class Scene {
   model: App["sceneController"]["model"];
 
   mode: "draw" | null = null;
-  activeController: Controller | null = null;
 
   private mousePressed: boolean = false;
 
   engine: THREEScene;
+
   focusedElement: {
     centerOffset: Vector3;
     position: Vector3;
     object: Mesh;
     initialData: { position: Vector3 };
   } | null = null;
+
   dragElement: {
     centerOffset: Vector3;
     position: Vector3;
@@ -45,11 +46,10 @@ class Scene {
       this.mousePressed = true;
 
       if (this.mode) {
-        let object = this.activeController?.create({
-          ...this.engine.groundInters,
-        });
-
-        object?.notifyObservers();
+        // let object = this.activeController?.create({
+        //   ...this.engine.groundInters,
+        // });
+        // object?.notifyObservers();
       } else {
         this.model.objects.map((element) => {
           element.focused = false;
@@ -116,17 +116,17 @@ class Scene {
 
       if (!this.mode) {
       } else {
-        let object = this.activeController?.update({
-          ...this.engine.groundInters,
-        });
-
-        object?.notifyObservers();
+        // let object = this.activeController?.update({
+        //   ...this.engine.groundInters,
+        // });
+        //
+        // object?.notifyObservers();
       }
     });
 
     this.engine.htmlElement?.addEventListener("keydown", (event) => {
       if (event.code == "Escape") {
-        this.activeController?.reset();
+        // this.activeController?.reset();
         this.mode = null;
         this.controller.event.emit("scene_update");
       }

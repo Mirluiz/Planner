@@ -1,7 +1,7 @@
 import { Geometry } from "./../../system";
 import { Engine } from "../interfaces/Engine";
 import * as THREE from "three";
-import { Scene as SceneView } from "../../scene/Scene";
+import { Scene as SceneView } from "../../view/Scene";
 import { Scene as SceneModel } from "../../model/Scene";
 import { Pipe as PipeModel } from "../../model";
 import { Math2D } from "./../utils";

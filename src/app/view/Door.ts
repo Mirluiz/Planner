@@ -1,9 +1,8 @@
 import * as THREE from "three";
-import { Door as DoorModel } from "../../../../model/Door";
-import { Mesh, BaseMesh } from "../Mesh";
-import { Observer } from "../../../interfaces/Observer";
-import { App } from "../../../../App";
-import { Wall } from "../../../../model";
+import { Door as DoorModel } from "../model/Door";
+import { BaseMesh, Mesh, Observer, ColorManager } from "./../system";
+import { App } from "../App";
+import { Wall } from "../model";
 
 class Door extends BaseMesh implements Mesh, Observer {
   constructor(readonly model: DoorModel, private app: App) {

@@ -40,7 +40,7 @@ const House = () => {
             if (!app?.sceneController.view) return;
 
             app.sceneController.view.mode = "draw";
-            app.sceneController.view.activeController = app.wallController;
+            // app.sceneController.view.activeController = app.wallController;
           }}
         >
           Wall
@@ -52,8 +52,8 @@ const House = () => {
             if (!app?.sceneController.view) return;
 
             app.sceneController.view.mode = "draw";
-            app.sceneController.view.activeController = app.object3DController;
-            app.sceneController.view.activeController.model = new Door();
+            // app.sceneController.view.activeController = app.object3DController;
+            // app.sceneController.view.activeController.model = new Door();
           }}
         >
           Door

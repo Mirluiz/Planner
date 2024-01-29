@@ -1,7 +1,7 @@
 import { Scene as SceneModel } from "../model/Scene";
 import { Corner, Fitting, Pipe, Wall } from "../model";
 import { EventSystem, Entity, Object3DSchema, Object3D } from "../system";
-import { Scene as SceneView } from "../scene/Scene";
+import { Scene as SceneView } from "../view/Scene";
 import { Room } from "../model/Room";
 import { App } from "../App";
 
