@@ -7,12 +7,8 @@ import {
   Corner as CornerModel,
 } from "../../../model";
 import { Mesh, BaseMesh } from "./Mesh";
-import { Wall } from "./Models/Wall";
-import { Pipe } from "./Models/Pipe";
-import { Room } from "./Models/Room";
-import { Corner } from "./Models/Corner";
+import { Wall, Pipe, Room, Corner, Door } from "../../../view";
 import { App } from "../../../App";
-import { Door } from "./Models/Door";
 
 class Renderer {
   static threeJS(model: Object3D, app: App): Mesh | undefined {
