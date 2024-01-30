@@ -7,4 +7,7 @@ export default defineConfig({
     hmr: false, // Disable Hot Module Replacement
   },
   plugins: [react()],
+  optimizeDeps: {
+    exclude: ["three-bvh-csg"],
+  },
 });

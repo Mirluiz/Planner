@@ -1,16 +1,10 @@
 import * as THREE from "three";
 import { Door as DoorModel } from "../model/Door";
-import {
-  BaseMesh,
-  Mesh,
-  Observer,
-  ColorManager,
-  Helpers,
-  Math2D,
-} from "./../system";
+import { BaseMesh, Mesh, Observer, Helpers, Math2D } from "./../system";
 import { App } from "../App";
 import { Wall as WallModel, Wall } from "../model";
 import { Vector3 } from "three";
+import { SUBTRACTION, Brush, Evaluator } from "three-bvh-csg";
 
 class Door extends BaseMesh implements Mesh, Observer {
   uuid: string;
@@ -48,6 +42,7 @@ class Door extends BaseMesh implements Mesh, Observer {
         .normalize();
       this.model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
       this.model.position = { ...firstObject.position };
+      this.model.attachedWall = firstObject.object;
     }
   }
 
@@ -87,6 +82,7 @@ class Door extends BaseMesh implements Mesh, Observer {
     // const geometry = new THREE.PlaneGeometry(1, 2);
 
     const edges = new THREE.EdgesGeometry(geometry);
+
     const mesh = new THREE.LineSegments(
       edges,
       new THREE.LineBasicMaterial({ color: 0x000fff })

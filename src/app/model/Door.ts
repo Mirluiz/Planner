@@ -9,9 +9,12 @@ import {
 } from "../system";
 import * as THREE from "three";
 import { Observer } from "../system/interfaces/Observer";
+import { Wall } from "./Wall/Wall";
 
 class Door implements Object3D {
   private observers: Observer[] = [];
+
+  attachedWall: Wall | null = null;
 
   uuid;
   dimension;

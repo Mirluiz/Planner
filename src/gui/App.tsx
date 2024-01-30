@@ -8,9 +8,9 @@ import { Right } from "./RightBar/Right";
 import { Top } from "./TopBar/Top";
 import { Room } from "../Demo/Room/Room";
 import { Wall } from "../Demo/Wall";
-import { Vector3 } from "three";
-import { Line } from "../app/system/engine/THREE/Indicator/Line";
+import * as THREE from "three";
 import { Angle } from "../Demo/Angle";
+import { Brush, Evaluator, SUBTRACTION } from "three-bvh-csg";
 
 const App = () => {
   const canvasRef = useRef<HTMLDivElement | null>(null);
@@ -36,12 +36,26 @@ const App = () => {
         // let line = new Line({ start, end });
         // app.sceneController.view?.engine.scene.add(line.render());
 
+        // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        //
+        // const brush1 = new Brush(new THREE.BoxGeometry(1, 1, 1));
+        // brush1.updateMatrixWorld();
+        // brush1.material = material;
+        //
+        // const brush2 = new Brush(new THREE.BoxGeometry());
+        // brush2.position.y = 0.5;
+        // brush2.updateMatrixWorld();
+        // //
+        // const evaluator = new Evaluator();
+        // const result = evaluator.evaluate(brush1, brush2, SUBTRACTION);
+
         demo.run();
         // angle.run();
         // corner.run();
         // wall.run();
 
         app.sceneController.event.emit("scene_update");
+        // app.sceneController.view?.engine.scene.add(result);
       });
 
       // @ts-ignore
