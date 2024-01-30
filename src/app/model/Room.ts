@@ -18,10 +18,6 @@ import { Vertex } from "../controller";
 import { Observer } from "../system/interfaces/Observer";
 
 class Room implements Object3D {
-  hovered = false;
-  focused = false;
-  temporary = false;
-
   corners: Array<Corner> = [];
   triangulation: Array<Vertex> = [];
 

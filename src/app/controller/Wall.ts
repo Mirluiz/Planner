@@ -64,7 +64,6 @@ class Wall implements Controller {
       this.connect(newWall, closest.object);
     }
 
-    newWall.temporary = true;
     this.addObject(newWall);
     this.activeModel = newWall;
   }
@@ -92,7 +91,6 @@ class Wall implements Controller {
       }
     }
 
-    this.activeModel.temporary = false;
     this.activeModel = null;
   }
 
@@ -512,7 +510,6 @@ class Wall implements Controller {
       this.clearTempCorner();
 
       this.scene.removeObject(this.activeModel.uuid);
-      this.activeModel.temporary = false;
       this.activeModel = null;
     }
 

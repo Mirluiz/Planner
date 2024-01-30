@@ -13,10 +13,6 @@ import { Observer } from "../../system/interfaces/Observer";
 import { PipeEnd } from "./PipeEnd";
 
 class Pipe implements Object3D, Geometry.Line {
-  hovered = false;
-  focused = false;
-  temporary = false;
-
   isPipe = true;
   private observers: Array<Observer> = [];
 

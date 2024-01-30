@@ -1,6 +1,6 @@
 import { Scene as SceneModel } from "../model/Scene";
 import { Corner, Fitting, Pipe, Wall } from "../model";
-import { EventSystem, Entity, Object3DSchema, Object3D } from "../system";
+import { EventSystem, Entity, Object3DSchema, Object3D, Mesh } from "../system";
 import { Scene as SceneView } from "../view/Scene";
 import { Room } from "../model/Room";
 import { App } from "../App";
@@ -9,8 +9,6 @@ class Scene {
   model: SceneModel;
   view: SceneView | null = null;
   event: EventSystem = new EventSystem();
-
-  active: Object3D | null = null;
 
   constructor(props: { canvas: HTMLElement | null }, readonly app: App) {
     this.model = new SceneModel();

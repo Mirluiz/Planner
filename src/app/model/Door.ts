@@ -11,10 +11,6 @@ import * as THREE from "three";
 import { Observer } from "../system/interfaces/Observer";
 
 class Door implements Object3D {
-  hovered = false;
-  focused = false;
-  temporary = false;
-
   private observers: Observer[] = [];
 
   uuid;

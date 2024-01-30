@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Typography } from "@mui/material";
 import { useSceneContext } from "../../System/PiperContext";
-import { Room as RoomModel } from "../../../app/model";
+import { Room as RoomModel, Wall } from "../../../app/model";
 import { Lang } from "../../../app/system/utils/Lang";
 
 const Room = () => {
@@ -12,9 +12,12 @@ const Room = () => {
     app?.sceneController.model.event.subscribe("objects_updated", () => {
       let focusedElement = null;
 
-      app?.sceneController.model.objects.map((child) => {
-        if (child.focused && child instanceof RoomModel) {
-          focusedElement = child;
+      app?.sceneController.view?.engine.scene.children.map((child) => {
+        if (
+          child.userData?.object?.focused &&
+          child.userData?.object instanceof RoomModel
+        ) {
+          focusedElement = child.userData?.object;
           return;
         }
       });

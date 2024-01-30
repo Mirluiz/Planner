@@ -13,10 +13,6 @@ import { WallEnd } from "./WallEnd";
 class Wall implements Object3D, Geometry.Line {
   isWall = true;
 
-  hovered = false;
-  focused = false;
-  temporary = false;
-
   uuid;
   dimension;
   rotation;

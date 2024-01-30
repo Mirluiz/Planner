@@ -18,7 +18,7 @@ class Scene {
 
   set intersects(i) {
     this._intersects.map((value, index, array) => {
-      value.object?.model.notifyObservers();
+      value.object?.model?.notifyObservers();
     });
 
     this._intersects = i;

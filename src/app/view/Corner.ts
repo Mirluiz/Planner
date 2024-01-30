@@ -34,7 +34,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
     // const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);
     const material = new THREE.MeshBasicMaterial({
       color:
-        this.model.hovered || this.model.temporary
+        this.hovered || this.temporary
           ? ColorManager.colors["lime"]
           : ColorManager.colors["beige"],
     });
@@ -57,7 +57,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
       this.model.position.z
     );
 
-    if (this.model.focused) {
+    if (this.focused) {
       this.mesh.scale.set(2, 1, 2);
     } else {
       this.mesh.scale.set(1, 1, 1);

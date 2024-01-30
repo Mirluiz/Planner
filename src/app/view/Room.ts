@@ -20,7 +20,7 @@ class Room extends BaseMesh implements Mesh, Observer {
     const geometry = this.getGeometry();
 
     const material = new THREE.MeshBasicMaterial({
-      color: this.model.hovered ? ColorManager.colors["light_grey"] : 0xffffff,
+      color: this.hovered ? ColorManager.colors["light_grey"] : 0xffffff,
     });
 
     let textMesh = this.mesh.children[0];
@@ -48,7 +48,7 @@ class Room extends BaseMesh implements Mesh, Observer {
     let geometry = this.getGeometry();
 
     const material = new THREE.MeshBasicMaterial({
-      color: this.model.hovered ? ColorManager.colors["light_grey"] : 0xffffff,
+      color: this.hovered ? ColorManager.colors["light_grey"] : 0xffffff,
     });
     const mesh = new THREE.Mesh(geometry, material);
 

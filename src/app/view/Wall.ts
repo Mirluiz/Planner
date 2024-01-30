@@ -1,6 +1,13 @@
 import * as THREE from "three";
 import { Wall as WallModel } from "../model";
-import { Storage, BaseMesh, Mesh, Observer, ColorManager } from "./../system";
+import {
+  Storage,
+  BaseMesh,
+  Mesh,
+  Observer,
+  ColorManager,
+  Object3DProps,
+} from "./../system";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Vector3 } from "three";
 import { App } from "../App";
@@ -14,6 +21,10 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
   trigger() {
     this.reRender();
+  }
+
+  create(props: { position: { x: number; y: number; z: number } }) {
+    this.app.wallController.create(props.position);
   }
 
   update(props: {
@@ -74,7 +85,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
       this.mesh.material = new THREE.MeshStandardMaterial({
         color:
-          this.model.hovered || this.model.focused
+          this.hovered || this.focused
             ? ColorManager.colors["cyan"]
             : ColorManager.colors["brown"],
       });
@@ -107,7 +118,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
     const material = new THREE.MeshStandardMaterial({
       color:
-        this.model.hovered || this.model.focused
+        this.hovered || this.focused
           ? ColorManager.colors["cyan"]
           : ColorManager.colors["brown"],
     });

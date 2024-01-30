@@ -1,10 +1,7 @@
 import * as THREE from "three";
 import { Scene as SceneController } from "./../controller/Scene";
 import { Scene as THREEScene } from "./../system/engine/THREE/Scene";
-import { Room, Wall } from "../model";
 import { App } from "../App";
-import { Object3D } from "../system";
-import { Controller } from "../controller/Controller";
 import { Vector3 } from "three";
 import { BaseMesh, Mesh } from "../system/engine/THREE/Mesh";
 
@@ -17,6 +14,12 @@ class Scene {
   private mousePressed: boolean = false;
 
   engine: THREEScene;
+
+  active: {
+    click: (position: { x: number; y: number; z: number }) => void;
+    move: (position: { x: number; y: number; z: number }) => void;
+    reset: () => void;
+  } | null = null;
 
   focusedElement: {
     centerOffset: Vector3;
@@ -43,27 +46,22 @@ class Scene {
   private initListeners() {
     this.engine.htmlElement?.addEventListener("mousedown", (event) => {
       this.engine.onPointerMove(event);
-      this.mousePressed = true;
+      if (event.button === 0) {
+        this.mousePressed = true;
 
-      if (this.mode) {
-        // let object = this.activeController?.create({
-        //   ...this.engine.groundInters,
-        // });
-        // object?.notifyObservers();
-      } else {
-        this.model.objects.map((element) => {
-          element.focused = false;
-        });
+        if (this.mode) {
+          this.active?.click({ ...this.engine.groundInters });
+        } else {
+          this.model.intersects.map((intersect) => {
+            intersect.object.focused = false;
+          });
 
-        this.model.intersects.map((intersect) => {
-          intersect.object.model.focused = false;
-        });
+          this.updateFocusedObject();
+        }
 
-        this.updateFocusedObject();
+        // this.controller.event.emit("scene_update");
+        this.controller.model.event.emit("objects_updated");
       }
-
-      this.controller.event.emit("scene_update");
-      this.controller.model.event.emit("objects_updated");
     });
 
     this.engine.htmlElement?.addEventListener("mouseup", () => {
@@ -74,12 +72,12 @@ class Scene {
         if (this.dragElement.object.onUpdate)
           this.dragElement.object.onUpdate();
 
-        this.dragElement.object.model.focused = false;
-        this.dragElement.object.model.notifyObservers();
+        this.dragElement.object.focused = false;
+        this.dragElement.object.model?.notifyObservers();
         this.dragElement = null;
       } else {
         if (intersection && !this.mode) {
-          intersection.object.model.focused = true;
+          intersection.object.focused = true;
           this.controller.model.event.emit("objects_updated");
         }
       }
@@ -111,40 +109,33 @@ class Scene {
           position: updatedPosition,
           meshIntersectionPosition: this.dragElement.centerOffset,
         });
-        this.dragElement?.object.model.notifyObservers();
+        this.dragElement?.object.model?.notifyObservers();
       }
 
-      if (!this.mode) {
-      } else {
-        // let object = this.activeController?.update({
-        //   ...this.engine.groundInters,
-        // });
-        //
-        // object?.notifyObservers();
+      if (this.mode) {
+        this.active?.move({ ...this.engine.groundInters });
       }
     });
 
     this.engine.htmlElement?.addEventListener("keydown", (event) => {
       if (event.code == "Escape") {
-        // this.activeController?.reset();
+        this.active?.reset();
+
         this.mode = null;
+        this.active = null;
         this.controller.event.emit("scene_update");
       }
     });
   }
 
   private updateIntersection(intersects: THREE.Intersection[]) {
-    this.controller.model.objects.map((model) => {
-      model.hovered = false;
-    });
-
     let intersections: Array<{
       position: Vector3;
       object: Mesh;
     }> = [];
 
     intersects.map((intersect) => {
-      if (intersect.object.userData.object?.model?.active) {
+      if (intersect.object.userData.object?.temporary) {
         return;
       }
 
@@ -158,7 +149,7 @@ class Scene {
 
     let intersect = intersections[0];
     if (intersect) {
-      intersect.object.model.hovered = true;
+      intersect.object.hovered = true;
     }
 
     this.model.intersects = intersections;

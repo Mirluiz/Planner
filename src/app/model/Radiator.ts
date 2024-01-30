@@ -3,10 +3,6 @@ import * as THREE from "three";
 import { Observer } from "../system/interfaces/Observer";
 
 class Radiator implements Object3D {
-  hovered = false;
-  focused = false;
-  temporary = false;
-
   private observers: Array<Observer> = [];
 
   uuid;

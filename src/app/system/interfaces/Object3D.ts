@@ -57,10 +57,6 @@ interface Schema {
 }
 
 interface Object3D {
-  hovered: boolean;
-  focused: boolean;
-  temporary: boolean;
-
   position: {
     x: number;
     y: number;
