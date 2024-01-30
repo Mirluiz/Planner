@@ -1,8 +1,16 @@
 import * as THREE from "three";
 import { Door as DoorModel } from "../model/Door";
-import { BaseMesh, Mesh, Observer, ColorManager, Helpers } from "./../system";
+import {
+  BaseMesh,
+  Mesh,
+  Observer,
+  ColorManager,
+  Helpers,
+  Math2D,
+} from "./../system";
 import { App } from "../App";
-import { Wall } from "../model";
+import { Wall as WallModel, Wall } from "../model";
+import { Vector3 } from "three";
 
 class Door extends BaseMesh implements Mesh, Observer {
   uuid: string;
@@ -22,10 +30,28 @@ class Door extends BaseMesh implements Mesh, Observer {
   }) {
     if (props.position) this.model.position = { ...props.position };
 
-    this.seekSnap();
+    if (props.position) this.seekSnap(props.position);
   }
 
-  seekSnap() {
+  seekSnap(position: { x: number; y: number; z: number }) {
+    let snapsByDistance = Math2D.Line.seekSnap(
+      this.walls,
+      new Vector3(position.x, position.y, position.z)
+    );
+
+    let firstObject = snapsByDistance[0];
+
+    if (firstObject && firstObject.distance < 2 && firstObject.object) {
+      let angle = firstObject.object.end
+        .clone()
+        .sub(firstObject.object.start.clone())
+        .normalize();
+      this.model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
+      this.model.position = { ...firstObject.position };
+    }
+  }
+
+  intersectionWithWall() {
     let { intersects } = this.app.sceneController.model;
     let firstObject = intersects[0]?.object?.model;
 
@@ -48,9 +74,8 @@ class Door extends BaseMesh implements Mesh, Observer {
     );
 
     this.mesh.position.copy(midPoint);
-    // this.mesh.rotation.y = this.model.rotation.y;
+    this.mesh.rotation.y = this.model.rotation.y;
 
-    // this.mesh.matrixAutoUpdate = false;
     this.mesh.updateMatrixWorld();
     this.mesh.updateMatrix();
   }
@@ -84,6 +109,16 @@ class Door extends BaseMesh implements Mesh, Observer {
     this.mesh = mesh;
 
     return this.mesh;
+  }
+
+  private get walls() {
+    return this.app.sceneController.model.objects.filter(
+      (obj): obj is WallModel => {
+        if (obj instanceof WallModel) {
+          return Math2D.Line.isLine(obj);
+        } else return false;
+      }
+    );
   }
 }
 
