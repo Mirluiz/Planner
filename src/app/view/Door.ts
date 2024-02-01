@@ -18,46 +18,14 @@ class Door extends BaseMesh implements Mesh, Observer {
     this.reRender();
   }
 
-  update(props: {
-    position?: { x: number; y: number; z: number };
-    meshIntersectionPosition?: { x: number; y: number; z: number };
-  }) {
-    if (props.position) this.model.position = { ...props.position };
-
-    if (props.position) this.seekSnap(props.position);
-  }
-
-  seekSnap(position: { x: number; y: number; z: number }) {
-    let snapsByDistance = Math2D.Line.seekSnap(
-      this.walls,
-      new Vector3(position.x, position.y, position.z)
-    );
-
-    let firstObject = snapsByDistance[0];
-
-    if (firstObject && firstObject.distance < 2 && firstObject.object) {
-      let angle = firstObject.object.end
-        .clone()
-        .sub(firstObject.object.start.clone())
-        .normalize();
-      this.model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
-      this.model.position = { ...firstObject.position };
-      this.model.attachedWall = firstObject.object;
-    }
-  }
-
-  intersectionWithWall() {
-    let { intersects } = this.app.sceneController.model;
-    let firstObject = intersects[0]?.object?.model;
-
-    if (firstObject instanceof Wall) {
-      let angle = firstObject.end
-        .clone()
-        .sub(firstObject.start.clone())
-        .normalize();
-      this.model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
-    }
-  }
+  // update(props: {
+  //   position?: { x: number; y: number; z: number };
+  //   meshIntersectionPosition?: { x: number; y: number; z: number };
+  // }) {
+  //   if (props.position) this.model.position = { ...props.position };
+  //
+  //   if (props.position) this.seekSnap(props.position);
+  // }
 
   reRender() {
     if (!this.mesh) return;

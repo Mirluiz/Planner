@@ -1,0 +1,102 @@
+import { Vector3 } from "three";
+import { Corner, Wall as WallModel } from "../../model";
+import { Math2D } from "../../system";
+import { WallEnd } from "../../model/Wall/WallEnd";
+
+class GeometryCalculation {
+  static getClosestCorner(vector: Vector3, corners: Corner[]) {
+    corners.sort(
+      (a, b) =>
+        vector.distanceTo(
+          new Vector3(a.position.x, a.position.y, a.position.z)
+        ) -
+        vector.distanceTo(new Vector3(b.position.x, b.position.y, b.position.z))
+    );
+
+    let closest: Corner | undefined = corners[0];
+
+    return closest &&
+      vector.distanceTo(
+        new Vector3(closest.position.x, closest.position.y, closest.position.z)
+      ) < 0.5
+      ? closest
+      : null;
+  }
+
+  static getClosestWall(
+    vector: Vector3,
+    walls: WallModel[]
+  ): {
+    distance: number;
+    position: Vector3;
+    object: WallModel;
+  } | null {
+    let snapsByDistance = Math2D.Line.seekSnap(walls, vector);
+
+    return snapsByDistance[0] ?? null;
+  }
+
+  static getWallSnap(
+    wall1: WallModel,
+    wall2: WallModel
+  ): {
+    distance: number;
+    position: Vector3;
+    end: WallEnd;
+  } | null {
+    let ret: {
+      distance: number;
+      position: Vector3;
+      end: WallEnd;
+    } | null = null;
+
+    let pipeStart = wall1.start;
+    let pipeEnd = wall1.end;
+
+    let startDistance = Math2D.Line.getSnap(pipeStart, wall2);
+    let endDistance = Math2D.Line.getSnap(pipeEnd, wall2);
+
+    if (startDistance !== null && endDistance !== null) {
+      ret =
+        startDistance.distance > endDistance.distance
+          ? {
+              ...endDistance,
+              end: wall1.end,
+            }
+          : {
+              ...startDistance,
+              end: wall1.start,
+            };
+    } else if (startDistance !== null) {
+      ret = {
+        ...startDistance,
+        end: wall1.start,
+      };
+    } else if (endDistance !== null) {
+      ret = {
+        ...endDistance,
+        end: wall1.end,
+      };
+    }
+
+    return ret;
+  }
+
+  static angleBetweenVectorsWithOrientation(
+    vectorA: Vector3,
+    vectorB: Vector3
+  ) {
+    const crossProduct = vectorA.x * vectorB.z - vectorA.z * vectorB.x;
+    const dotProduct = vectorA.x * vectorB.x + vectorA.z * vectorB.z;
+
+    const angleRadians = Math.atan2(crossProduct, dotProduct);
+
+    return angleRadians;
+  }
+
+  static isItWallEnd(wall: WallModel, pos: Vector3): WallEnd | null {
+    return Math2D.Line.isEnd(wall, pos) === "start" ? wall.start : wall.end;
+  }
+}
+
+export { GeometryCalculation };

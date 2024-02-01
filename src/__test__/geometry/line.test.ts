@@ -1,8 +1,8 @@
 import { describe, test } from "@jest/globals";
-import { Math2D } from "../app/system";
-import { Wall } from "./../app/model/Wall/Wall";
+import { Math2D } from "../../app/system";
+import { Wall } from "../../app/model/Wall/Wall";
 import * as THREE from "three";
-import { WallEnd } from "../app/model/Wall/WallEnd";
+import { WallEnd } from "../../app/model/Wall/WallEnd";
 
 describe("Line algorithms", () => {
   test("line ends intersection", () => {

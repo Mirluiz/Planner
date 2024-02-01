@@ -5,10 +5,12 @@ import {
   Object3D,
   Object3DProps,
   Object3DSchema,
+  Math2D,
 } from "../../system";
 import { Vector3 } from "three";
 import { Observer } from "../../system/interfaces/Observer";
 import { WallEnd } from "./WallEnd";
+import { GeometryCalculation } from "../../controller/Wall/GeometryCalculation";
 
 class Wall implements Object3D, Geometry.Line {
   isWall = true;
@@ -104,6 +106,87 @@ class Wall implements Object3D, Geometry.Line {
     this.position.x = midPoint.x;
     this.position.y = midPoint.y;
     this.position.z = midPoint.z;
+  }
+
+  updateWallAngle() {
+    let startWalls = this.start.object?.walls.filter(
+      (_w) => _w.uuid !== this.uuid
+    );
+    let endWalls = this.end.object?.walls.filter((_w) => _w.uuid !== this.uuid);
+
+    let prevWall: Wall | undefined;
+    let nextWall: Wall | undefined;
+
+    if (startWalls) {
+      prevWall = startWalls.sort(
+        (a, b) =>
+          Math2D.Calculation.calculateTheta(
+            new Vector3(a.position.x, a.position.y, a.position.z)
+          ) -
+          Math2D.Calculation.calculateTheta(
+            new Vector3(b.position.x, b.position.y, b.position.z)
+          )
+      )[0];
+    }
+
+    if (endWalls) {
+      nextWall = endWalls.sort(
+        (a, b) =>
+          Math2D.Calculation.calculateTheta(
+            new Vector3(a.position.x, a.position.y, a.position.z)
+          ) -
+          Math2D.Calculation.calculateTheta(
+            new Vector3(b.position.x, b.position.y, b.position.z)
+          )
+      )[0];
+    }
+
+    {
+      if (prevWall) {
+        let nextWallOppositeEnd =
+          prevWall.start.object?.uuid === this.start.object?.uuid
+            ? prevWall.end
+            : prevWall.start;
+        let currentNormal = nextWallOppositeEnd
+          .clone()
+          .sub(this.start)
+          .normalize();
+
+        let nextNormal = this.end.clone()?.sub(this.start).normalize();
+
+        if (currentNormal && nextNormal) {
+          let angle = GeometryCalculation.angleBetweenVectorsWithOrientation(
+            currentNormal,
+            nextNormal
+          );
+
+          this.endAngle = angle / 2 - Math.PI / 2;
+        }
+      }
+    }
+
+    {
+      if (nextWall) {
+        let prevWallOppositeEnd =
+          nextWall.start.object?.uuid === this.end.object?.uuid
+            ? nextWall.end
+            : nextWall.start;
+        let currentNormal = prevWallOppositeEnd
+          .clone()
+          .sub(this.end)
+          .normalize();
+        let nextNormal = this.start.clone()?.sub(this.end).normalize();
+
+        if (currentNormal && nextNormal) {
+          let angle = GeometryCalculation.angleBetweenVectorsWithOrientation(
+            currentNormal,
+            nextNormal
+          );
+
+          this.startAngle = angle / 2 - Math.PI / 2;
+        }
+      }
+    }
   }
 
   static fromJson(schema: Object3DSchema) {

@@ -1,5 +1,5 @@
 import { Scene as SceneController } from "./controller/Scene";
-import { Wall as WallController } from "../app/controller/Wall";
+import { Wall as WallController } from "../app/controller/Wall/Wall";
 import { Room as RoomController } from "../app/controller/Room";
 import { Object3D as Object3DController } from "../app/controller/Object3D";
 import { Graph as GraphController } from "../app/controller/Graph";
@@ -32,7 +32,6 @@ class App {
 
     this.wallController = new WallController({
       scene: this.sceneController.model,
-      room: this.roomController,
     });
 
     this.object3DController = new Object3DController({

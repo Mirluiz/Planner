@@ -1,12 +1,12 @@
 import { Geometry } from "./../";
 import { Vector3 } from "three";
-import { Corner } from "../../model";
+import { Corner, Wall as WallModel } from "../../model";
 
 namespace Math2D {
   export class Line {
     static seekSnap<T extends Geometry.Line>(
       lines: Array<T>,
-      vec: Geometry.Vector3,
+      vec: Geometry.Vector3
     ) {
       let snaps: Array<{
         position: Geometry.Vector3;
@@ -36,7 +36,7 @@ namespace Math2D {
 
     static getSnap<T extends Geometry.Line>(
       vec: Geometry.Vector3,
-      line: Geometry.Line,
+      line: Geometry.Line
     ): {
       distance: number;
       position: Vector3;
@@ -77,7 +77,7 @@ namespace Math2D {
 
     private static getEnd<T extends Geometry.Line>(
       lines: Array<T>,
-      end: Vector3,
+      end: Vector3
     ): { object: T; end: "start" | "end" } | null {
       let closest: { object: T; end: "start" | "end" } | null = null;
 
@@ -98,8 +98,8 @@ namespace Math2D {
       return line.end.distanceTo(pos) < 1
         ? "end"
         : line.start.distanceTo(pos) < 1
-          ? "start"
-          : null;
+        ? "start"
+        : null;
     }
 
     static isLine(obj: any): obj is Geometry.Line {
@@ -108,7 +108,7 @@ namespace Math2D {
 
     private static vectorLineIntersectionPosition(
       v: Geometry.Vector3,
-      ln: Geometry.Line,
+      ln: Geometry.Line
     ): {
       distance: number;
       position: Vector3;
@@ -120,7 +120,7 @@ namespace Math2D {
         .clone()
         .multiplyScalar(
           vOrigin.clone().dot(lnOrigin.clone()) /
-            (lnOrigin.length() * lnOrigin.length()),
+            (lnOrigin.length() * lnOrigin.length())
         );
 
       let isObtuse =
@@ -167,8 +167,14 @@ namespace Math2D {
       return new Vector3(
         intersection.x,
         Math.round(intersection.y),
-        intersection.z,
+        intersection.z
       );
+    }
+  }
+
+  export class Calculation {
+    static calculateTheta(vector: Vector3): number {
+      return Math.atan2(vector.z, vector.x) * (180 / Math.PI);
     }
   }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { Graph } from "../app/system";
+import { Graph } from "../../app/system";
 
 describe("Graph cycles", () => {
   /**
