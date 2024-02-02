@@ -24,6 +24,7 @@ class GeometryCalculation {
   }
 
   static getClosestWall(
+    wall: WallModel,
     vector: Vector3,
     walls: WallModel[]
   ): {
@@ -33,7 +34,11 @@ class GeometryCalculation {
   } | null {
     let snapsByDistance = Math2D.Line.seekSnap(walls, vector);
 
-    return snapsByDistance[0] ?? null;
+    let excludeItself = snapsByDistance.filter(
+      (snap) => snap.object.uuid !== wall?.uuid
+    );
+
+    return excludeItself[0] ?? null;
   }
 
   static getWallSnap(
@@ -89,9 +94,7 @@ class GeometryCalculation {
     const crossProduct = vectorA.x * vectorB.z - vectorA.z * vectorB.x;
     const dotProduct = vectorA.x * vectorB.x + vectorA.z * vectorB.z;
 
-    const angleRadians = Math.atan2(crossProduct, dotProduct);
-
-    return angleRadians;
+    return Math.atan2(crossProduct, dotProduct);
   }
 
   static isItWallEnd(wall: WallModel, pos: Vector3): WallEnd | null {

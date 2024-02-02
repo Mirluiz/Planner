@@ -1,7 +1,6 @@
 import { Wall as WallModel, Corner } from "../../model/";
 import { Scene as SceneModel } from "../../model/Scene";
 import { Math2D } from "../../system";
-import { Vector3 } from "three";
 import { Controller } from "../Controller";
 import { WallEnd } from "../../model/Wall/WallEnd";
 import { GeometryCalculation } from "./GeometryCalculation";
@@ -54,7 +53,7 @@ class Wall implements Controller {
       ? GeometryCalculation.getClosestCorner(newWall.start, this.corners)
       : null;
     const closest = newWall?.start
-      ? GeometryCalculation.getClosestWall(newWall.start, this.walls)
+      ? GeometryCalculation.getClosestWall(newWall, newWall.start, this.walls)
       : null;
 
     if (corner) {
@@ -78,7 +77,11 @@ class Wall implements Controller {
       ? GeometryCalculation.getClosestCorner(this.model.end, this.corners)
       : null;
     const closest = this.model
-      ? GeometryCalculation.getClosestWall(this.model.end, this.walls)
+      ? GeometryCalculation.getClosestWall(
+          this.model,
+          this.model.end,
+          this.walls
+        )
       : null;
 
     if (this.model) {
@@ -238,106 +241,9 @@ class Wall implements Controller {
     }
   }
 
-  onCornerUpdate(corner: Corner) {
-    corner.walls.map((wall) => {
-      if (wall.end.object?.uuid === corner.uuid) {
-        wall.end.set(corner.position.x, corner.position.y, corner.position.z);
-      } else {
-        wall.end.object?.walls.map((w) => {
-          w.updateWallAngle();
-          w.notifyObservers();
-        });
-      }
-
-      if (wall.start.object?.uuid === corner.uuid) {
-        wall.start.set(corner.position.x, corner.position.y, corner.position.z);
-      } else {
-        wall.start.object?.walls.map((w) => {
-          w.updateWallAngle();
-          w.notifyObservers();
-        });
-      }
-
-      wall.updateCenter();
-      wall.updateWallAngle();
-      wall.notifyObservers();
-    });
-  }
-
-  onWallUpdate(w: WallModel) {
-    let startCorner = w.start.object;
-    let endCorner = w.end.object;
-
-    if (startCorner) {
-      startCorner.position = { x: w.start.x, y: w.start.y, z: w.start.z };
-      startCorner.walls.map((wall) => {
-        if (wall.uuid !== w.uuid && startCorner) {
-          if (wall.end.object?.uuid === startCorner.uuid) {
-            wall.end.set(
-              startCorner.position.x,
-              startCorner.position.y,
-              startCorner.position.z
-            );
-          }
-
-          if (wall.start.object?.uuid === startCorner.uuid) {
-            wall.start.set(
-              startCorner.position.x,
-              startCorner.position.y,
-              startCorner.position.z
-            );
-          }
-
-          wall.updateCenter();
-          wall.notifyObservers();
-        }
-      });
-
-      startCorner.notifyObservers();
-    }
-
-    if (endCorner) {
-      endCorner.position = { x: w.end.x, y: w.end.y, z: w.end.z };
-      endCorner.walls.map((wall) => {
-        if (wall.uuid !== w.uuid && endCorner) {
-          if (wall.end.object?.uuid === endCorner.uuid) {
-            wall.end.set(
-              endCorner.position.x,
-              endCorner.position.y,
-              endCorner.position.z
-            );
-          }
-
-          if (wall.start.object?.uuid === endCorner.uuid) {
-            wall.start.set(
-              endCorner.position.x,
-              endCorner.position.y,
-              endCorner.position.z
-            );
-          }
-
-          wall.updateCenter();
-          wall.notifyObservers();
-        }
-      });
-
-      endCorner.notifyObservers();
-    }
-
-    this.updateWallAngles();
-
-    // this.corners.map((corner) => {
-    //   corner.notifyObservers();
-    // });
-    //
-    // this.walls.map((wall) => {
-    //   wall.notifyObservers();
-    // });
-  }
-
   private updateWallAngles() {
     this.walls.map((wall) => {
-      wall.updateWallAngle();
+      wall.updateAngle();
     });
   }
 

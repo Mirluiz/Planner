@@ -1,15 +1,7 @@
 import * as THREE from "three";
 import { Wall as WallModel } from "../model";
-import {
-  Storage,
-  BaseMesh,
-  Mesh,
-  Observer,
-  ColorManager,
-  Object3DProps,
-} from "./../system";
+import { BaseMesh, ColorManager, Mesh, Observer, Storage } from "./../system";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
-import { Vector3 } from "three";
 import { App } from "../App";
 
 class Wall extends BaseMesh implements Mesh, Observer {
@@ -23,44 +15,44 @@ class Wall extends BaseMesh implements Mesh, Observer {
     this.reRender();
   }
 
-  create(props: { position: { x: number; y: number; z: number } }) {
-    this.app.wallController.create(props.position);
-  }
+  // create(props: { position: { x: number; y: number; z: number } }) {
+  //   this.app.wallController.create(props.position);
+  // }
 
-  update(props: {
-    position?: { x: number; y: number; z: number };
-    meshIntersectionPosition?: { x: number; y: number; z: number };
-  }) {
-    let { position, meshIntersectionPosition } = props;
-
-    if (position && meshIntersectionPosition) {
-      let meshIPVec = new Vector3(
-        meshIntersectionPosition.x,
-        meshIntersectionPosition.y,
-        meshIntersectionPosition.z
-      );
-      let mousePos = new Vector3(position.x, position.y, position.z);
-      let newMidPosition = mousePos.clone().sub(meshIPVec);
-
-      let difference = newMidPosition.sub(
-        new Vector3(
-          this.model.position.x,
-          this.model.position.y,
-          this.model.position.z
-        )
-      );
-
-      let startModelPos = this.model.start.clone().add(difference);
-      let endModelPos = this.model.end.clone().add(difference);
-
-      this.model.start.set(startModelPos.x, startModelPos.y, startModelPos.z);
-      this.model.end.set(endModelPos.x, endModelPos.y, endModelPos.z);
-
-      this.model.updateCenter();
-
-      this.app.wallController.onWallUpdate(this.model);
-    }
-  }
+  // update(props: {
+  //   position?: { x: number; y: number; z: number };
+  //   meshIntersectionPosition?: { x: number; y: number; z: number };
+  // }) {
+  //   let { position, meshIntersectionPosition } = props;
+  //
+  //   if (position && meshIntersectionPosition) {
+  //     let meshIPVec = new Vector3(
+  //       meshIntersectionPosition.x,
+  //       meshIntersectionPosition.y,
+  //       meshIntersectionPosition.z
+  //     );
+  //     let mousePos = new Vector3(position.x, position.y, position.z);
+  //     let newMidPosition = mousePos.clone().sub(meshIPVec);
+  //
+  //     let difference = newMidPosition.sub(
+  //       new Vector3(
+  //         this.model.position.x,
+  //         this.model.position.y,
+  //         this.model.position.z
+  //       )
+  //     );
+  //
+  //     let startModelPos = this.model.start.clone().add(difference);
+  //     let endModelPos = this.model.end.clone().add(difference);
+  //
+  //     this.model.start.set(startModelPos.x, startModelPos.y, startModelPos.z);
+  //     this.model.end.set(endModelPos.x, endModelPos.y, endModelPos.z);
+  //
+  //     this.model.updateCenter();
+  //
+  //     this.app.wallController.onWallUpdate(this.model);
+  //   }
+  // }
 
   onUpdate() {
     this.app.roomController.updateGraph();
@@ -83,11 +75,14 @@ class Wall extends BaseMesh implements Mesh, Observer {
       this.mesh.geometry.setFromPoints(geometry);
       this.mesh.material.dispose();
 
+      // this.mesh.material = new THREE.MeshStandardMaterial({
+      //   color:
+      //     this.hovered || this.focused
+      //       ? ColorManager.colors["cyan"]
+      //       : ColorManager.colors["brown"],
+      // });
       this.mesh.material = new THREE.MeshStandardMaterial({
-        color:
-          this.hovered || this.focused
-            ? ColorManager.colors["cyan"]
-            : ColorManager.colors["brown"],
+        color: ColorManager.colors["brown"],
       });
       this.mesh.geometry.needsUpdate = true;
     }
@@ -176,6 +171,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
     ];
 
     let startAngle = this.model.startAngle; // is angle
+
     let startCrop = Math.max(
       Math.min(Math.PI / 4, (depth / 2) * Math.tan(startAngle)),
       -Math.PI / 4
@@ -260,10 +256,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
       ),
     ];
 
-    const vertices = [...front, ...up, ...right, ...bottom, ...back, ...left];
-
-    return vertices;
-    // return new THREE.BoxGeometry().setFromPoints(vertices);
+    return [...front, ...up, ...right, ...bottom, ...back, ...left];
   }
 
   private angle(start: THREE.Vector3, end: THREE.Vector3) {

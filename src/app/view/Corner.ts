@@ -20,7 +20,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
     if (position) {
       this.model.position = { ...position };
 
-      this.app.wallController.onCornerUpdate(this.model);
+      this.model.update();
     }
   }
 
@@ -53,7 +53,8 @@ class Corner extends BaseMesh implements Mesh, Observer {
 
     this.mesh.position.set(
       this.model.position.x,
-      this.model.position.y + highestPoint.dimension.height + 0.1 / 2,
+      // this.model.position.y + highestPoint.dimension.height + 0.1 / 2,
+      this.model.position.y,
       this.model.position.z
     );
 
@@ -69,26 +70,26 @@ class Corner extends BaseMesh implements Mesh, Observer {
   render() {
     this.destroy();
 
-    const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);
-    const material = new THREE.MeshBasicMaterial({
-      color: ColorManager.colors["beige"],
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-
-    let highestPoint = this.model.walls.sort(
-      (a, b) => b.dimension.height - a.dimension.height
-    )[0];
-
-    mesh.position.set(
-      this.model.position.x,
-      this.model.position.y + highestPoint.dimension.height + 0.1 / 2,
-      this.model.position.z
-    );
-
-    mesh.userData.object = this;
-    mesh.name = "Corner";
-
-    this.mesh = mesh;
+    // const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);
+    // const material = new THREE.MeshBasicMaterial({
+    //   color: ColorManager.colors["beige"],
+    // });
+    // const mesh = new THREE.Mesh(geometry, material);
+    //
+    // let highestPoint = this.model.walls.sort(
+    //   (a, b) => b.dimension.height - a.dimension.height
+    // )[0];
+    //
+    // mesh.position.set(
+    //   this.model.position.x,
+    //   this.model.position.y + highestPoint.dimension.height + 0.1 / 2,
+    //   this.model.position.z
+    // );
+    //
+    // mesh.userData.object = this;
+    // mesh.name = "Corner";
+    //
+    // this.mesh = mesh;
 
     return this.mesh;
   }

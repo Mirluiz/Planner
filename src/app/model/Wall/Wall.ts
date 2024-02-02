@@ -108,7 +108,7 @@ class Wall implements Object3D, Geometry.Line {
     this.position.z = midPoint.z;
   }
 
-  updateWallAngle() {
+  updateAngle() {
     let startWalls = this.start.object?.walls.filter(
       (_w) => _w.uuid !== this.uuid
     );

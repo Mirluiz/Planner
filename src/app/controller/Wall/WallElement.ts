@@ -21,8 +21,6 @@ class WallElement implements Controller {
   }
 
   create() {
-    console.log("==");
-
     return this.model ?? null;
   }
 

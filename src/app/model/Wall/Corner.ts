@@ -36,6 +36,32 @@ class Corner implements Object3D {
     }
   }
 
+  update() {
+    this.walls.map((wall) => {
+      if (wall.end.object?.uuid === this.uuid) {
+        wall.end.set(this.position.x, this.position.y, this.position.z);
+      } else {
+        wall.end.object?.walls.map((w) => {
+          w.updateAngle();
+          w.notifyObservers();
+        });
+      }
+
+      if (wall.start.object?.uuid === this.uuid) {
+        wall.start.set(this.position.x, this.position.y, this.position.z);
+      } else {
+        wall.start.object?.walls.map((w) => {
+          w.updateAngle();
+          w.notifyObservers();
+        });
+      }
+
+      wall.updateCenter();
+      wall.updateAngle();
+      wall.notifyObservers();
+    });
+  }
+
   destroy() {
     for (const observer of this.observers) {
       observer.trigger();
