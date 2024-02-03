@@ -59,7 +59,6 @@ class Scene {
           this.updateFocusedObject();
         }
 
-        // this.controller.event.emit("scene_update");
         this.controller.model.event.emit("objects_updated");
       }
     });
@@ -133,6 +132,12 @@ class Scene {
       position: Vector3;
       object: Mesh;
     }> = [];
+
+    this.engine.scene.children.map((child) => {
+      if (this.isBaseMesh(child.userData?.object)) {
+        child.userData.object.hovered = false;
+      }
+    });
 
     intersects.map((intersect) => {
       if (intersect.object.userData.object?.temporary) {

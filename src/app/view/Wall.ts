@@ -75,14 +75,11 @@ class Wall extends BaseMesh implements Mesh, Observer {
       this.mesh.geometry.setFromPoints(geometry);
       this.mesh.material.dispose();
 
-      // this.mesh.material = new THREE.MeshStandardMaterial({
-      //   color:
-      //     this.hovered || this.focused
-      //       ? ColorManager.colors["cyan"]
-      //       : ColorManager.colors["brown"],
-      // });
       this.mesh.material = new THREE.MeshStandardMaterial({
-        color: ColorManager.colors["brown"],
+        color:
+          this.hovered || this.focused
+            ? ColorManager.colors["cyan"]
+            : ColorManager.colors["brown"],
       });
       this.mesh.geometry.needsUpdate = true;
     }
