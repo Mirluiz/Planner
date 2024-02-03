@@ -1,31 +1,37 @@
 import { Wall as WallModel, Corner } from "../../model/";
-import { Scene as SceneModel } from "../../model/Scene";
 import { Math2D } from "../../system";
 import { Controller } from "../Controller";
 import { WallEnd } from "../../model/Wall/WallEnd";
 import { GeometryCalculation } from "./GeometryCalculation";
+import { Base } from "../Base";
+import { Wall as WallView } from "./../../view/Wall";
+import { App } from "../../App";
+import { Scene as SceneController } from "../Scene";
 
-class Wall implements Controller {
-  readonly scene: SceneModel;
+class Wall extends Base<WallModel, WallView> implements Controller {
+  constructor(readonly app: App, readonly sceneController: SceneController) {
+    super(app, sceneController);
 
-  model: WallModel | null = null;
-
-  constructor(props: { scene: SceneModel }) {
-    this.scene = props.scene;
+    this.model = new WallModel();
+    this.view = new WallView(this.model);
   }
 
   get walls() {
-    return this.scene.objects.filter((obj): obj is WallModel => {
-      if (obj instanceof WallModel) {
-        return Math2D.Line.isLine(obj);
-      } else return false;
-    });
+    return (
+      this.sceneController.model?.objects.filter((obj): obj is WallModel => {
+        if (obj instanceof WallModel) {
+          return Math2D.Line.isLine(obj);
+        } else return false;
+      }) ?? []
+    );
   }
 
   get corners() {
-    return this.scene.objects.filter((obj): obj is Corner => {
-      return obj instanceof Corner;
-    });
+    return (
+      this.sceneController.model?.objects.filter((obj): obj is Corner => {
+        return obj instanceof Corner;
+      }) ?? []
+    );
   }
 
   create(props: { x: number; y: number; z: number }) {
@@ -64,7 +70,7 @@ class Wall implements Controller {
       this.connect(newWall, closest.object);
     }
 
-    this.scene.addObject(newWall);
+    this.sceneController.model?.addObject(newWall);
     this.model = newWall;
   }
 
@@ -95,7 +101,7 @@ class Wall implements Controller {
       }
     }
 
-    this.model = null;
+    // this.model = null;
   }
 
   moveEnd(
@@ -130,7 +136,7 @@ class Wall implements Controller {
       snap.end.object = corner;
       wallToConnectEnd.object = corner;
 
-      this.scene.addObject(corner);
+      this.sceneController.model?.addObject(corner);
     } else {
       let corner = new Corner({
         position: { ...position },
@@ -164,9 +170,9 @@ class Wall implements Controller {
 
       wall.end.object = corner;
 
-      this.scene.addObject(dividedWallFromPrevCorner);
-      this.scene.addObject(dividedWallToNextCorner);
-      this.scene.addObject(corner);
+      this.sceneController.model?.addObject(dividedWallFromPrevCorner);
+      this.sceneController.model?.addObject(dividedWallToNextCorner);
+      this.sceneController.model?.addObject(corner);
 
       if (wallToConnect.start.object) {
         let wallIndex = wallToConnect.start.object.walls.findIndex(
@@ -192,7 +198,7 @@ class Wall implements Controller {
         wallToConnect.end.object.walls.push(dividedWallToNextCorner);
       }
 
-      this.scene.removeObject(wallToConnect.uuid);
+      this.sceneController.model?.removeObject(wallToConnect.uuid);
 
       wallToConnect.destroy();
 
@@ -201,7 +207,7 @@ class Wall implements Controller {
   }
 
   clearTempCorner() {
-    let corner = this.scene.objects.find(
+    let corner = this.sceneController.model?.objects.find(
       (obj): obj is Corner =>
         obj instanceof Corner &&
         obj.walls.some((w) => w.uuid === this.model?.uuid)
@@ -221,7 +227,7 @@ class Wall implements Controller {
           corner.walls[0].end.object = null;
         }
 
-        this.scene.removeObject(corner.uuid);
+        this.sceneController.model?.removeObject(corner.uuid);
       }
     }
   }
@@ -251,8 +257,8 @@ class Wall implements Controller {
     if (this.model) {
       this.clearTempCorner();
 
-      this.scene.removeObject(this.model.uuid);
-      this.model = null;
+      this.sceneController.model?.removeObject(this.model.uuid);
+      // this.model = null;
     }
 
     this.updateWallAngles();

@@ -19,7 +19,7 @@ class Renderer {
         ret = new Pipe(<PipeModel>model);
         break;
       case Entity.WALL:
-        ret = new Wall(<WallModel>model, app);
+        ret = new Wall(<WallModel>model);
         break;
       case Entity.DOOR:
         ret = new Door(<DoorModel>model, app);

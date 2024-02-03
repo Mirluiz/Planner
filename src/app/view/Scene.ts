@@ -13,7 +13,7 @@ class Scene {
 
   private mousePressed: boolean = false;
 
-  engine: THREEScene;
+  engine: THREEScene | null = null;
 
   active: {
     click: (position: { x: number; y: number; z: number }) => void;
@@ -44,8 +44,10 @@ class Scene {
   }
 
   private initListeners() {
-    this.engine.htmlElement?.addEventListener("mousedown", (event) => {
-      this.engine.onPointerMove(event);
+    this.engine?.htmlElement?.addEventListener("mousedown", (event) => {
+      if (!this.engine) return;
+
+      this.engine?.onPointerMove(event);
       if (event.button === 0) {
         this.mousePressed = true;
 
@@ -63,7 +65,9 @@ class Scene {
       }
     });
 
-    this.engine.htmlElement?.addEventListener("mouseup", () => {
+    this.engine?.htmlElement?.addEventListener("mouseup", () => {
+      if (!this.engine) return;
+
       this.mousePressed = false;
       let intersection = this.model.intersects[0];
 
@@ -82,7 +86,9 @@ class Scene {
       }
     });
 
-    this.engine.htmlElement?.addEventListener("mousemove", (event) => {
+    this.engine?.htmlElement?.addEventListener("mousemove", (event) => {
+      if (!this.engine) return;
+
       this.engine.onPointerMove(event);
       this.updateIntersection(this.engine.intersects);
 
@@ -116,7 +122,7 @@ class Scene {
       }
     });
 
-    this.engine.htmlElement?.addEventListener("keydown", (event) => {
+    this.engine?.htmlElement?.addEventListener("keydown", (event) => {
       if (event.code == "Escape") {
         this.active?.reset();
 
@@ -133,7 +139,7 @@ class Scene {
       object: Mesh;
     }> = [];
 
-    this.engine.scene.children.map((child) => {
+    this.engine?.scene.children.map((child) => {
       if (this.isBaseMesh(child.userData?.object)) {
         child.userData.object.hovered = false;
       }
@@ -164,9 +170,9 @@ class Scene {
     this.focusedElement = null;
     let intersection = this.model.intersects[0];
     let ground = new Vector3(
-      this.engine.groundInters.x,
-      this.engine.groundInters.y,
-      this.engine.groundInters.z
+      this.engine?.groundInters.x,
+      this.engine?.groundInters.y,
+      this.engine?.groundInters.z
     );
 
     if (intersection?.object?.model) {

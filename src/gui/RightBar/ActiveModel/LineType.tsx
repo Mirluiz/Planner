@@ -13,7 +13,7 @@ const LineType = () => {
     app?.sceneController.model.event.subscribe("objects_updated", () => {
       let focusedElement = null;
 
-      app?.sceneController.view?.engine.scene.children.map((child) => {
+      app?.sceneController.view?.engine?.scene.children.map((child) => {
         if (
           child.userData?.object?.focused &&
           child.userData?.object instanceof Wall

@@ -1,14 +1,16 @@
 import { Scene as SceneModel } from "../model/Scene";
-import { Corner, Fitting, Pipe, Wall } from "../model";
-import { EventSystem, Entity, Object3DSchema, Object3D, Mesh } from "../system";
+import { EventSystem } from "../system";
 import { Scene as SceneView } from "../view/Scene";
-import { Room } from "../model/Room";
+
 import { App } from "../App";
+import { Controller } from "./Controller";
+import { Vector3 } from "three";
 
 class Scene {
   model: SceneModel;
   view: SceneView | null = null;
   event: EventSystem = new EventSystem();
+  activeController: Controller | null = null;
 
   constructor(props: { canvas: HTMLElement | null }, readonly app: App) {
     this.model = new SceneModel();
@@ -18,40 +20,26 @@ class Scene {
         canvas: props.canvas,
         controller: this,
       });
+
+      this.initListeners();
     }
   }
 
-  loadFromSchemas(schemas: Array<Object3DSchema>) {
-    schemas.map((schema, index) => {
-      switch (schema.type) {
-        case Entity.PIPE:
-          let pipe = Pipe.fromJson(schema);
+  private initListeners() {
+    this.view?.engine?.htmlElement?.addEventListener("mousedown", (event) => {
+      this.activeController?.mouseDown(this.view!.engine!.groundInters);
+    });
 
-          if (pipe) this.model.addObject(pipe);
-          break;
-        case Entity.WALL: {
-          let wall = Wall.fromJson(schema);
-          if (wall) this.model.addObject(wall);
-          break;
-        }
-        case Entity.ROOM: {
-          let room = Room.fromJson(schema);
-          if (room) this.model.addObject(room);
-          break;
-        }
-        case Entity.FITTING:
-          let fitting = Fitting.fromJson(schema);
-          if (fitting) this.model.addObject(fitting);
-          break;
-        case Entity.CORNER:
-          let corner = Corner.fromJson(schema);
+    this.view?.engine?.htmlElement?.addEventListener("mouseup", () => {
+      this.activeController?.mouseUp(this.view!.engine!.groundInters);
+    });
 
-          this.model.addObject(corner);
-          break;
-        case Entity.RADIATOR:
-          // this.model.addObject(Radiator.fromJson(schema));
-          break;
-      }
+    this.view?.engine?.htmlElement?.addEventListener("mousemove", () => {
+      this.activeController?.mouseMove(this.view!.engine!.groundInters);
+    });
+
+    this.view?.engine?.htmlElement?.addEventListener("keydown", () => {
+      // this.activeController
     });
   }
 }

@@ -63,7 +63,7 @@ const House = () => {
             app.sceneController.view.mode = "draw";
 
             let active: Door | null = new Door(new DoorModel(), app);
-            app.sceneController.view.engine.scene.add(active.render());
+            app.sceneController.view.engine?.scene.add(active.render());
 
             app.sceneController.view.active = {
               click: (position) => {

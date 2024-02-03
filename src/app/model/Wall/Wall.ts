@@ -31,18 +31,20 @@ class Wall implements Object3D, Geometry.Line {
   endAngle: number = 0;
 
   constructor(
-    props: {
-      start: Geometry.Vector3;
-      end: Geometry.Vector3;
-    } & Object3DProps
+    props?: Partial<
+      {
+        start: Geometry.Vector3;
+        end: Geometry.Vector3;
+      } & Object3DProps
+    >
   ) {
-    this.start = new WallEnd(props.start.x, props.start.y, props.start.z);
-    this.end = new WallEnd(props.end.x, props.end.y, props.end.z);
+    this.start = new WallEnd(props?.start?.x, props?.start?.y, props?.start?.z);
+    this.end = new WallEnd(props?.end?.x, props?.end?.y, props?.end?.z);
 
-    this.uuid = props.uuid ?? Helpers.uuid();
+    this.uuid = props?.uuid ?? Helpers.uuid();
     this.dimension = { width: 1, height: 1, depth: 1 };
-    this.rotation = props.rotation ?? { w: 0, x: 0, y: 0, z: 0 };
-    this.position = props.position ?? { x: 0, y: 0, z: 0 };
+    this.rotation = props?.rotation ?? { w: 0, x: 0, y: 0, z: 0 };
+    this.position = props?.position ?? { x: 0, y: 0, z: 0 };
   }
 
   addObserver(observer: Observer) {

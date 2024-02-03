@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { BaseMesh, Mesh, Observer, ColorManager } from "./../system";
 import { Pipe as PipeModel } from "../model";
+import { App } from "../App";
 
 class Pipe extends BaseMesh implements Mesh, Observer {
   constructor(readonly model: PipeModel) {

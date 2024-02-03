@@ -29,19 +29,21 @@ class Pipe implements Object3D, Geometry.Line {
   type = Entity.PIPE;
 
   constructor(
-    props: {
-      start: Vector3;
-      end: Vector3;
-      flow: "red" | "blue";
-    } & Object3DProps
+    props?: Partial<
+      {
+        start: Vector3;
+        end: Vector3;
+        flow: "red" | "blue";
+      } & Object3DProps
+    >
   ) {
-    this.start = new PipeEnd(props.start.x, props.start.y, props.start.z);
-    this.end = new PipeEnd(props.end.x, props.end.y, props.end.z);
+    this.start = new PipeEnd(props?.start?.x, props?.start?.y, props?.start?.z);
+    this.end = new PipeEnd(props?.end?.x, props?.end?.y, props?.end?.z);
 
-    this.uuid = props.uuid ?? Helpers.uuid();
+    this.uuid = props?.uuid ?? Helpers.uuid();
     this.dimension = { width: 1, height: 1, depth: 1 };
-    this.rotation = props.rotation ?? { w: 0, x: 0, y: 0, z: 0 };
-    this.position = props.position ?? { x: 0, y: 0, z: 0 };
+    this.rotation = props?.rotation ?? { w: 0, x: 0, y: 0, z: 0 };
+    this.position = props?.position ?? { x: 0, y: 0, z: 0 };
 
     this.flow = props?.flow ?? "blue";
   }

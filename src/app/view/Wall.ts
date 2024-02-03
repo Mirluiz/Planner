@@ -5,7 +5,7 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { App } from "../App";
 
 class Wall extends BaseMesh implements Mesh, Observer {
-  constructor(readonly model: WallModel, private app: App) {
+  constructor(readonly model: WallModel) {
     super(model);
 
     model.addObserver(this);
@@ -55,7 +55,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
   // }
 
   onUpdate() {
-    this.app.roomController.updateGraph();
+    // this.app.roomController.updateGraph();
   }
 
   reRender() {

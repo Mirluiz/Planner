@@ -1,38 +1,42 @@
-import { Drawing, Object3D, Geometry, Math2D } from "../system";
-import { Scene as SceneController } from "../controller/Scene";
-import { Scene as SceneModel } from "../model/Scene";
-import { Fitting, Pipe as PipeModel } from "../model";
+import { Object3D, Math2D } from "../system";
+import { Fitting, Pipe as PipeModel, Wall as WallModel } from "../model";
+import { Pipe as PipeView } from "./../view";
 import { Vector3 } from "three";
 import { Controller } from "./Controller";
+import { App } from "../App";
+import { Scene as SceneController } from "./Scene";
+import { Base } from "./Base";
 
-class Pipe implements Controller {
-  readonly scene: SceneModel;
-  activeModel: PipeModel | null = null;
-
+class Pipe extends Base<PipeModel, PipeView> implements Controller {
   private tempFitting: Array<Fitting> = [];
 
-  constructor(props: { scene: SceneModel }) {
-    this.scene = props.scene;
+  constructor(readonly app: App, readonly sceneController: SceneController) {
+    super(app, sceneController);
+
+    this.model = new PipeModel();
+    this.view = new PipeView(this.model);
   }
 
   create(props: { [key: string]: any }) {
-    return this.activeModel;
+    return this.model;
   }
   update(props: { [key: string]: any }) {
-    return this.activeModel;
+    return this.model;
   }
   remove() {}
 
   reset() {
-    this.activeModel = null;
+    this.model = null;
   }
 
   get pipes() {
-    return this.scene.objects.filter((obj): obj is PipeModel => {
-      if (obj instanceof PipeModel) {
-        return Math2D.Line.isLine(obj);
-      } else return false;
-    });
+    return this.sceneController.model.objects.filter(
+      (obj): obj is PipeModel => {
+        if (obj instanceof PipeModel) {
+          return Math2D.Line.isLine(obj);
+        } else return false;
+      }
+    );
   }
 
   // start(pos: { x: number; y: number; z: number }, flow: "red" | "blue") {
@@ -227,10 +231,6 @@ class Pipe implements Controller {
   //     this.scene.removeObject(fitting.uuid);
   //   });
   // }
-
-  private addObject(object: Object3D) {
-    this.scene.addObject(object);
-  }
 
   // reset() {
   //   if (this.active) {

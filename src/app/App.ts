@@ -1,7 +1,9 @@
-import { Scene as SceneController } from "./controller/Scene";
 import { Wall as WallController } from "../app/controller/Wall/Wall";
+import { Wall as WallModel } from "../app/model/Wall/Wall";
+import { Wall as WallView } from "../app/view/Wall";
 import { Room as RoomController } from "../app/controller/Room";
 import { Object3D as Object3DController } from "../app/controller/Object3D";
+import { Scene as SceneController } from "./controller/Scene";
 import { Graph as GraphController } from "../app/controller/Graph";
 import { Pipe as PipeController } from "../app/controller/Pipe";
 import { EventSystem, Database, Object3D, Storage } from "./system";
@@ -12,31 +14,19 @@ class App {
   active: Object3D | null = null;
 
   graphController: GraphController;
-  sceneController: SceneController;
   wallController: WallController;
   pipeController: PipeController;
-  object3DController: Object3DController;
+  sceneController: SceneController;
   roomController: RoomController;
+  // object3DController: Object3DController;
 
   constructor(props: { canvas: HTMLElement | null }) {
-    this.sceneController = new SceneController(props, this);
-
     this.graphController = new GraphController();
-    this.pipeController = new PipeController({
-      scene: this.sceneController.model,
-    });
 
-    this.roomController = new RoomController({
-      scene: this.sceneController.model,
-    });
-
-    this.wallController = new WallController({
-      scene: this.sceneController.model,
-    });
-
-    this.object3DController = new Object3DController({
-      scene: this.sceneController.model,
-    });
+    this.sceneController = new SceneController(props, this);
+    this.pipeController = new PipeController(this, this.sceneController);
+    this.roomController = new RoomController(this, this.sceneController);
+    this.wallController = new WallController(this, this.sceneController);
   }
 
   init(): Promise<unknown> {
@@ -54,7 +44,7 @@ class App {
   }
 
   run() {
-    this.sceneController.view?.engine.animate();
+    this.sceneController.view?.engine?.animate();
   }
 
   save() {

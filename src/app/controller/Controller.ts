@@ -6,6 +6,10 @@ interface Controller {
   update: (...args: any[]) => Object3D | null;
   reset: () => void;
   remove: () => void;
+
+  mouseDown: (pos: { x: number; y: number; z: number }) => void;
+  mouseUp: (pos: { x: number; y: number; z: number }) => void;
+  mouseMove: (pos: { x: number; y: number; z: number }) => void;
 }
 
 export { Controller };

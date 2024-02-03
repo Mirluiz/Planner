@@ -3,21 +3,17 @@ import { Controller } from "../Controller";
 import { Door, Wall as WallModel, Wall } from "../../model";
 import { Scene as SceneModel } from "../../model/Scene";
 import { Vector3 } from "three";
+import { Base } from "../Base";
 
-class WallElement implements Controller {
-  readonly scene: SceneModel;
-  model?: Door | null | undefined;
-
-  constructor(props: { scene: SceneModel }) {
-    this.scene = props.scene;
-  }
-
+class WallElement extends Base implements Controller {
   get walls() {
-    return this.scene.objects.filter((obj): obj is WallModel => {
-      if (obj instanceof WallModel) {
-        return Math2D.Line.isLine(obj);
-      } else return false;
-    });
+    return (
+      this.sceneController.model?.objects.filter((obj): obj is WallModel => {
+        if (obj instanceof WallModel) {
+          return Math2D.Line.isLine(obj);
+        } else return false;
+      }) ?? []
+    );
   }
 
   create() {
@@ -25,7 +21,7 @@ class WallElement implements Controller {
   }
 
   update(props: { position: { x: number; y: number; z: number } }) {
-    let { intersects } = this.scene;
+    let { intersects } = this.sceneController.model;
     let firstObject = intersects[0]?.object?.model;
 
     if (firstObject instanceof Wall) {
@@ -54,7 +50,7 @@ class WallElement implements Controller {
           .normalize();
         this.model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
         this.model.position = { ...firstObject.position };
-        this.model.attachedWall = firstObject.object;
+        // this.model.attachedWall = firstObject.object;
       }
     }
 
