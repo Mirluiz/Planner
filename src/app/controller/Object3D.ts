@@ -42,6 +42,12 @@ class Object3D implements Controller {
   addObject(object: Object3DModel) {
     this.scene.addObject(object);
   }
+
+  mouseUp() {}
+
+  mouseDown() {}
+
+  mouseMove() {}
 }
 
 export { Object3D };

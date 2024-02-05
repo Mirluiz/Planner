@@ -11,7 +11,10 @@ class Base<M extends Object3D = Object3D, V extends Mesh = Mesh>
   view: V | null = null;
   event: EventSystem = new EventSystem();
 
-  constructor(readonly app: App, readonly sceneController: SceneController) {}
+  constructor(
+    readonly app: App,
+    readonly sceneController: SceneController,
+  ) {}
 
   create(...args: any[]): M | null {
     throw new Error("not implemented");
@@ -26,6 +29,18 @@ class Base<M extends Object3D = Object3D, V extends Mesh = Mesh>
   }
 
   remove() {
+    throw new Error("not implemented");
+  }
+
+  mouseUp(pos: { x: number; y: number; z: number }) {
+    throw new Error("not implemented");
+  }
+
+  mouseDown(pos: { x: number; y: number; z: number }) {
+    throw new Error("not implemented");
+  }
+
+  mouseMove(pos: { x: number; y: number; z: number }) {
     throw new Error("not implemented");
   }
 }

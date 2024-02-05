@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { Wall as WallModel } from "../model";
 import { BaseMesh, ColorManager, Mesh, Observer, Storage } from "./../system";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
-import { App } from "../App";
 
 class Wall extends BaseMesh implements Mesh, Observer {
   constructor(readonly model: WallModel) {
@@ -87,7 +86,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
     const midPoint = new THREE.Vector3(
       this.model.position.x,
       this.model.position.y,
-      this.model.position.z
+      this.model.position.z,
     );
 
     this.mesh.position.copy(midPoint);
@@ -146,7 +145,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
     let endAngle = this.model.endAngle; // is angle
     let endCrop = Math.max(
       Math.min(Math.PI / 4, (depth / 2) * Math.tan(endAngle)),
-      -Math.PI / 4
+      -Math.PI / 4,
     );
 
     let endSideEdgeLn =
@@ -171,7 +170,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
     let startCrop = Math.max(
       Math.min(Math.PI / 4, (depth / 2) * Math.tan(startAngle)),
-      -Math.PI / 4
+      -Math.PI / 4,
     );
 
     let startSideEdgeLn =
@@ -194,62 +193,62 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
     let front = [
       new THREE.Vector3(0, h, depth / 2).add(
-        new THREE.Vector3(-ln / 2 + startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 + startCrop, 0, 0),
       ),
       new THREE.Vector3(0, h, depth / 2).add(
-        new THREE.Vector3(ln / 2 + endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 + endCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, depth / 2).add(
-        new THREE.Vector3(-ln / 2 + startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 + startCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, depth / 2).add(
-        new THREE.Vector3(ln / 2 + endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 + endCrop, 0, 0),
       ),
     ];
 
     let back = [
       new THREE.Vector3(0, h, -depth / 2).add(
-        new THREE.Vector3(ln / 2 - endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 - endCrop, 0, 0),
       ),
       new THREE.Vector3(0, h, -depth / 2).add(
-        new THREE.Vector3(-ln / 2 - startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 - startCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, -depth / 2).add(
-        new THREE.Vector3(ln / 2 - endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 - endCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, -depth / 2).add(
-        new THREE.Vector3(-ln / 2 - startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 - startCrop, 0, 0),
       ),
     ];
 
     let up = [
       new THREE.Vector3(0, h, depth / 2).add(
-        new THREE.Vector3(ln / 2 + endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 + endCrop, 0, 0),
       ),
       new THREE.Vector3(0, h, depth / 2).add(
-        new THREE.Vector3(-ln / 2 + startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 + startCrop, 0, 0),
       ),
       new THREE.Vector3(0, h, -depth / 2).add(
-        new THREE.Vector3(ln / 2 - endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 - endCrop, 0, 0),
       ),
       new THREE.Vector3(0, h, -depth / 2).add(
-        new THREE.Vector3(-ln / 2 - startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 - startCrop, 0, 0),
       ),
     ];
 
     let bottom = [
       new THREE.Vector3(0, 0, depth / 2).add(
-        new THREE.Vector3(-ln / 2 + startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 + startCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, depth / 2).add(
-        new THREE.Vector3(ln / 2 + endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 + endCrop, 0, 0),
       ),
       new THREE.Vector3(0, 0, -depth / 2).add(
-        new THREE.Vector3(-ln / 2 - startCrop, 0, 0)
+        new THREE.Vector3(-ln / 2 - startCrop, 0, 0),
       ),
 
       new THREE.Vector3(0, 0, -depth / 2).add(
-        new THREE.Vector3(ln / 2 - endCrop, 0, 0)
+        new THREE.Vector3(ln / 2 - endCrop, 0, 0),
       ),
     ];
 

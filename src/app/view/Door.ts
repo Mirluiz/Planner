@@ -4,11 +4,13 @@ import { BaseMesh, Mesh, Observer, Helpers, Math2D } from "./../system";
 import { App } from "../App";
 import { Wall as WallModel, Wall } from "../model";
 import { Vector3 } from "three";
-import { SUBTRACTION, Brush, Evaluator } from "three-bvh-csg";
 
 class Door extends BaseMesh implements Mesh, Observer {
   uuid: string;
-  constructor(readonly model: DoorModel, private app: App) {
+  constructor(
+    readonly model: DoorModel,
+    private app: App,
+  ) {
     super(model);
     this.uuid = Helpers.uuid();
     model?.addObserver(this);
@@ -33,7 +35,7 @@ class Door extends BaseMesh implements Mesh, Observer {
     const midPoint = new THREE.Vector3(
       this.model.position.x,
       this.model.position.y,
-      this.model.position.z
+      this.model.position.z,
     );
 
     this.mesh.position.copy(midPoint);
@@ -53,13 +55,13 @@ class Door extends BaseMesh implements Mesh, Observer {
 
     const mesh = new THREE.LineSegments(
       edges,
-      new THREE.LineBasicMaterial({ color: 0x000fff })
+      new THREE.LineBasicMaterial({ color: 0x000fff }),
     );
 
     const midPoint = new THREE.Vector3(
       this.model.position.x,
       this.model.position.y,
-      this.model.position.z
+      this.model.position.z,
     );
 
     mesh.rotation.y = this.model.rotation.y;
@@ -81,7 +83,7 @@ class Door extends BaseMesh implements Mesh, Observer {
         if (obj instanceof WallModel) {
           return Math2D.Line.isLine(obj);
         } else return false;
-      }
+      },
     );
   }
 }

@@ -9,11 +9,11 @@ import { App } from "../../App";
 import { Scene as SceneController } from "../Scene";
 
 class Wall extends Base<WallModel, WallView> implements Controller {
-  constructor(readonly app: App, readonly sceneController: SceneController) {
+  constructor(
+    readonly app: App,
+    readonly sceneController: SceneController,
+  ) {
     super(app, sceneController);
-
-    this.model = new WallModel();
-    this.view = new WallView(this.model);
   }
 
   get walls() {
@@ -36,6 +36,9 @@ class Wall extends Base<WallModel, WallView> implements Controller {
 
   create(props: { x: number; y: number; z: number }) {
     this.startDraw(props);
+    if (this.view) {
+      this.sceneController.view?.engine?.scene.add(this.view?.render());
+    }
 
     return this.model;
   }
@@ -43,6 +46,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
   update(props: { x: number; y: number; z: number }) {
     this.draw(props);
     this.updateWallAngles();
+    this.model?.notifyObservers();
 
     return this.model;
   }
@@ -72,6 +76,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
 
     this.sceneController.model?.addObject(newWall);
     this.model = newWall;
+    this.view = new WallView(this.model);
   }
 
   end(pos: { x: number; y: number; z: number }) {
@@ -86,7 +91,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
       ? GeometryCalculation.getClosestWall(
           this.model,
           this.model.end,
-          this.walls
+          this.walls,
         )
       : null;
 
@@ -101,13 +106,13 @@ class Wall extends Base<WallModel, WallView> implements Controller {
       }
     }
 
-    // this.model = null;
+    this.model = null;
   }
 
   moveEnd(
     wall: WallModel,
     end: "start" | "end",
-    pos: { x: number; y: number; z: number }
+    pos: { x: number; y: number; z: number },
   ) {
     wall[end].set(pos.x, pos.y, pos.z);
 
@@ -122,7 +127,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
     const { position } = snap;
     const wallToConnectEnd = GeometryCalculation.isItWallEnd(
       wallToConnect,
-      position
+      position,
     );
 
     if (wallToConnectEnd) {
@@ -176,7 +181,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
 
       if (wallToConnect.start.object) {
         let wallIndex = wallToConnect.start.object.walls.findIndex(
-          (wall) => wall.uuid === wallToConnect.uuid
+          (wall) => wall.uuid === wallToConnect.uuid,
         );
 
         if (wallIndex !== -1) {
@@ -188,7 +193,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
 
       if (wallToConnect.end.object) {
         let wallIndex = wallToConnect.end.object.walls.findIndex(
-          (wall) => wall.uuid === wallToConnect.uuid
+          (wall) => wall.uuid === wallToConnect.uuid,
         );
 
         if (wallIndex !== -1) {
@@ -210,7 +215,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
     let corner = this.sceneController.model?.objects.find(
       (obj): obj is Corner =>
         obj instanceof Corner &&
-        obj.walls.some((w) => w.uuid === this.model?.uuid)
+        obj.walls.some((w) => w.uuid === this.model?.uuid),
     );
 
     if (corner) {
@@ -262,6 +267,18 @@ class Wall extends Base<WallModel, WallView> implements Controller {
     }
 
     this.updateWallAngles();
+  }
+
+  mouseUp(pos: { x: number; y: number; z: number }) {
+    console.log("");
+  }
+
+  mouseDown(pos: { x: number; y: number; z: number }) {
+    this.create(pos);
+  }
+
+  mouseMove(pos: { x: number; y: number; z: number }) {
+    this.update(pos);
   }
 }
 
