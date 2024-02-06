@@ -11,15 +11,9 @@ class Scene {
 
   mode: "draw" | null = null;
 
-  private mousePressed: boolean = false;
+  mousePressed: boolean = false;
 
   engine: THREEScene | null = null;
-
-  active: {
-    click: (position: { x: number; y: number; z: number }) => void;
-    move: (position: { x: number; y: number; z: number }) => void;
-    reset: () => void;
-  } | null = null;
 
   focusedElement: {
     centerOffset: Vector3;
@@ -51,15 +45,11 @@ class Scene {
       if (event.button === 0) {
         this.mousePressed = true;
 
-        if (this.mode) {
-          this.active?.click({ ...this.engine.groundInters });
-        } else {
-          this.model.intersects.map((intersect) => {
-            intersect.object.focused = false;
-          });
+        this.model.intersects.map((intersect) => {
+          intersect.object.focused = false;
+        });
 
-          this.updateFocusedObject();
-        }
+        this.updateFocusedObject();
 
         this.controller.model.event.emit("objects_updated");
       }
@@ -72,9 +62,6 @@ class Scene {
       let intersection = this.model.intersects[0];
 
       if (this.dragElement?.object) {
-        if (this.dragElement.object.onUpdate)
-          this.dragElement.object.onUpdate();
-
         this.dragElement.object.focused = false;
         this.dragElement.object.model?.notifyObservers();
         this.dragElement = null;
@@ -116,18 +103,10 @@ class Scene {
         });
         this.dragElement?.object.model?.notifyObservers();
       }
-
-      if (this.mode) {
-        this.active?.move({ ...this.engine.groundInters });
-      }
     });
 
     this.engine?.htmlElement?.addEventListener("keydown", (event) => {
       if (event.code == "Escape") {
-        this.active?.reset();
-
-        this.mode = null;
-        this.active = null;
         this.controller.event.emit("scene_update");
       }
     });

@@ -38,18 +38,18 @@ const House = () => {
             if (!app?.sceneController.view) return;
 
             app.sceneController.view.mode = "draw";
-            app.sceneController.view.active = {
-              click: (position) => {
-                app.wallController.create(position);
-              },
-              move: (position) => {
-                let active = app.wallController.update(position);
-                active?.notifyObservers();
-              },
-              reset: () => {
-                app.wallController.reset();
-              },
-            };
+            // app.sceneController.view.active = {
+            //   click: (position) => {
+            //     app.wallController.create(position);
+            //   },
+            //   move: (position) => {
+            //     let active = app.wallController.update(position);
+            //     active?.notifyObservers();
+            //   },
+            //   reset: () => {
+            //     app.wallController.reset();
+            //   },
+            // };
           }}
         >
           Wall
@@ -65,39 +65,39 @@ const House = () => {
             let active: Door | null = new Door(new DoorModel(), app);
             app.sceneController.view.engine?.scene.add(active.render());
 
-            app.sceneController.view.active = {
-              click: (position) => {
-                if (active) {
-                  app.sceneController.model.removeObject(active.uuid);
-                  app.sceneController.model.addObject(active.model.clone());
-
-                  if (active.mesh) {
-                    console.log("active.mesh", active.mesh);
-                    app.sceneController.view?.engine?.scene.add(
-                      active.mesh.clone()
-                    );
-                  }
-
-                  active.destroy();
-                  active = null;
-                }
-
-                active = new Door(new DoorModel(), app);
-                app.sceneController.model.addObject(active.model);
-                app.sceneController.view?.engine?.scene.add(active.render());
-              },
-              move: (position) => {
-                active?.update({ position: { ...position } });
-                active?.reRender();
-              },
-              reset: () => {
-                if (active) {
-                  app.sceneController.model.removeObject(active.uuid);
-                }
-
-                active = null;
-              },
-            };
+            // app.sceneController.view.active = {
+            //   click: (position) => {
+            //     if (active) {
+            //       app.sceneController.model.removeObject(active.uuid);
+            //       app.sceneController.model.addObject(active.model.clone());
+            //
+            //       if (active.mesh) {
+            //         console.log("active.mesh", active.mesh);
+            //         app.sceneController.view?.engine?.scene.add(
+            //           active.mesh.clone()
+            //         );
+            //       }
+            //
+            //       active.destroy();
+            //       active = null;
+            //     }
+            //
+            //     active = new Door(new DoorModel(), app);
+            //     app.sceneController.model.addObject(active.model);
+            //     app.sceneController.view?.engine?.scene.add(active.render());
+            //   },
+            //   move: (position) => {
+            //     active?.update({ position: { ...position } });
+            //     active?.reRender();
+            //   },
+            //   reset: () => {
+            //     if (active) {
+            //       app.sceneController.model.removeObject(active.uuid);
+            //     }
+            //
+            //     active = null;
+            //   },
+            // };
           }}
         >
           Door

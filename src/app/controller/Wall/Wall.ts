@@ -7,12 +7,10 @@ import { Base } from "../Base";
 import { Wall as WallView } from "./../../view/Wall";
 import { App } from "../../App";
 import { Scene as SceneController } from "../Scene";
+import { Vector3 } from "three";
 
 class Wall extends Base<WallModel, WallView> implements Controller {
-  constructor(
-    readonly app: App,
-    readonly sceneController: SceneController,
-  ) {
+  constructor(readonly app: App, readonly sceneController: SceneController) {
     super(app, sceneController);
   }
 
@@ -43,12 +41,34 @@ class Wall extends Base<WallModel, WallView> implements Controller {
     return this.model;
   }
 
-  update(props: { x: number; y: number; z: number }) {
-    this.draw(props);
-    this.updateWallAngles();
-    this.model?.notifyObservers();
+  update(
+    props: Partial<{
+      start: Vector3;
+      end: Vector3;
+    }>,
+    model: WallModel
+  ) {
+    if (this.model) {
+      if (props.start) {
+        model.start.x = props.start.x;
+        model.start.y = props.start.y;
+        model.start.z = props.start.z;
+      }
+      if (props.end) {
+        model.end.x = props.end.x;
+        model.end.y = props.end.y;
+        model.end.z = props.end.z;
+      }
 
-    return this.model;
+      model.updateCenter();
+    }
+
+    model.updateCorners();
+    this.updateWallAngles();
+
+    model?.notifyObservers();
+
+    return model;
   }
 
   remove() {}
@@ -76,7 +96,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
 
     this.sceneController.model?.addObject(newWall);
     this.model = newWall;
-    this.view = new WallView(this.model);
+    this.view = new WallView(this.model, this);
   }
 
   end(pos: { x: number; y: number; z: number }) {
@@ -91,7 +111,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
       ? GeometryCalculation.getClosestWall(
           this.model,
           this.model.end,
-          this.walls,
+          this.walls
         )
       : null;
 
@@ -112,7 +132,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
   moveEnd(
     wall: WallModel,
     end: "start" | "end",
-    pos: { x: number; y: number; z: number },
+    pos: { x: number; y: number; z: number }
   ) {
     wall[end].set(pos.x, pos.y, pos.z);
 
@@ -127,7 +147,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
     const { position } = snap;
     const wallToConnectEnd = GeometryCalculation.isItWallEnd(
       wallToConnect,
-      position,
+      position
     );
 
     if (wallToConnectEnd) {
@@ -181,7 +201,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
 
       if (wallToConnect.start.object) {
         let wallIndex = wallToConnect.start.object.walls.findIndex(
-          (wall) => wall.uuid === wallToConnect.uuid,
+          (wall) => wall.uuid === wallToConnect.uuid
         );
 
         if (wallIndex !== -1) {
@@ -193,7 +213,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
 
       if (wallToConnect.end.object) {
         let wallIndex = wallToConnect.end.object.walls.findIndex(
-          (wall) => wall.uuid === wallToConnect.uuid,
+          (wall) => wall.uuid === wallToConnect.uuid
         );
 
         if (wallIndex !== -1) {
@@ -215,7 +235,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
     let corner = this.sceneController.model?.objects.find(
       (obj): obj is Corner =>
         obj instanceof Corner &&
-        obj.walls.some((w) => w.uuid === this.model?.uuid),
+        obj.walls.some((w) => w.uuid === this.model?.uuid)
     );
 
     if (corner) {
@@ -269,16 +289,15 @@ class Wall extends Base<WallModel, WallView> implements Controller {
     this.updateWallAngles();
   }
 
-  mouseUp(pos: { x: number; y: number; z: number }) {
-    console.log("");
-  }
+  mouseUp(pos: { x: number; y: number; z: number }) {}
 
   mouseDown(pos: { x: number; y: number; z: number }) {
     this.create(pos);
   }
 
   mouseMove(pos: { x: number; y: number; z: number }) {
-    this.update(pos);
+    if (this.model)
+      this.update({ end: new Vector3(pos.x, pos.y, pos.z) }, this.model);
   }
 }
 

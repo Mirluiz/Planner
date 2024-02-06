@@ -191,6 +191,69 @@ class Wall implements Object3D, Geometry.Line {
     }
   }
 
+  updateCorners() {
+    let startCorner = this.start.object;
+    let endCorner = this.end.object;
+
+    if (startCorner) {
+      startCorner.position = {
+        x: this.start.x,
+        y: this.start.y,
+        z: this.start.z,
+      };
+      startCorner.walls.map((wall) => {
+        if (wall.uuid !== this.uuid && startCorner) {
+          if (wall.end.object?.uuid === startCorner.uuid) {
+            wall.end.set(
+              startCorner.position.x,
+              startCorner.position.y,
+              startCorner.position.z
+            );
+          }
+
+          if (wall.start.object?.uuid === startCorner.uuid) {
+            wall.start.set(
+              startCorner.position.x,
+              startCorner.position.y,
+              startCorner.position.z
+            );
+          }
+
+          wall.updateCenter();
+          wall.notifyObservers();
+        }
+      });
+    }
+
+    if (endCorner) {
+      endCorner.position = { x: this.end.x, y: this.end.y, z: this.end.z };
+      endCorner.walls.map((wall) => {
+        if (wall.uuid !== this.uuid && endCorner) {
+          if (wall.end.object?.uuid === endCorner.uuid) {
+            wall.end.set(
+              endCorner.position.x,
+              endCorner.position.y,
+              endCorner.position.z
+            );
+          }
+
+          if (wall.start.object?.uuid === endCorner.uuid) {
+            wall.start.set(
+              endCorner.position.x,
+              endCorner.position.y,
+              endCorner.position.z
+            );
+          }
+
+          wall.updateCenter();
+          wall.notifyObservers();
+        }
+      });
+    }
+
+    this.updateAngle();
+  }
+
   static fromJson(schema: Object3DSchema) {
     if (!schema.start || !schema.end) return;
 
