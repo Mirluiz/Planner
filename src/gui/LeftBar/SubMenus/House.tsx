@@ -38,18 +38,7 @@ const House = () => {
             if (!app?.sceneController.view) return;
 
             app.sceneController.view.mode = "draw";
-            // app.sceneController.view.active = {
-            //   click: (position) => {
-            //     app.wallController.create(position);
-            //   },
-            //   move: (position) => {
-            //     let active = app.wallController.update(position);
-            //     active?.notifyObservers();
-            //   },
-            //   reset: () => {
-            //     app.wallController.reset();
-            //   },
-            // };
+            app.sceneController.activeController = app.wallController;
           }}
         >
           Wall
@@ -61,9 +50,11 @@ const House = () => {
             if (!app?.sceneController.view) return;
 
             app.sceneController.view.mode = "draw";
+            app.sceneController.activeController = app.wallElementController;
+            app.wallElementController.createGhost();
 
-            let active: Door | null = new Door(new DoorModel(), app);
-            app.sceneController.view.engine?.scene.add(active.render());
+            // let active: Door | null = new Door(new DoorModel(), app);
+            // app.sceneController.view.engine?.scene.add(active.render());
 
             // app.sceneController.view.active = {
             //   click: (position) => {

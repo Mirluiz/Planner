@@ -7,6 +7,7 @@ import { Scene as SceneController } from "./controller/Scene";
 import { Graph as GraphController } from "../app/controller/Graph";
 import { Pipe as PipeController } from "../app/controller/Pipe";
 import { EventSystem, Database, Object3D, Storage } from "./system";
+import { WallElement as WallElementController } from "./controller";
 
 class App {
   database: Database = new Database();
@@ -15,6 +16,7 @@ class App {
 
   graphController: GraphController;
   wallController: WallController;
+  wallElementController: WallElementController;
   pipeController: PipeController;
   sceneController: SceneController;
   roomController: RoomController;
@@ -27,6 +29,10 @@ class App {
     this.pipeController = new PipeController(this, this.sceneController);
     this.roomController = new RoomController(this, this.sceneController);
     this.wallController = new WallController(this, this.sceneController);
+    this.wallElementController = new WallElementController(
+      this,
+      this.sceneController
+    );
   }
 
   init(): Promise<unknown> {

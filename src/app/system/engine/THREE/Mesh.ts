@@ -55,7 +55,6 @@ class BaseMesh implements Mesh {
       this.mesh?.material?.map?.dispose();
       this.mesh?.geometry?.dispose();
       this.mesh?.removeFromParent();
-      this.mesh?.remove();
     }
 
     this.mesh = null;

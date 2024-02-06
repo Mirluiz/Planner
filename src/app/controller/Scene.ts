@@ -39,7 +39,7 @@ class Scene {
     });
 
     this.view?.engine?.htmlElement?.addEventListener("keydown", () => {
-      // this.activeController
+      this.activeController?.reset();
     });
   }
 }
