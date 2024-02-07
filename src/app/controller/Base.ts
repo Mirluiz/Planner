@@ -4,23 +4,16 @@ import { App } from "../App";
 import { Controller } from "./Controller";
 import { Scene as SceneModel } from "./../model/Scene";
 
-class Base<M extends Object3D = Object3D, V extends Mesh = Mesh>
-  implements Controller
-{
-  model: M | null = null;
-  view: V | null = null;
+class Base implements Controller {
   event: EventSystem = new EventSystem();
 
-  constructor(
-    readonly app: App,
-    readonly sceneController: SceneController,
-  ) {}
+  constructor(readonly app: App, readonly sceneController: SceneController) {}
 
-  create(...args: any[]): M | null {
+  create(...args: any[]): Object3D | null {
     throw new Error("not implemented");
   }
 
-  update(...args: any[]): M | null {
+  update(...args: any[]): Object3D | null {
     throw new Error("not implemented");
   }
 

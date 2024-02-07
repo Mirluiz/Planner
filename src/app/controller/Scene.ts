@@ -38,8 +38,11 @@ class Scene {
       this.activeController?.mouseMove(this.view!.engine!.groundInters);
     });
 
-    this.view?.engine?.htmlElement?.addEventListener("keydown", () => {
-      this.activeController?.reset();
+    this.view?.engine?.htmlElement?.addEventListener("keydown", (event) => {
+      if (event.code == "Escape") {
+        this.activeController?.reset();
+        this.activeController = null;
+      }
     });
   }
 }

@@ -4,12 +4,15 @@ import { Controller } from "../Controller";
 import { WallEnd } from "../../model/Wall/WallEnd";
 import { GeometryCalculation } from "./GeometryCalculation";
 import { Base } from "../Base";
-import { Wall as WallView } from "./../../view/Wall";
+import { Wall as WallView, Corner as CornerView } from "./../../view";
 import { App } from "../../App";
 import { Scene as SceneController } from "../Scene";
 import { Vector3 } from "three";
 
-class Wall extends Base<WallModel, WallView> implements Controller {
+class Wall extends Base implements Controller {
+  model: WallModel | null = null;
+  view: WallView | null = null;
+
   constructor(readonly app: App, readonly sceneController: SceneController) {
     super(app, sceneController);
   }
@@ -34,6 +37,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
 
   create(props: { x: number; y: number; z: number }) {
     this.startDraw(props);
+
     if (this.view) {
       this.sceneController.view?.engine?.scene.add(this.view?.render());
     }
@@ -48,7 +52,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
     }>,
     model: WallModel
   ) {
-    if (this.model) {
+    if (model) {
       if (props.start) {
         model.start.x = props.start.x;
         model.start.y = props.start.y;
@@ -61,6 +65,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
       }
 
       model.updateCenter();
+      model.updateCorners();
     }
 
     model.updateCorners();
@@ -154,6 +159,12 @@ class Wall extends Base<WallModel, WallView> implements Controller {
       let corner = new Corner({
         position: { ...position },
       });
+
+      let cornerView = new CornerView(corner, this.app);
+
+      if (cornerView) {
+        this.sceneController.view?.engine?.scene.add(cornerView.render());
+      }
 
       corner.walls.push(wall);
       corner.walls.push(wallToConnect);
@@ -253,6 +264,7 @@ class Wall extends Base<WallModel, WallView> implements Controller {
         }
 
         this.sceneController.model?.removeObject(corner.uuid);
+        corner.destroy();
       }
     }
   }
@@ -283,7 +295,10 @@ class Wall extends Base<WallModel, WallView> implements Controller {
       this.clearTempCorner();
 
       this.sceneController.model?.removeObject(this.model.uuid);
-      // this.model = null;
+
+      this.model.destroy();
+      this.model = null;
+      this.view = null;
     }
 
     this.updateWallAngles();

@@ -52,10 +52,6 @@ class Wall extends BaseMesh implements Mesh, Observer {
     }
   }
 
-  onUpdate() {
-    // this.app.roomController.updateGraph();
-  }
-
   reRender() {
     if (!this.mesh) return;
 
@@ -70,16 +66,17 @@ class Wall extends BaseMesh implements Mesh, Observer {
     }
 
     if (this.mesh instanceof THREE.Mesh) {
-      this.mesh.geometry.setFromPoints(geometry);
-      this.mesh.material.dispose();
+      this.mesh.geometry.dispose();
+      this.mesh.geometry = new THREE.BoxGeometry().setFromPoints(geometry);
+      this.mesh.geometry.needsUpdate = true;
 
+      this.mesh.material.dispose();
       this.mesh.material = new THREE.MeshStandardMaterial({
         color:
           this.hovered || this.focused
             ? ColorManager.colors["cyan"]
             : ColorManager.colors["brown"],
       });
-      this.mesh.geometry.needsUpdate = true;
     }
 
     const midPoint = new THREE.Vector3(

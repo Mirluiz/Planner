@@ -31,7 +31,6 @@ class Corner extends BaseMesh implements Mesh, Observer {
   reRender() {
     if (!this.mesh) return;
 
-    // const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);
     const material = new THREE.MeshBasicMaterial({
       color:
         this.hovered || this.temporary
@@ -50,7 +49,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
 
     this.mesh.position.set(
       this.model.position.x,
-      this.model.position.y + highestPoint.dimension.height + 0.1 / 2,
+      this.model.position.y + (highestPoint?.dimension?.height ?? 1) + 0.1 / 2,
       this.model.position.z
     );
 
@@ -78,7 +77,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
 
     mesh.position.set(
       this.model.position.x,
-      this.model.position.y + highestPoint.dimension.height + 0.1 / 2,
+      this.model.position.y + (highestPoint?.dimension?.height ?? 1) + 0.1 / 2,
       this.model.position.z
     );
 

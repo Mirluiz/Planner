@@ -2,16 +2,18 @@ import {
   Object3D,
   Object3DProps,
   Object3DSchema,
-  Geometry,
   Helpers,
-  Engine,
   Entity,
 } from "../system";
-import * as THREE from "three";
 import { Observer } from "../system/interfaces/Observer";
 import { Wall } from "./Wall/Wall";
+import { Door as DoorModel } from "../model";
+import { Door as DoorView } from "../view";
 
 class Door implements Object3D {
+  model: DoorModel | null = null;
+  view: DoorView | null = null;
+
   private observers: Observer[] = [];
 
   attachedWall: Wall | null = null;

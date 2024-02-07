@@ -107,7 +107,7 @@ class Scene {
 
     this.engine?.htmlElement?.addEventListener("keydown", (event) => {
       if (event.code == "Escape") {
-        this.controller.event.emit("scene_update");
+        console.log("esc pressed");
       }
     });
   }

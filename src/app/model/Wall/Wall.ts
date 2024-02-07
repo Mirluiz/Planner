@@ -94,7 +94,7 @@ class Wall implements Object3D, Geometry.Line {
 
   destroy() {
     for (const observer of this.observers) {
-      observer.trigger();
+      observer.destroy();
     }
   }
 
@@ -223,6 +223,7 @@ class Wall implements Object3D, Geometry.Line {
           wall.notifyObservers();
         }
       });
+      startCorner.notifyObservers();
     }
 
     if (endCorner) {
@@ -249,6 +250,7 @@ class Wall implements Object3D, Geometry.Line {
           wall.notifyObservers();
         }
       });
+      endCorner.notifyObservers();
     }
 
     this.updateAngle();

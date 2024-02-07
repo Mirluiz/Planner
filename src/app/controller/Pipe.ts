@@ -7,7 +7,10 @@ import { App } from "../App";
 import { Scene as SceneController } from "./Scene";
 import { Base } from "./Base";
 
-class Pipe extends Base<PipeModel, PipeView> implements Controller {
+class Pipe extends Base implements Controller {
+  model: PipeModel | null = null;
+  view: PipeView | null = null;
+
   private tempFitting: Array<Fitting> = [];
 
   constructor(readonly app: App, readonly sceneController: SceneController) {

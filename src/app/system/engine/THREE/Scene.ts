@@ -142,9 +142,7 @@ class Scene {
       this.updateCameraData();
     });
 
-    this.htmlElement?.addEventListener("mousemove", () => {
-      this.mouseMove();
-    });
+    this.htmlElement?.addEventListener("mousemove", () => {});
 
     this.htmlElement?.addEventListener("mousedown", () => {
       const planeIntersect = Math2D.NetAlgorithms.planeIntersection(
@@ -276,13 +274,9 @@ class Scene {
       this.camera
     );
 
-    this.snapHighLight?.run();
-
     this.renderer.render(this.scene, this.camera);
     this.stats.update();
-  }
 
-  mouseMove() {
     const planeIntersect = Math2D.NetAlgorithms.planeIntersection(
       new Vector3(0, 0, 0),
       this.raycaster.ray.clone()
@@ -301,8 +295,10 @@ class Scene {
       this.groundInters.x = this.ground.x;
       this.groundInters.z = this.ground.z;
     }
-
+    // console.log("this.raycaster.ray", this.raycaster.ray.origin);
     this.intersects = this.raycaster.intersectObjects(this.scene.children);
+
+    this.snapHighLight?.run();
   }
 
   private updateCameraData() {

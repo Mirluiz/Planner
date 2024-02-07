@@ -1,13 +1,15 @@
 import { Math2D } from "../../system";
 import { Controller } from "../Controller";
-import { Door, Wall as WallModel, Wall } from "../../model";
+import { Door as DoorModel, Wall as WallModel, Wall } from "../../model";
 import { Door as DoorView } from "../../view/Door";
 import { Vector3 } from "three";
 import { Base } from "../Base";
 
 class WallElement extends Base implements Controller {
+  model: DoorModel | null = null;
+  view: DoorView | null = null;
   private ghostView: DoorView | null = null;
-  private ghostModel: Door | null = null;
+  private ghostModel: DoorModel | null = null;
 
   get walls() {
     return (
@@ -20,7 +22,7 @@ class WallElement extends Base implements Controller {
   }
 
   create(pos: { x: number; y: number; z: number }) {
-    let model = new Door({
+    let model = new DoorModel({
       position: new Vector3(pos.x, pos.y, pos.z),
     });
 
@@ -52,7 +54,7 @@ class WallElement extends Base implements Controller {
           .normalize();
         model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
         model.position = { ...firstObject.position };
-        // this.model.attachedWall = firstObject.object;
+        model.attachedWall = firstObject.object;
       }
     }
 
@@ -72,7 +74,7 @@ class WallElement extends Base implements Controller {
     props: Partial<{
       pos: Vector3;
     }>,
-    model: Door
+    model: DoorModel
   ) {
     if (props.pos) model.position = { ...props.pos };
 
@@ -134,7 +136,7 @@ class WallElement extends Base implements Controller {
   }
 
   createGhost() {
-    let newDoor = new Door();
+    let newDoor = new DoorModel();
 
     this.ghostView = new DoorView(newDoor, this.app);
     this.ghostModel = newDoor;
@@ -152,7 +154,7 @@ class WallElement extends Base implements Controller {
   }
 
   mouseMove(pos: { x: number; y: number; z: number }) {
-    if (this.model instanceof Door) {
+    if (this.model instanceof DoorModel) {
       this.update({ pos: new Vector3(pos.x, pos.y, pos.z) }, this.model);
     }
 

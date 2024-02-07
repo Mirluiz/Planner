@@ -1,21 +1,16 @@
-import { Corner, Room as RoomModel, Wall as WallModel } from "../model";
+import { Corner, Room as RoomModel } from "../model";
 import { Room as RoomView } from "../view/Room";
 import { Helpers } from "../system";
-import { Scene as SceneModel } from "../model/Scene";
-import { Graph as GraphController } from "./Graph";
-import { Polygon } from "../system/utils/Polygon";
 import { Vector3 } from "three";
 import { Controller } from "./Controller";
 import { Base } from "./Base";
 import { App } from "../App";
 import { Scene as SceneController } from "./Scene";
-import { Wall as WallView } from "../view";
 
-class Room extends Base<RoomModel, RoomView> implements Controller {
-  // constructor(props: { scene: SceneModel }) {
-  //   this.scene = props.scene;
-  //   this.graph = new GraphController();
-  // }
+class Room extends Base implements Controller {
+  model: RoomModel | null = null;
+  view: RoomView | null = null;
+
   constructor(readonly app: App, readonly sceneController: SceneController) {
     super(app, sceneController);
 
