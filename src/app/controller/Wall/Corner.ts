@@ -39,21 +39,15 @@ class Corner extends Base implements Controller {
     this.doors.map((door) => {
       model.walls.map((wall) => {
         if (door.attachedWall?.wall.uuid === wall.uuid) {
-          let doorPos = new Vector3(
-            door.position.x,
-            door.position.y,
-            door.position.z
-          );
-          let modelPos = new Vector3(
-            wall.position.x,
-            wall.position.y,
-            wall.position.z
-          );
-          let normal = wall.end.clone().sub(wall.start).normalize();
+          let modelPos = new Vector3(wall.start.x, wall.start.y, wall.start.z);
+          let normal = wall.start.clone().sub(wall.end).normalize();
+          let ln = wall.start.clone().sub(wall.end).length();
 
           let finalPos = modelPos
             .clone()
-            .add(normal.multiplyScalar(-door.attachedWall.centerOffset ?? 1));
+            .sub(
+              normal.multiplyScalar(door.attachedWall.centerOffset * ln ?? 1)
+            );
 
           door.position = { x: finalPos.x, y: finalPos.y, z: finalPos.z };
 

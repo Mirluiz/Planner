@@ -83,15 +83,18 @@ class Wall extends Base implements Controller {
             door.position.z
           );
           let modelPos = new Vector3(
-            model.position.x,
-            model.position.y,
-            model.position.z
+            model.start.x,
+            model.start.y,
+            model.start.z
           );
-          let normal = model.end.clone().sub(model.start).normalize();
+          let normal = model.start.clone().sub(model.end).normalize();
+          let ln = model.start.clone().sub(model.end).length();
 
           let finalPos = modelPos
             .clone()
-            .add(normal.multiplyScalar(-door.attachedWall.centerOffset ?? 1));
+            .sub(
+              normal.multiplyScalar(door.attachedWall.centerOffset * ln ?? 1)
+            );
 
           door.position = { x: finalPos.x, y: finalPos.y, z: finalPos.z };
           door.notifyObservers();

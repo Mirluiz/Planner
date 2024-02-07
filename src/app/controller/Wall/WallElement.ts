@@ -54,13 +54,12 @@ class WallElement extends Base implements Controller {
           .normalize();
         model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
         model.position = { ...firstObject.position };
+
         model.attachedWall = {
           wall: firstObject.object,
-          centerOffset: new Vector3(
-            firstObject.object.position.x,
-            firstObject.object.position.y,
-            firstObject.object.position.z
-          ).distanceTo(firstObject.position),
+          centerOffset:
+            firstObject.object.start.distanceTo(firstObject.position) /
+            firstObject.object.start.clone().distanceTo(firstObject.object.end),
         };
       }
     }
@@ -115,11 +114,9 @@ class WallElement extends Base implements Controller {
         model.position = { ...firstObject.position };
         model.attachedWall = {
           wall: firstObject.object,
-          centerOffset: new Vector3(
-            firstObject.object.position.x,
-            firstObject.object.position.y,
-            firstObject.object.position.z
-          ).distanceTo(firstObject.position),
+          centerOffset:
+            firstObject.object.start.distanceTo(firstObject.position) /
+            firstObject.object.start.clone().distanceTo(firstObject.object.end),
         };
       }
     }
