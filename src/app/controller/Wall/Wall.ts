@@ -1,4 +1,4 @@
-import { Wall as WallModel, Corner } from "../../model/";
+import { Wall as WallModel, Corner, Door } from "../../model/";
 import { Math2D } from "../../system";
 import { Controller } from "../Controller";
 import { WallEnd } from "../../model/Wall/WallEnd";
@@ -35,6 +35,14 @@ class Wall extends Base implements Controller {
     );
   }
 
+  get doors() {
+    return (
+      this.sceneController.model?.objects.filter((obj): obj is Door => {
+        return obj instanceof Door;
+      }) ?? []
+    );
+  }
+
   create(props: { x: number; y: number; z: number }) {
     this.startDraw(props);
 
@@ -66,6 +74,29 @@ class Wall extends Base implements Controller {
 
       model.updateCenter();
       model.updateCorners();
+
+      this.doors.map((door) => {
+        if (door.attachedWall?.wall.uuid === model.uuid) {
+          let doorPos = new Vector3(
+            door.position.x,
+            door.position.y,
+            door.position.z
+          );
+          let modelPos = new Vector3(
+            model.position.x,
+            model.position.y,
+            model.position.z
+          );
+          let normal = model.end.clone().sub(model.start).normalize();
+
+          let finalPos = modelPos
+            .clone()
+            .add(normal.multiplyScalar(-door.attachedWall.centerOffset ?? 1));
+
+          door.position = { x: finalPos.x, y: finalPos.y, z: finalPos.z };
+          door.notifyObservers();
+        }
+      });
     }
 
     model.updateCorners();

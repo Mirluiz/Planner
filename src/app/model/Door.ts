@@ -16,7 +16,10 @@ class Door implements Object3D {
 
   private observers: Observer[] = [];
 
-  attachedWall: Wall | null = null;
+  attachedWall: {
+    wall: Wall;
+    centerOffset: number;
+  } | null = null;
 
   uuid;
   dimension;

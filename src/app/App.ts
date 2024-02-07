@@ -8,6 +8,7 @@ import { Graph as GraphController } from "../app/controller/Graph";
 import { Pipe as PipeController } from "../app/controller/Pipe";
 import { EventSystem, Database, Object3D, Storage } from "./system";
 import { WallElement as WallElementController } from "./controller";
+import { Corner as CornerController } from "./controller/Wall/Corner";
 
 class App {
   database: Database = new Database();
@@ -20,6 +21,7 @@ class App {
   pipeController: PipeController;
   sceneController: SceneController;
   roomController: RoomController;
+  cornerController: CornerController;
   // object3DController: Object3DController;
 
   constructor(props: { canvas: HTMLElement | null }) {
@@ -29,6 +31,7 @@ class App {
     this.pipeController = new PipeController(this, this.sceneController);
     this.roomController = new RoomController(this, this.sceneController);
     this.wallController = new WallController(this, this.sceneController);
+    this.cornerController = new CornerController(this, this.sceneController);
     this.wallElementController = new WallElementController(
       this,
       this.sceneController

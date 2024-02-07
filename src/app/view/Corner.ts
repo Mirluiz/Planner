@@ -20,7 +20,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
     if (position) {
       this.model.position = { ...position };
 
-      this.model.update();
+      this.app.cornerController.update({}, this.model);
     }
   }
 
