@@ -59,12 +59,12 @@ const Top = () => {
               return;
             }
 
-            // app.sceneController.view?.engine.setCamera(
-            //   app.sceneController.view?.engine.cameraMode === "3D" ? "2D" : "3D"
-            // );
-            //
-            // if (app.sceneController.view)
-            //   setCamera(app.sceneController.view?.engine.cameraMode);
+            app.sceneController.view?.engine?.setCamera(
+              app.sceneController.view?.engine.cameraMode === "3D" ? "2D" : "3D"
+            );
+
+            if (app.sceneController.view?.engine)
+              setCamera(app.sceneController.view?.engine?.cameraMode);
           }}
         />
         <BorderClearIcon
@@ -75,11 +75,13 @@ const Top = () => {
               return;
             }
 
-            // app.sceneController.view?.engine.updateGrid(
-            //   !app.sceneController.view?.engine.netBinding
-            // );
-            //
-            // setNetBinding(app.sceneController.view?.engine.netBinding ?? false);
+            app.sceneController.view?.engine?.updateGrid(
+              !app.sceneController.view?.engine.netBinding
+            );
+
+            setNetBinding(
+              app.sceneController.view?.engine?.netBinding ?? false
+            );
           }}
         />
       </Grid>
