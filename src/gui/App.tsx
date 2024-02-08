@@ -12,6 +12,7 @@ import * as THREE from "three";
 import { Angle } from "../Demo/Angle";
 import { Brush, Evaluator, SUBTRACTION } from "three-bvh-csg";
 import { Door } from "../Demo/Doors";
+import { GlbManager } from "../app/system/engine/THREE/GlbManager";
 
 const App = () => {
   const canvasRef = useRef<HTMLDivElement | null>(null);
@@ -25,6 +26,7 @@ const App = () => {
 
   useEffect(() => {
     if (app) {
+      GlbManager.init();
       app.init().then(() => {
         app.run();
         const demo = new Room({ app });

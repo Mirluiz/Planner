@@ -133,6 +133,14 @@ class Wall extends BaseMesh implements Mesh, Observer {
     return this.mesh;
   }
 
+  render3D() {
+    return this.render2D();
+  }
+
+  reRender3D() {
+    return this.reRender2D();
+  }
+
   private getGeometry() {
     let depth = 0.2;
     let ln = this.model.start.distanceTo(this.model.end);

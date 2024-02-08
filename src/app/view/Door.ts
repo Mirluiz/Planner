@@ -10,10 +10,15 @@ import {
 } from "./../system";
 import { App } from "../App";
 import { Wall as WallModel, Wall } from "../model";
-import { Vector3 } from "three";
+import { Group, Vector3 } from "three";
+import { GlbManager } from "../system/engine/THREE/GlbManager";
+import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 
 class Door extends BaseMesh implements Mesh, Observer {
   uuid: string;
+
+  loadedGlb: Group | null = null;
+
   constructor(readonly model: DoorModel, private app: App) {
     super(model);
     this.uuid = Helpers.uuid();
@@ -38,7 +43,7 @@ class Door extends BaseMesh implements Mesh, Observer {
 
     const midPoint = new THREE.Vector3(
       this.model.position.x,
-      this.model.position.y,
+      this.model.dimension.height / 2,
       this.model.position.z
     );
 
@@ -51,32 +56,47 @@ class Door extends BaseMesh implements Mesh, Observer {
 
   render3D() {
     this.destroy();
+    let group = new THREE.Group();
 
-    const geometry = new THREE.BoxGeometry(1, 2, 0.3);
-    // const geometry = new THREE.PlaneGeometry(1, 2);
-
-    const edges = new THREE.EdgesGeometry(geometry);
-
-    const mesh = new THREE.LineSegments(
-      edges,
-      new THREE.LineBasicMaterial({ color: 0x000fff })
-    );
+    // if (!this.loadedGlb) {
+    //   GlbManager.loader.load(
+    //     "/assets/glbs/wooden_door/scene.gltf",
+    //     (gltf) => {
+    //       group.add(gltf.scene);
+    //       const box = new THREE.Box3().setFromObject(gltf.scene);
+    //       const size = box.getSize(new THREE.Vector3());
+    //
+    //       gltf.scene.rotateY(Math.PI / 2);
+    //       group.position.y = size.y / 2;
+    //
+    //       gltf.animations;
+    //       gltf.scene;
+    //       gltf.scenes;
+    //       gltf.cameras;
+    //       gltf.asset;
+    //
+    //       this.loadedGlb = gltf.scene.clone();
+    //     },
+    //     function (xhr) {
+    //       console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+    //     },
+    //     // called when loading has errors
+    //     function (error) {
+    //       console.log("An error happened", error);
+    //     }
+    //   );
+    // }
 
     const midPoint = new THREE.Vector3(
       this.model.position.x,
-      this.model.position.y,
+      this.model.dimension.height / 2,
       this.model.position.z
     );
 
-    mesh.rotation.y = this.model.rotation.y;
-    mesh.position.copy(midPoint);
-    mesh.name = "Door";
-    mesh.userData.object = {
-      uuid: this.model.uuid,
-      temporary: this.temporary,
-    };
+    group.rotation.y = this.model.rotation.y;
+    group.position.copy(midPoint);
 
-    this.mesh = mesh;
+    this.mesh = group;
 
     return this.mesh;
   }

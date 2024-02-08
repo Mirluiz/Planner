@@ -62,6 +62,7 @@ const Top = () => {
             app.sceneController.view?.engine?.setCamera(
               app.sceneController.view?.engine.cameraMode === "3D" ? "2D" : "3D"
             );
+            app.sceneController.event.emit("scene_update");
 
             if (app.sceneController.view?.engine)
               setCamera(app.sceneController.view?.engine?.cameraMode);

@@ -5,6 +5,7 @@ import { Scene as SceneController } from "../../../controller/Scene";
 import { Vector3 } from "three";
 import { Renderer } from "./Renderer";
 import Stats from "three/examples/jsm/libs/stats.module";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment";
 
 class Scene {
   controller: SceneController;
@@ -86,7 +87,7 @@ class Scene {
 
     const hLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
     hLight.position.set(1, 2, 0);
-    this.scene.add(hLight);
+    // this.scene.add(hLight);
 
     this.cameraMode = this.localStorage.camera?.mode ?? "3D";
     // this.cameraMode = "2D";
@@ -96,6 +97,14 @@ class Scene {
 
     this.renderer.domElement.setAttribute("tabindex", "0");
     this.renderer.domElement.focus();
+
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
+
+    const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+    this.scene.environment = pmremGenerator.fromScene(
+      new RoomEnvironment(),
+      0.06
+    ).texture;
 
     this.initEvents();
     this.subscribeEvents();
