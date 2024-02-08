@@ -18,6 +18,7 @@ export type Color = {
   lavender: 0xdcbeff;
   light_yellow: 0xfff000;
   light_grey: 0xc6c6c6;
+  grey: 0x777777;
 };
 
 class ColorManager {
@@ -42,6 +43,7 @@ class ColorManager {
     lavender: 0xdcbeff,
     light_yellow: 0xfff000,
     light_grey: 0xc6c6c6,
+    grey: 0x777777,
   };
 
   static pick(): number {

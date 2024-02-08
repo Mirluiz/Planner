@@ -67,7 +67,7 @@ class WallElement extends Base implements Controller {
     let view = new DoorView(model, this.app);
 
     if (view) {
-      let render = view.render();
+      let render = view.render2D();
       if (render) this.sceneController.view?.engine?.scene.add(render);
     }
 
@@ -153,7 +153,7 @@ class WallElement extends Base implements Controller {
     this.ghostModel = newDoor;
 
     if (this.ghostView) {
-      let render = this.ghostView.render();
+      let render = this.ghostView.render2D();
       if (render) this.sceneController.view?.engine?.scene.add(render);
     }
   }

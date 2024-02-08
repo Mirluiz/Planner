@@ -11,7 +11,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
   }
 
   trigger() {
-    this.reRender();
+    this.reRender2D();
   }
 
   update(props: { position?: { x: number; y: number; z: number } }) {
@@ -28,7 +28,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
     this.app.roomController.updateGraph();
   }
 
-  reRender() {
+  reRender2D() {
     if (!this.mesh) return;
 
     const material = new THREE.MeshBasicMaterial({
@@ -62,7 +62,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
     this.mesh.updateMatrix();
   }
 
-  render() {
+  render2D() {
     this.destroy();
 
     const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);

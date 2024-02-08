@@ -11,6 +11,7 @@ import { Wall } from "../Demo/Wall";
 import * as THREE from "three";
 import { Angle } from "../Demo/Angle";
 import { Brush, Evaluator, SUBTRACTION } from "three-bvh-csg";
+import { Door } from "../Demo/Doors";
 
 const App = () => {
   const canvasRef = useRef<HTMLDivElement | null>(null);
@@ -30,6 +31,7 @@ const App = () => {
         const angle = new Angle({ app });
         // const corner = new Corner({ app });
         const wall = new Wall({ app });
+        const door = new Door({ app });
 
         // let start = new Vector3(2, 0, 0);
         // let end = new Vector3(5, 0, 4);
@@ -50,6 +52,7 @@ const App = () => {
         // const result = evaluator.evaluate(brush1, brush2, SUBTRACTION);
 
         demo.run();
+        // door.run();
         // angle.run();
         // corner.run();
         // wall.run();

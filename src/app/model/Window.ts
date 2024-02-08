@@ -8,7 +8,7 @@ import {
 } from "../system";
 import { Wall } from "./Wall/Wall";
 
-class Door implements Object3D {
+class Window implements Object3D {
   private observers: Observer[] = [];
 
   attachedWall: {
@@ -21,7 +21,7 @@ class Door implements Object3D {
   rotation;
   position;
 
-  type = Entity.DOOR;
+  type = Entity.WINDOW;
 
   constructor(props?: Object3DProps) {
     if (!props) {
@@ -64,14 +64,14 @@ class Door implements Object3D {
   }
 
   static fromJson(schema: Omit<Object3DSchema, "type">) {
-    return new Door({ ...schema });
+    return new Window({ ...schema });
   }
 
   clone() {
     let jsonV = this.toJson();
     jsonV.uuid = Helpers.uuid();
-    return new Door(jsonV);
+    return new Window(jsonV);
   }
 }
 
-export { Door };
+export { Window };

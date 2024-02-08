@@ -10,7 +10,7 @@ class Radiator extends BaseMesh implements Mesh, Observer {
   }
 
   trigger() {
-    this.reRender();
+    this.render3D();
   }
 
   update() {}

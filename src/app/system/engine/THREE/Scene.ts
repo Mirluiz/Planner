@@ -166,9 +166,7 @@ class Scene {
     this.controller.event.subscribe("scene_update", () => {
       if (!this.scene) return;
 
-      const runDelete = (
-        children: Array<THREE.Mesh<any, any> | THREE.Group>
-      ) => {
+      const runDelete = (children: Array<THREE.Object3D>) => {
         for (let i = 0; i < children.length; i++) {
           let child = children[i];
 
@@ -190,13 +188,17 @@ class Scene {
         }
       };
 
-      // @ts-ignore
       runDelete(this.scene.children);
 
       this.controller.model?.objects.map((object) => {
         let renderModel = Renderer.threeJS(object, this.controller.app);
-        let mesh = renderModel?.render();
-        if (mesh) this.scene.add(mesh);
+        if (this.cameraMode === "2D") {
+          let mesh = renderModel?.render2D();
+          if (mesh) this.scene.add(mesh);
+        } else {
+          let mesh = renderModel?.render3D();
+          if (mesh) this.scene.add(mesh);
+        }
       });
     });
   }

@@ -13,7 +13,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
   }
 
   trigger() {
-    this.reRender();
+    this.reRender2D();
   }
 
   update(props: {
@@ -52,7 +52,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
     }
   }
 
-  reRender() {
+  reRender2D() {
     if (!this.mesh) return;
 
     let geometry = this.getGeometry();
@@ -98,7 +98,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
     this.mesh.updateMatrix();
   }
 
-  render() {
+  render2D() {
     this.destroy();
 
     let geometry = new THREE.BoxGeometry().setFromPoints(this.getGeometry());

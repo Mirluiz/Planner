@@ -48,7 +48,7 @@ class Wall extends Base implements Controller {
     this.startDraw(props);
 
     if (this.view) {
-      this.sceneController.view?.engine?.scene.add(this.view?.render());
+      this.sceneController.view?.engine?.scene.add(this.view?.render2D());
     }
 
     return this.model;
@@ -174,7 +174,7 @@ class Wall extends Base implements Controller {
       let cornerView = new CornerView(corner, this.app);
 
       if (cornerView) {
-        this.sceneController.view?.engine?.scene.add(cornerView.render());
+        this.sceneController.view?.engine?.scene.add(cornerView.render2D());
       }
 
       corner.walls.push(wall);

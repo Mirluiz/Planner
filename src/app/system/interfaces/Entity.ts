@@ -6,6 +6,7 @@ enum Entity {
   RADIATOR,
   ROOM,
   DOOR,
+  WINDOW,
 }
 
 export { Entity };
