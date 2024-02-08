@@ -8,6 +8,7 @@ import { Wall as WallView, Corner as CornerView } from "./../../view";
 import { App } from "../../App";
 import { Scene as SceneController } from "../Scene";
 import { Vector3 } from "three";
+import { WallUpdates } from "./WallUpdates";
 
 class Wall extends Base implements Controller {
   model: WallModel | null = null;
@@ -75,31 +76,7 @@ class Wall extends Base implements Controller {
       model.updateCenter();
       model.updateCorners();
 
-      this.doors.map((door) => {
-        if (door.attachedWall?.wall.uuid === model.uuid) {
-          let doorPos = new Vector3(
-            door.position.x,
-            door.position.y,
-            door.position.z
-          );
-          let modelPos = new Vector3(
-            model.start.x,
-            model.start.y,
-            model.start.z
-          );
-          let normal = model.start.clone().sub(model.end).normalize();
-          let ln = model.start.clone().sub(model.end).length();
-
-          let finalPos = modelPos
-            .clone()
-            .sub(
-              normal.multiplyScalar(door.attachedWall.centerOffset * ln ?? 1)
-            );
-
-          door.position = { x: finalPos.x, y: finalPos.y, z: finalPos.z };
-          door.notifyObservers();
-        }
-      });
+      WallUpdates.updateDoorsByWall(this.doors, model);
     }
 
     model.updateCorners();

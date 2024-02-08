@@ -10,6 +10,7 @@ import {
 import { Door as DoorView } from "../../view/Door";
 import { Vector3 } from "three";
 import { Base } from "../Base";
+import { WallUpdates } from "./WallUpdates";
 
 class Corner extends Base implements Controller {
   model: DoorModel | null = null;
@@ -30,34 +31,9 @@ class Corner extends Base implements Controller {
     model: CornerModel
   ) {
     model.update();
-    this.updateDoors(model);
+    WallUpdates.updateDoorsByCorner(this.doors, model);
 
     return model ?? null;
-  }
-
-  updateDoors(model: CornerModel) {
-    this.doors.map((door) => {
-      model.walls.map((wall) => {
-        if (door.attachedWall?.wall.uuid === wall.uuid) {
-          let modelPos = new Vector3(wall.start.x, wall.start.y, wall.start.z);
-          let normal = wall.start.clone().sub(wall.end).normalize();
-          let ln = wall.start.clone().sub(wall.end).length();
-
-          let finalPos = modelPos
-            .clone()
-            .sub(
-              normal.multiplyScalar(door.attachedWall.centerOffset * ln ?? 1)
-            );
-
-          door.position = { x: finalPos.x, y: finalPos.y, z: finalPos.z };
-
-          let angle = wall.end.clone().sub(wall.start.clone()).normalize();
-          door.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
-
-          door.notifyObservers();
-        }
-      });
-    });
   }
 
   reset() {
