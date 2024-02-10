@@ -1,5 +1,8 @@
 import * as THREE from "three";
 import { Engine, Object3D, Object3DProps } from "../../interfaces";
+import { BufferGeometry } from "three/src/core/BufferGeometry";
+import { Material } from "three/src/materials/Material";
+import { MeshBasicMaterial } from "three/src/materials/MeshBasicMaterial";
 
 interface Mesh {
   focused: boolean;
@@ -63,26 +66,50 @@ class BaseMesh implements Mesh {
     };
 
     this.mesh?.children.map((child) => {
-      if (child instanceof THREE.Mesh || child instanceof THREE.LineSegments) {
-        child.geometry.dispose();
-        child.material.dispose();
-        child.removeFromParent();
-
-        if (child.children.length > 0) {
-          runDelete(child.children);
-        }
+      if (child.children.length > 0) {
+        runDelete(child.children);
       }
+
+      if ("geometry" in child && child.geometry instanceof BufferGeometry) {
+        child.geometry.dispose();
+      }
+
+      if ("material" in child && child.material instanceof Material) {
+        child.material.dispose();
+      }
+
+      if ("material" in child && child.material instanceof MeshBasicMaterial) {
+        child.material?.map?.dispose();
+      }
+
+      child.removeFromParent();
     });
 
     if (
-      this.mesh instanceof THREE.Mesh ||
-      this.mesh instanceof THREE.LineSegments
+      this.mesh &&
+      "geometry" in this.mesh &&
+      this.mesh.geometry instanceof BufferGeometry
+    ) {
+      this.mesh?.geometry?.dispose();
+    }
+
+    if (
+      this.mesh &&
+      "material" in this.mesh &&
+      this.mesh.material instanceof Material
     ) {
       this.mesh?.material?.dispose();
-      this.mesh?.material?.map?.dispose();
-      this.mesh?.geometry?.dispose();
-      this.mesh?.removeFromParent();
     }
+
+    if (
+      this.mesh &&
+      "material" in this.mesh &&
+      this.mesh.material instanceof MeshBasicMaterial
+    ) {
+      this.mesh?.material?.map?.dispose();
+    }
+
+    this.mesh?.removeFromParent();
 
     this.mesh = null;
   }
