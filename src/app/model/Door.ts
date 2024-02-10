@@ -7,9 +7,11 @@ import {
   Observer,
 } from "../system";
 import { Wall } from "./Wall/Wall";
+import { Vector3 } from "three";
 
 class Door implements Object3D {
   private observers: Observer[] = [];
+  face: Vector3;
 
   attachedWall: {
     wall: Wall;
@@ -23,13 +25,15 @@ class Door implements Object3D {
 
   type = Entity.DOOR;
 
-  constructor(props?: Object3DProps) {
+  constructor(props?: Object3DProps & { face: Vector3 }) {
     if (!props) {
       this.uuid = Helpers.uuid();
       this.dimension = { width: 0.1, depth: 1, height: 1 };
       this.rotation = { w: 0, x: 0, y: 0, z: 0 };
       this.position = { x: 0, y: 0, z: 0 };
+      this.face = new Vector3();
     } else {
+      this.face = props.face ?? new Vector3();
       this.uuid = props.uuid ?? Helpers.uuid();
       this.dimension = props.dimension ?? { width: 0.1, depth: 1, height: 1 };
       this.rotation = props.rotation ?? { w: 0, x: 0, y: 0, z: 0 };
@@ -59,11 +63,12 @@ class Door implements Object3D {
       dimension: { ...this.dimension },
       rotation: { ...this.rotation },
       position: { ...this.position },
+      face: this.face.clone(),
       type: Entity.FITTING,
     };
   }
 
-  static fromJson(schema: Omit<Object3DSchema, "type">) {
+  static fromJson(schema: Omit<Object3DSchema, "type"> & { face: Vector3 }) {
     return new Door({ ...schema });
   }
 

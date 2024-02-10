@@ -36,7 +36,7 @@ class Wall implements Object3D, Geometry.Line {
         start: Geometry.Vector3;
         end: Geometry.Vector3;
       } & Object3DProps
-    >
+    >,
   ) {
     this.start = new WallEnd(props?.start?.x, props?.start?.y, props?.start?.z);
     this.end = new WallEnd(props?.end?.x, props?.end?.y, props?.end?.z);
@@ -67,13 +67,13 @@ class Wall implements Object3D, Geometry.Line {
       let reservedCenterVector = new Vector3(
         reservedPosition.x,
         reservedPosition.y,
-        reservedPosition.z
+        reservedPosition.z,
       );
 
       let centerVector = new Vector3(
         this.position.x,
         this.position.y,
-        this.position.z
+        this.position.z,
       );
 
       let fromCenterToStart = this.start.clone().sub(reservedCenterVector);
@@ -112,7 +112,7 @@ class Wall implements Object3D, Geometry.Line {
 
   updateAngle() {
     let startWalls = this.start.object?.walls.filter(
-      (_w) => _w.uuid !== this.uuid
+      (_w) => _w.uuid !== this.uuid,
     );
     let endWalls = this.end.object?.walls.filter((_w) => _w.uuid !== this.uuid);
 
@@ -123,11 +123,11 @@ class Wall implements Object3D, Geometry.Line {
       prevWall = startWalls.sort(
         (a, b) =>
           Math2D.Calculation.calculateTheta(
-            new Vector3(a.position.x, a.position.y, a.position.z)
+            new Vector3(a.position.x, a.position.y, a.position.z),
           ) -
           Math2D.Calculation.calculateTheta(
-            new Vector3(b.position.x, b.position.y, b.position.z)
-          )
+            new Vector3(b.position.x, b.position.y, b.position.z),
+          ),
       )[0];
     }
 
@@ -135,11 +135,11 @@ class Wall implements Object3D, Geometry.Line {
       nextWall = endWalls.sort(
         (a, b) =>
           Math2D.Calculation.calculateTheta(
-            new Vector3(a.position.x, a.position.y, a.position.z)
+            new Vector3(a.position.x, a.position.y, a.position.z),
           ) -
           Math2D.Calculation.calculateTheta(
-            new Vector3(b.position.x, b.position.y, b.position.z)
-          )
+            new Vector3(b.position.x, b.position.y, b.position.z),
+          ),
       )[0];
     }
 
@@ -159,7 +159,7 @@ class Wall implements Object3D, Geometry.Line {
         if (currentNormal && nextNormal) {
           let angle = GeometryCalculation.angleBetweenVectorsWithOrientation(
             currentNormal,
-            nextNormal
+            nextNormal,
           );
 
           this.endAngle = angle / 2 - Math.PI / 2;
@@ -182,7 +182,7 @@ class Wall implements Object3D, Geometry.Line {
         if (currentNormal && nextNormal) {
           let angle = GeometryCalculation.angleBetweenVectorsWithOrientation(
             currentNormal,
-            nextNormal
+            nextNormal,
           );
 
           this.startAngle = angle / 2 - Math.PI / 2;
@@ -207,7 +207,7 @@ class Wall implements Object3D, Geometry.Line {
             wall.end.set(
               startCorner.position.x,
               startCorner.position.y,
-              startCorner.position.z
+              startCorner.position.z,
             );
           }
 
@@ -215,7 +215,7 @@ class Wall implements Object3D, Geometry.Line {
             wall.start.set(
               startCorner.position.x,
               startCorner.position.y,
-              startCorner.position.z
+              startCorner.position.z,
             );
           }
 
@@ -234,7 +234,7 @@ class Wall implements Object3D, Geometry.Line {
             wall.end.set(
               endCorner.position.x,
               endCorner.position.y,
-              endCorner.position.z
+              endCorner.position.z,
             );
           }
 
@@ -242,7 +242,7 @@ class Wall implements Object3D, Geometry.Line {
             wall.start.set(
               endCorner.position.x,
               endCorner.position.y,
-              endCorner.position.z
+              endCorner.position.z,
             );
           }
 

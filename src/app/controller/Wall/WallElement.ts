@@ -24,6 +24,7 @@ class WallElement extends Base implements Controller {
   create(pos: { x: number; y: number; z: number }) {
     let model = new DoorModel({
       position: new Vector3(pos.x, pos.y, pos.z),
+      face: new Vector3(),
     });
 
     let { intersects } = this.sceneController.model;
@@ -42,7 +43,7 @@ class WallElement extends Base implements Controller {
 
       let snapsByDistance = Math2D.Line.seekSnap(
         this.walls,
-        new Vector3(position.x, position.y, position.z)
+        new Vector3(position.x, position.y, position.z),
       );
 
       let firstObject = snapsByDistance[0];
@@ -54,6 +55,10 @@ class WallElement extends Base implements Controller {
           .normalize();
         model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
         model.position = { ...firstObject.position };
+        model.face = firstObject.position
+          .clone()
+          .sub(new Vector3(pos?.x, pos?.y, pos?.z))
+          .normalize();
 
         model.attachedWall = {
           wall: firstObject.object,
@@ -80,7 +85,7 @@ class WallElement extends Base implements Controller {
     props: Partial<{
       pos: Vector3;
     }>,
-    model: DoorModel
+    model: DoorModel,
   ) {
     if (props.pos) model.position = { ...props.pos };
 
@@ -92,15 +97,18 @@ class WallElement extends Base implements Controller {
         .clone()
         .sub(firstObject.start.clone())
         .normalize();
+
       if (model) model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
     }
+
+    model.face = new Vector3(0, 0, 1);
 
     if (model) {
       let { position } = model;
 
       let snapsByDistance = Math2D.Line.seekSnap(
         this.walls,
-        new Vector3(position.x, position.y, position.z)
+        new Vector3(position.x, position.y, position.z),
       );
 
       let firstObject = snapsByDistance[0];
@@ -112,6 +120,11 @@ class WallElement extends Base implements Controller {
           .normalize();
         model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
         model.position = { ...firstObject.position };
+        model.face = firstObject.position
+          .clone()
+          .sub(new Vector3(props?.pos?.x, props?.pos?.y, props?.pos?.z))
+          .normalize();
+
         model.attachedWall = {
           wall: firstObject.object,
           centerOffset:

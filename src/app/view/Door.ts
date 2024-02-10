@@ -19,7 +19,10 @@ class Door extends BaseMesh implements Mesh, Observer {
 
   loadedGlb: Group | null = null;
 
-  constructor(readonly model: DoorModel, private app: App) {
+  constructor(
+    readonly model: DoorModel,
+    private app: App,
+  ) {
     super(model);
     this.uuid = Helpers.uuid();
     model?.addObserver(this);
@@ -44,7 +47,7 @@ class Door extends BaseMesh implements Mesh, Observer {
     const midPoint = new THREE.Vector3(
       this.model.position.x,
       this.model.dimension.height / 2,
-      this.model.position.z
+      this.model.position.z,
     );
 
     this.mesh.position.copy(midPoint);
@@ -90,7 +93,7 @@ class Door extends BaseMesh implements Mesh, Observer {
     const midPoint = new THREE.Vector3(
       this.model.position.x,
       this.model.dimension.height / 2,
-      this.model.position.z
+      this.model.position.z,
     );
 
     group.rotation.y = this.model.rotation.y;
@@ -107,11 +110,18 @@ class Door extends BaseMesh implements Mesh, Observer {
     const midPoint = new THREE.Vector3(
       this.model.position.x,
       this.model.position.y,
-      this.model.position.z
+      this.model.position.z,
     );
 
     this.mesh.position.copy(midPoint);
-    this.mesh.rotation.y = this.model.rotation.y;
+    let face = Math.atan2(this.model.face.z, this.model.face.x);
+    this.mesh.rotation.y = Math.PI / 2 - face;
+
+    console.log(
+      "this.mesh.rotation.y",
+      this.mesh.rotation.y,
+      this.model.face.y,
+    );
 
     this.mesh.updateMatrixWorld();
     this.mesh.updateMatrix();
@@ -125,10 +135,12 @@ class Door extends BaseMesh implements Mesh, Observer {
     const midPoint = new THREE.Vector3(
       this.model.position.x,
       this.model.position.y,
-      this.model.position.z
+      this.model.position.z,
     );
 
-    mesh.rotation.y = this.model.rotation.y;
+    let face = Math.atan2(this.model.face.z, this.model.face.x);
+    mesh.rotation.y = Math.PI / 2 - face;
+
     mesh.position.copy(midPoint);
     mesh.name = "Door";
     mesh.userData.object = {
@@ -201,7 +213,7 @@ class Door extends BaseMesh implements Mesh, Observer {
         if (obj instanceof WallModel) {
           return Math2D.Line.isLine(obj);
         } else return false;
-      }
+      },
     );
   }
 }
