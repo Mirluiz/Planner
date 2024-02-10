@@ -13,14 +13,23 @@ import { Angle } from "../Demo/Angle";
 import { Brush, Evaluator, SUBTRACTION } from "three-bvh-csg";
 import { Door } from "../Demo/Doors";
 import { GlbManager } from "../app/system/engine/THREE/GlbManager";
+import { Database } from "../system/Database";
+import BackDrop from "./Components/BackDrop";
 
 const App = () => {
+  const [backDrop, setBackDrop] = useState<boolean>(false);
   const canvasRef = useRef<HTMLDivElement | null>(null);
   const [app, setApp] = useState<PiperApp | null>(null);
+  const [database, setDatabase] = useState<Database | null>(null);
 
   useEffect(() => {
     if (canvasRef.current) {
       setApp(new PiperApp({ canvas: canvasRef.current }));
+
+      let database = new Database();
+      database.init(() => {
+        setDatabase(database);
+      });
     }
   }, []);
 
@@ -69,7 +78,8 @@ const App = () => {
   }, [app]);
 
   return (
-    <SceneProviderContext.Provider value={{ app }}>
+    <SceneProviderContext.Provider value={{ app, database, setBackDrop }}>
+      <BackDrop open={backDrop} />
       <Grid
         sx={{
           height: "100vh",

@@ -7,7 +7,7 @@ import BorderClearIcon from "@mui/icons-material/BorderClear";
 import { useSceneContext } from "../System/PiperContext";
 
 const Top = () => {
-  const { app } = useSceneContext();
+  const { app, database, setBackDrop } = useSceneContext();
 
   const [camera, setCamera] = useState<"3D" | "2D">("3D");
   const [netBinding, setNetBinding] = useState<boolean>(false);
@@ -22,7 +22,25 @@ const Top = () => {
     >
       <Grid>
         <Button size={"small"}>New</Button>
-        <Button size={"small"}>Save</Button>
+        <Button
+          size={"small"}
+          onClick={() => {
+            let schemas = app?.sceneController.model.objects.map((object) =>
+              object.toJson(),
+            );
+
+            if (schemas) {
+              setBackDrop(true);
+
+              database?.save(schemas, () => {
+                setBackDrop(false);
+                alert("saved");
+              });
+            }
+          }}
+        >
+          Save
+        </Button>
         <Button size={"small"}>Export</Button>
         <Button size={"small"}>Catalog</Button>
       </Grid>
@@ -60,7 +78,9 @@ const Top = () => {
             }
 
             app.sceneController.view?.engine?.setCamera(
-              app.sceneController.view?.engine.cameraMode === "3D" ? "2D" : "3D"
+              app.sceneController.view?.engine.cameraMode === "3D"
+                ? "2D"
+                : "3D",
             );
             app.sceneController.event.emit("scene_update");
 
@@ -77,11 +97,11 @@ const Top = () => {
             }
 
             app.sceneController.view?.engine?.updateGrid(
-              !app.sceneController.view?.engine.netBinding
+              !app.sceneController.view?.engine.netBinding,
             );
 
             setNetBinding(
-              app.sceneController.view?.engine?.netBinding ?? false
+              app.sceneController.view?.engine?.netBinding ?? false,
             );
           }}
         />
