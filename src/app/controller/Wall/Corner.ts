@@ -1,16 +1,16 @@
-import { Math2D } from "../../system";
+import { Entity } from "../../system";
 import { Controller } from "../Controller";
 import {
-  Door,
-  Door as DoorModel,
-  Wall as WallModel,
-  Wall,
   Corner as CornerModel,
+  Door as DoorModel,
+  Door,
+  Wall,
 } from "../../model";
 import { Door as DoorView } from "../../view/Door";
 import { Vector3 } from "three";
 import { Base } from "../Base";
 import { WallUpdates } from "./WallUpdates";
+import { DoorUpdates } from "./DoorUpdates";
 
 class Corner extends Base implements Controller {
   model: DoorModel | null = null;
@@ -30,8 +30,14 @@ class Corner extends Base implements Controller {
     }>,
     model: CornerModel
   ) {
-    model.update();
-    WallUpdates.updateDoorsByCorner(this.doors, model);
+    WallUpdates.updateWallsByCorner(
+      this.sceneController.model.objects.filter(
+        (obj): obj is Wall => obj.type === Entity.WALL
+      ),
+      model,
+      this.sceneController
+    );
+    DoorUpdates.doorsByCorner(this.doors, model);
 
     return model ?? null;
   }

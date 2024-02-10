@@ -9,6 +9,7 @@ import { App } from "../../App";
 import { Scene as SceneController } from "../Scene";
 import { Vector3 } from "three";
 import { WallUpdates } from "./WallUpdates";
+import { DoorUpdates } from "./DoorUpdates";
 
 class Wall extends Base implements Controller {
   model: WallModel | null = null;
@@ -74,12 +75,12 @@ class Wall extends Base implements Controller {
       }
 
       model.updateCenter();
-      model.updateCorners();
 
-      WallUpdates.updateDoorsByWall(this.doors, model);
+      WallUpdates.updateCorners(model, this.sceneController);
+      DoorUpdates.doorsByWall(this.doors, model, this.sceneController);
     }
 
-    model.updateCorners();
+    WallUpdates.updateCorners(model, this.sceneController);
     this.updateWallAngles();
 
     model?.notifyObservers();
@@ -105,7 +106,7 @@ class Wall extends Base implements Controller {
     if (corner) {
       corner.walls.push(newWall);
       newWall.start = new WallEnd(corner.position.x, 0, corner.position.z);
-      newWall.start.object = corner;
+      newWall.start.object = corner.uuid;
     } else if (closest && closest?.distance < 1) {
       this.connect(newWall, closest.object);
     }
@@ -134,7 +135,7 @@ class Wall extends Base implements Controller {
     if (this.model) {
       if (corner) {
         corner.walls.push(this.model);
-        this.model.end.object = corner;
+        this.model.end.object = corner.uuid;
         this.model.end.x = corner.position.x;
         this.model.end.z = corner.position.z;
       } else if (closest && closest?.distance < 0.5) {
@@ -180,8 +181,8 @@ class Wall extends Base implements Controller {
       corner.walls.push(wall);
       corner.walls.push(wallToConnect);
 
-      snap.end.object = corner;
-      wallToConnectEnd.object = corner;
+      snap.end.object = corner.uuid;
+      wallToConnectEnd.object = corner.uuid;
 
       this.sceneController.model?.addObject(corner);
     } else {
@@ -202,47 +203,51 @@ class Wall extends Base implements Controller {
         end: new WallEnd(position.x, position.y, position.z),
       });
       dividedWallFromPrevCorner.start = wallToConnect.start;
-      dividedWallFromPrevCorner.end.object = corner;
+      dividedWallFromPrevCorner.end.object = corner.uuid;
 
       let dividedWallToNextCorner = new WallModel({
         start: new WallEnd(position.x, position.y, position.z),
         end: wallToConnect.end.clone(),
       });
-      dividedWallToNextCorner.start.object = corner;
+      dividedWallToNextCorner.start.object = corner.uuid;
       dividedWallToNextCorner.end = wallToConnect.end;
 
       corner.walls.push(dividedWallFromPrevCorner);
       corner.walls.push(dividedWallToNextCorner);
       corner.walls.push(wall);
 
-      wall.end.object = corner;
+      wall.end.object = corner.uuid;
 
       this.sceneController.model?.addObject(dividedWallFromPrevCorner);
       this.sceneController.model?.addObject(dividedWallToNextCorner);
       this.sceneController.model?.addObject(corner);
 
-      if (wallToConnect.start.object) {
-        let wallIndex = wallToConnect.start.object.walls.findIndex(
+      let startCorner = this.sceneController.model.objects.find(
+        (object) => object.uuid === wallToConnect.start.object
+      ) as Corner;
+
+      if (startCorner) {
+        let wallIndex = startCorner.walls.findIndex(
           (wall) => wall.uuid === wallToConnect.uuid
         );
 
         if (wallIndex !== -1) {
-          wallToConnect.start.object.walls.splice(wallIndex, 1);
+          startCorner.walls.splice(wallIndex, 1);
         }
 
-        wallToConnect.start.object.walls.push(dividedWallFromPrevCorner);
+        startCorner.walls.push(dividedWallFromPrevCorner);
       }
 
       if (wallToConnect.end.object) {
-        let wallIndex = wallToConnect.end.object.walls.findIndex(
+        let wallIndex = startCorner.walls.findIndex(
           (wall) => wall.uuid === wallToConnect.uuid
         );
 
         if (wallIndex !== -1) {
-          wallToConnect.end.object.walls.splice(wallIndex, 1);
+          startCorner.walls.splice(wallIndex, 1);
         }
 
-        wallToConnect.end.object.walls.push(dividedWallToNextCorner);
+        startCorner.walls.push(dividedWallToNextCorner);
       }
 
       this.sceneController.model?.removeObject(wallToConnect.uuid);
@@ -268,7 +273,7 @@ class Wall extends Base implements Controller {
       }
 
       if (corner.walls.length < 2) {
-        if (corner.walls[0].start.object?.uuid === corner.uuid) {
+        if (corner.walls[0].start.object === corner.uuid) {
           corner.walls[0].start.object = null;
         } else {
           corner.walls[0].end.object = null;
@@ -297,7 +302,7 @@ class Wall extends Base implements Controller {
 
   private updateWallAngles() {
     this.walls.map((wall) => {
-      wall.updateAngle();
+      WallUpdates.updateAngle(wall, this.sceneController);
     });
   }
 

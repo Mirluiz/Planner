@@ -16,8 +16,8 @@ interface Object3DProps {
     z: number;
   };
 
-  start?: { x: number; y: number; z: number; object: Object3D | null };
-  end?: { x: number; y: number; z: number; object: Object3D | null };
+  start?: { x: number; y: number; z: number; object: string | null };
+  end?: { x: number; y: number; z: number; object: string | null };
 
   rotation?: {
     w: number;
@@ -50,8 +50,8 @@ interface Schema {
 
   type: Entity;
 
-  start?: { x: number; y: number; z: number; object: Object3D | null };
-  end?: { x: number; y: number; z: number; object: Object3D | null };
+  start?: { x: number; y: number; z: number; object: string | null };
+  end?: { x: number; y: number; z: number; object: string | null };
 
   flow?: "blue" | "red";
 }

@@ -1,4 +1,5 @@
 import { Object3DSchema } from "../app/system";
+import { App } from "../app/App";
 
 export type DBData = {
   objects: Object3DSchema[];
@@ -19,11 +20,11 @@ class Database {
       {
         objects: [],
       },
-      () => {},
+      () => {}
     );
   }
 
-  init(callBack: () => void) {
+  init(app: App, callBack: () => void) {
     let request = this.indexedDB.open(this.dbName, 1);
 
     request.onupgradeneeded = (event) => {
@@ -39,6 +40,11 @@ class Database {
 
       this.get((res) => {
         this.results = res;
+
+        this.results?.objects?.map((schema) => {
+          app.sceneController.model.addSchema(schema);
+        });
+
         callBack();
       });
     };
@@ -50,9 +56,8 @@ class Database {
         objects: objects,
       },
       () => {
-        console.log("===");
         callBack();
-      },
+      }
     );
   }
 

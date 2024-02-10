@@ -11,6 +11,7 @@ import { Vector3 } from "three";
 import { Observer } from "../../system/interfaces/Observer";
 import { WallEnd } from "./WallEnd";
 import { GeometryCalculation } from "../../controller/Wall/GeometryCalculation";
+import { Scene } from "../../controller/Scene";
 
 class Wall implements Object3D, Geometry.Line {
   isWall = true;
@@ -36,7 +37,7 @@ class Wall implements Object3D, Geometry.Line {
         start: Geometry.Vector3;
         end: Geometry.Vector3;
       } & Object3DProps
-    >,
+    >
   ) {
     this.start = new WallEnd(props?.start?.x, props?.start?.y, props?.start?.z);
     this.end = new WallEnd(props?.end?.x, props?.end?.y, props?.end?.z);
@@ -67,13 +68,13 @@ class Wall implements Object3D, Geometry.Line {
       let reservedCenterVector = new Vector3(
         reservedPosition.x,
         reservedPosition.y,
-        reservedPosition.z,
+        reservedPosition.z
       );
 
       let centerVector = new Vector3(
         this.position.x,
         this.position.y,
-        this.position.z,
+        this.position.z
       );
 
       let fromCenterToStart = this.start.clone().sub(reservedCenterVector);
@@ -110,151 +111,151 @@ class Wall implements Object3D, Geometry.Line {
     this.position.z = midPoint.z;
   }
 
-  updateAngle() {
-    let startWalls = this.start.object?.walls.filter(
-      (_w) => _w.uuid !== this.uuid,
-    );
-    let endWalls = this.end.object?.walls.filter((_w) => _w.uuid !== this.uuid);
-
-    let prevWall: Wall | undefined;
-    let nextWall: Wall | undefined;
-
-    if (startWalls) {
-      prevWall = startWalls.sort(
-        (a, b) =>
-          Math2D.Calculation.calculateTheta(
-            new Vector3(a.position.x, a.position.y, a.position.z),
-          ) -
-          Math2D.Calculation.calculateTheta(
-            new Vector3(b.position.x, b.position.y, b.position.z),
-          ),
-      )[0];
-    }
-
-    if (endWalls) {
-      nextWall = endWalls.sort(
-        (a, b) =>
-          Math2D.Calculation.calculateTheta(
-            new Vector3(a.position.x, a.position.y, a.position.z),
-          ) -
-          Math2D.Calculation.calculateTheta(
-            new Vector3(b.position.x, b.position.y, b.position.z),
-          ),
-      )[0];
-    }
-
-    {
-      if (prevWall) {
-        let nextWallOppositeEnd =
-          prevWall.start.object?.uuid === this.start.object?.uuid
-            ? prevWall.end
-            : prevWall.start;
-        let currentNormal = nextWallOppositeEnd
-          .clone()
-          .sub(this.start)
-          .normalize();
-
-        let nextNormal = this.end.clone()?.sub(this.start).normalize();
-
-        if (currentNormal && nextNormal) {
-          let angle = GeometryCalculation.angleBetweenVectorsWithOrientation(
-            currentNormal,
-            nextNormal,
-          );
-
-          this.endAngle = angle / 2 - Math.PI / 2;
-        }
-      }
-    }
-
-    {
-      if (nextWall) {
-        let prevWallOppositeEnd =
-          nextWall.start.object?.uuid === this.end.object?.uuid
-            ? nextWall.end
-            : nextWall.start;
-        let currentNormal = prevWallOppositeEnd
-          .clone()
-          .sub(this.end)
-          .normalize();
-        let nextNormal = this.start.clone()?.sub(this.end).normalize();
-
-        if (currentNormal && nextNormal) {
-          let angle = GeometryCalculation.angleBetweenVectorsWithOrientation(
-            currentNormal,
-            nextNormal,
-          );
-
-          this.startAngle = angle / 2 - Math.PI / 2;
-        }
-      }
-    }
-  }
-
-  updateCorners() {
-    let startCorner = this.start.object;
-    let endCorner = this.end.object;
-
-    if (startCorner) {
-      startCorner.position = {
-        x: this.start.x,
-        y: this.start.y,
-        z: this.start.z,
-      };
-      startCorner.walls.map((wall) => {
-        if (wall.uuid !== this.uuid && startCorner) {
-          if (wall.end.object?.uuid === startCorner.uuid) {
-            wall.end.set(
-              startCorner.position.x,
-              startCorner.position.y,
-              startCorner.position.z,
-            );
-          }
-
-          if (wall.start.object?.uuid === startCorner.uuid) {
-            wall.start.set(
-              startCorner.position.x,
-              startCorner.position.y,
-              startCorner.position.z,
-            );
-          }
-
-          wall.updateCenter();
-          wall.notifyObservers();
-        }
-      });
-      startCorner.notifyObservers();
-    }
-
-    if (endCorner) {
-      endCorner.position = { x: this.end.x, y: this.end.y, z: this.end.z };
-      endCorner.walls.map((wall) => {
-        if (wall.uuid !== this.uuid && endCorner) {
-          if (wall.end.object?.uuid === endCorner.uuid) {
-            wall.end.set(
-              endCorner.position.x,
-              endCorner.position.y,
-              endCorner.position.z,
-            );
-          }
-
-          if (wall.start.object?.uuid === endCorner.uuid) {
-            wall.start.set(
-              endCorner.position.x,
-              endCorner.position.y,
-              endCorner.position.z,
-            );
-          }
-
-          wall.updateCenter();
-          wall.notifyObservers();
-        }
-      });
-      endCorner.notifyObservers();
-    }
-
-    this.updateAngle();
-  }
+  // updateAngle() {
+  //   let startWalls = this.start.object?.walls.filter(
+  //     (_w) => _w.uuid !== this.uuid
+  //   );
+  //   let endWalls = this.end.object?.walls.filter((_w) => _w.uuid !== this.uuid);
+  //
+  //   let prevWall: Wall | undefined;
+  //   let nextWall: Wall | undefined;
+  //
+  //   if (startWalls) {
+  //     prevWall = startWalls.sort(
+  //       (a, b) =>
+  //         Math2D.Calculation.calculateTheta(
+  //           new Vector3(a.position.x, a.position.y, a.position.z)
+  //         ) -
+  //         Math2D.Calculation.calculateTheta(
+  //           new Vector3(b.position.x, b.position.y, b.position.z)
+  //         )
+  //     )[0];
+  //   }
+  //
+  //   if (endWalls) {
+  //     nextWall = endWalls.sort(
+  //       (a, b) =>
+  //         Math2D.Calculation.calculateTheta(
+  //           new Vector3(a.position.x, a.position.y, a.position.z)
+  //         ) -
+  //         Math2D.Calculation.calculateTheta(
+  //           new Vector3(b.position.x, b.position.y, b.position.z)
+  //         )
+  //     )[0];
+  //   }
+  //
+  //   {
+  //     if (prevWall) {
+  //       let nextWallOppositeEnd =
+  //         prevWall.start.object?.uuid === this.start.object?.uuid
+  //           ? prevWall.end
+  //           : prevWall.start;
+  //       let currentNormal = nextWallOppositeEnd
+  //         .clone()
+  //         .sub(this.start)
+  //         .normalize();
+  //
+  //       let nextNormal = this.end.clone()?.sub(this.start).normalize();
+  //
+  //       if (currentNormal && nextNormal) {
+  //         let angle = GeometryCalculation.angleBetweenVectorsWithOrientation(
+  //           currentNormal,
+  //           nextNormal
+  //         );
+  //
+  //         this.endAngle = angle / 2 - Math.PI / 2;
+  //       }
+  //     }
+  //   }
+  //
+  //   {
+  //     if (nextWall) {
+  //       let prevWallOppositeEnd =
+  //         nextWall.start.object?.uuid === this.end.object?.uuid
+  //           ? nextWall.end
+  //           : nextWall.start;
+  //       let currentNormal = prevWallOppositeEnd
+  //         .clone()
+  //         .sub(this.end)
+  //         .normalize();
+  //       let nextNormal = this.start.clone()?.sub(this.end).normalize();
+  //
+  //       if (currentNormal && nextNormal) {
+  //         let angle = GeometryCalculation.angleBetweenVectorsWithOrientation(
+  //           currentNormal,
+  //           nextNormal
+  //         );
+  //
+  //         this.startAngle = angle / 2 - Math.PI / 2;
+  //       }
+  //     }
+  //   }
+  // }
+  //
+  // updateCorners() {
+  //   let startCorner = this.start.object;
+  //   let endCorner = this.end.object;
+  //
+  //   if (startCorner) {
+  //     startCorner.position = {
+  //       x: this.start.x,
+  //       y: this.start.y,
+  //       z: this.start.z,
+  //     };
+  //     startCorner.walls.map((wall) => {
+  //       if (wall.uuid !== this.uuid && startCorner) {
+  //         if (wall.end.object?.uuid === startCorner.uuid) {
+  //           wall.end.set(
+  //             startCorner.position.x,
+  //             startCorner.position.y,
+  //             startCorner.position.z
+  //           );
+  //         }
+  //
+  //         if (wall.start.object?.uuid === startCorner.uuid) {
+  //           wall.start.set(
+  //             startCorner.position.x,
+  //             startCorner.position.y,
+  //             startCorner.position.z
+  //           );
+  //         }
+  //
+  //         wall.updateCenter();
+  //         wall.notifyObservers();
+  //       }
+  //     });
+  //     startCorner.notifyObservers();
+  //   }
+  //
+  //   if (endCorner) {
+  //     endCorner.position = { x: this.end.x, y: this.end.y, z: this.end.z };
+  //     endCorner.walls.map((wall) => {
+  //       if (wall.uuid !== this.uuid && endCorner) {
+  //         if (wall.end.object?.uuid === endCorner.uuid) {
+  //           wall.end.set(
+  //             endCorner.position.x,
+  //             endCorner.position.y,
+  //             endCorner.position.z
+  //           );
+  //         }
+  //
+  //         if (wall.start.object?.uuid === endCorner.uuid) {
+  //           wall.start.set(
+  //             endCorner.position.x,
+  //             endCorner.position.y,
+  //             endCorner.position.z
+  //           );
+  //         }
+  //
+  //         wall.updateCenter();
+  //         wall.notifyObservers();
+  //       }
+  //     });
+  //     endCorner.notifyObservers();
+  //   }
+  //
+  //   this.updateAngle();
+  // }
 
   static fromJson(schema: Object3DSchema) {
     if (!schema.start || !schema.end) return;
@@ -263,6 +264,8 @@ class Wall implements Object3D, Geometry.Line {
       start: new WallEnd(schema.start.x, schema.start.y, schema.start.z),
       end: new WallEnd(schema.end.x, schema.end.y, schema.end.z),
     });
+
+    // wall.start.object
 
     wall.position = schema.position;
     wall.rotation = schema.rotation;
@@ -291,16 +294,20 @@ class Wall implements Object3D, Geometry.Line {
         z: this.end.z,
         object: this.end.object,
       },
-      type: Entity.WALL,
+      type: this.type,
     };
   }
 
   clone() {
-    return new Wall({
-      ...this.toJson(),
-      end: this.end.clone(),
-      start: this.start.clone(),
-    });
+    let props = this.toJson();
+    props.uuid = Helpers.uuid();
+
+    let cloned = Wall.fromJson(props)!;
+
+    cloned.start.object = this.start.object;
+    cloned.end.object = this.end.object;
+
+    return cloned;
   }
 }
 

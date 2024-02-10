@@ -200,7 +200,9 @@ class Scene {
       runDelete(this.scene.children);
 
       this.controller.model?.objects.map((object) => {
+        // console.log("object", object);
         let renderModel = Renderer.threeJS(object, this.controller.app);
+        // console.log("renderModel", this.scene, renderModel);
         if (this.cameraMode === "2D") {
           let mesh = renderModel?.render2D();
           if (mesh) this.scene.add(mesh);

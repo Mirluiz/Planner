@@ -27,6 +27,7 @@ class Door {
         position: { x: 0, y: 0, z: index * 2 },
         rotation: { w: 0, x: 0, y: 0, z: 0 },
         uuid: Helpers.uuid(),
+        face: new THREE.Vector3(0, 0, 1),
         dimension: { width: 0.1, depth: 1, height: 1 },
       });
 

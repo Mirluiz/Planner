@@ -68,7 +68,9 @@ class Door implements Object3D {
     };
   }
 
-  static fromJson(schema: Omit<Object3DSchema, "type"> & { face: Vector3 }) {
+  static fromJson(
+    schema: Record<"face", Vector3> & Omit<Object3DSchema, "type">
+  ) {
     return new Door({ ...schema });
   }
 

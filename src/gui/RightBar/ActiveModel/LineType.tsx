@@ -44,7 +44,10 @@ const LineType = () => {
     return ret;
   };
 
-  const getNameByObject = (object: Object3D) => {
+  const getNameByObject = (str: string) => {
+    let object = app?.sceneController.model.objects.find(
+      (object) => object.uuid === str
+    ) as Object3D;
     let ret = "";
 
     switch (object.type) {

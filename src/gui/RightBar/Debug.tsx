@@ -91,13 +91,13 @@ const Debug = () => {
             let secondary: string = "";
 
             if (wall.start.object) {
-              secondary += `start ${wall.start.object.uuid.slice(0, 3)}`;
+              secondary += `start ${wall.start.object.slice(0, 3)}`;
             }
 
             secondary += " ";
 
             if (wall.end.object) {
-              secondary += `end ${wall.end.object.uuid.slice(0, 3)}`;
+              secondary += `end ${wall.end.object.slice(0, 3)}`;
             }
 
             return (

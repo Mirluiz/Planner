@@ -24,11 +24,13 @@ const App = () => {
 
   useEffect(() => {
     if (canvasRef.current) {
-      setApp(new PiperApp({ canvas: canvasRef.current }));
+      let app = new PiperApp({ canvas: canvasRef.current });
+      setApp(app);
 
       let database = new Database();
-      database.init(() => {
+      database.init(app, () => {
         setDatabase(database);
+        app.sceneController.event.emit("scene_update");
       });
     }
   }, []);

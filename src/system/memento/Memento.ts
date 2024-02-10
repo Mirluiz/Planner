@@ -1,16 +1,15 @@
-import {ContainerSchema} from '../../types/schemas/common'
-import {Container} from '../../app/models'
+import { Object3DSchema } from "../../app/system";
 
 class Memento {
-  private state: Array<ContainerSchema>
+  private state: Array<Object3DSchema>;
 
-  constructor(state: Array<ContainerSchema>) {
-    this.state = state
+  constructor(state: Array<Object3DSchema>) {
+    this.state = state;
   }
 
-  getState(): Array<ContainerSchema> {
-    return this.state
+  getState(): Array<Object3DSchema> {
+    return this.state;
   }
 }
 
-export {Memento}
+export { Memento };

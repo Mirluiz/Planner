@@ -26,15 +26,14 @@ const Top = () => {
           size={"small"}
           onClick={() => {
             let schemas = app?.sceneController.model.objects.map((object) =>
-              object.toJson(),
+              object.toJson()
             );
 
             if (schemas) {
-              setBackDrop(true);
+              // setBackDrop(true);
 
               database?.save(schemas, () => {
                 setBackDrop(false);
-                alert("saved");
               });
             }
           }}
@@ -78,9 +77,7 @@ const Top = () => {
             }
 
             app.sceneController.view?.engine?.setCamera(
-              app.sceneController.view?.engine.cameraMode === "3D"
-                ? "2D"
-                : "3D",
+              app.sceneController.view?.engine.cameraMode === "3D" ? "2D" : "3D"
             );
             app.sceneController.event.emit("scene_update");
 
@@ -97,11 +94,11 @@ const Top = () => {
             }
 
             app.sceneController.view?.engine?.updateGrid(
-              !app.sceneController.view?.engine.netBinding,
+              !app.sceneController.view?.engine.netBinding
             );
 
             setNetBinding(
-              app.sceneController.view?.engine?.netBinding ?? false,
+              app.sceneController.view?.engine?.netBinding ?? false
             );
           }}
         />
