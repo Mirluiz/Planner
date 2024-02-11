@@ -15,7 +15,10 @@ class Wall extends Base implements Controller {
   model: WallModel | null = null;
   view: WallView | null = null;
 
-  constructor(readonly app: App, readonly sceneController: SceneController) {
+  constructor(
+    readonly app: App,
+    readonly sceneController: SceneController,
+  ) {
     super(app, sceneController);
   }
 
@@ -60,7 +63,7 @@ class Wall extends Base implements Controller {
       start: Vector3;
       end: Vector3;
     }>,
-    model: WallModel
+    model: WallModel,
   ) {
     if (model) {
       if (props.start) {
@@ -104,7 +107,7 @@ class Wall extends Base implements Controller {
       : null;
 
     if (corner) {
-      corner.walls.push(newWall);
+      corner.walls.push(newWall.uuid);
       newWall.start = new WallEnd(corner.position.x, 0, corner.position.z);
       newWall.start.object = corner.uuid;
     } else if (closest && closest?.distance < 1) {
@@ -128,13 +131,13 @@ class Wall extends Base implements Controller {
       ? GeometryCalculation.getClosestWall(
           this.model,
           this.model.end,
-          this.walls
+          this.walls,
         )
       : null;
 
     if (this.model) {
       if (corner) {
-        corner.walls.push(this.model);
+        corner.walls.push(this.model.uuid);
         this.model.end.object = corner.uuid;
         this.model.end.x = corner.position.x;
         this.model.end.z = corner.position.z;
@@ -149,7 +152,7 @@ class Wall extends Base implements Controller {
   moveEnd(
     wall: WallModel,
     end: "start" | "end",
-    pos: { x: number; y: number; z: number }
+    pos: { x: number; y: number; z: number },
   ) {
     wall[end].set(pos.x, pos.y, pos.z);
 
@@ -164,7 +167,7 @@ class Wall extends Base implements Controller {
     const { position } = snap;
     const wallToConnectEnd = GeometryCalculation.isItWallEnd(
       wallToConnect,
-      position
+      position,
     );
 
     if (wallToConnectEnd) {
@@ -178,8 +181,8 @@ class Wall extends Base implements Controller {
         this.sceneController.view?.engine?.scene.add(cornerView.render2D());
       }
 
-      corner.walls.push(wall);
-      corner.walls.push(wallToConnect);
+      corner.walls.push(wall.uuid);
+      corner.walls.push(wallToConnect.uuid);
 
       snap.end.object = corner.uuid;
       wallToConnectEnd.object = corner.uuid;
@@ -212,9 +215,9 @@ class Wall extends Base implements Controller {
       dividedWallToNextCorner.start.object = corner.uuid;
       dividedWallToNextCorner.end = wallToConnect.end;
 
-      corner.walls.push(dividedWallFromPrevCorner);
-      corner.walls.push(dividedWallToNextCorner);
-      corner.walls.push(wall);
+      corner.walls.push(dividedWallFromPrevCorner.uuid);
+      corner.walls.push(dividedWallToNextCorner.uuid);
+      corner.walls.push(wall.uuid);
 
       wall.end.object = corner.uuid;
 
@@ -223,31 +226,31 @@ class Wall extends Base implements Controller {
       this.sceneController.model?.addObject(corner);
 
       let startCorner = this.sceneController.model.objects.find(
-        (object) => object.uuid === wallToConnect.start.object
+        (object) => object.uuid === wallToConnect.start.object,
       ) as Corner;
 
       if (startCorner) {
         let wallIndex = startCorner.walls.findIndex(
-          (wall) => wall.uuid === wallToConnect.uuid
+          (wall) => wall === wallToConnect.uuid,
         );
 
         if (wallIndex !== -1) {
           startCorner.walls.splice(wallIndex, 1);
         }
 
-        startCorner.walls.push(dividedWallFromPrevCorner);
+        startCorner.walls.push(dividedWallFromPrevCorner.uuid);
       }
 
       if (wallToConnect.end.object) {
         let wallIndex = startCorner.walls.findIndex(
-          (wall) => wall.uuid === wallToConnect.uuid
+          (wall) => wall === wallToConnect.uuid,
         );
 
         if (wallIndex !== -1) {
           startCorner.walls.splice(wallIndex, 1);
         }
 
-        startCorner.walls.push(dividedWallToNextCorner);
+        startCorner.walls.push(dividedWallToNextCorner.uuid);
       }
 
       this.sceneController.model?.removeObject(wallToConnect.uuid);
@@ -261,22 +264,25 @@ class Wall extends Base implements Controller {
   clearTempCorner() {
     let corner = this.sceneController.model?.objects.find(
       (obj): obj is Corner =>
-        obj instanceof Corner &&
-        obj.walls.some((w) => w.uuid === this.model?.uuid)
+        obj instanceof Corner && obj.walls.some((w) => w === this.model?.uuid),
     );
 
     if (corner) {
-      const index = corner.walls.findIndex((w) => this.model?.uuid === w.uuid);
+      const index = corner.walls.findIndex((w) => this.model?.uuid === w);
 
       if (index > -1) {
         corner.walls.splice(index, 1);
       }
 
       if (corner.walls.length < 2) {
-        if (corner.walls[0].start.object === corner.uuid) {
-          corner.walls[0].start.object = null;
-        } else {
-          corner.walls[0].end.object = null;
+        let _wall = this.sceneController.model.objectsBy[corner.walls[0]];
+
+        if (_wall instanceof WallModel) {
+          if (_wall.start.object === corner.uuid) {
+            _wall.start.object = null;
+          } else {
+            _wall.end.object = null;
+          }
         }
 
         this.sceneController.model?.removeObject(corner.uuid);

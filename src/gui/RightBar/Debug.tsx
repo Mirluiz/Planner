@@ -59,7 +59,7 @@ const Debug = () => {
           }
         >
           {corners.map((corner) => {
-            let secondary = corner.walls.map((a) => a.uuid.slice(0, 3));
+            let secondary = corner.walls.map((a) => a.slice(0, 3));
 
             return (
               <ListItem key={corner.uuid}>

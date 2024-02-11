@@ -7,40 +7,60 @@ import { Scene as SceneController } from "../../controller/Scene";
 class WallUpdates {
   static updateAngle(wall: WallModel, scene: SceneController) {
     let startCorner = scene.model.objects.find(
-      (object) => object.uuid === wall.start.object
+      (object) => object.uuid === wall.start.object,
     ) as CornerModel | undefined;
     let endCorner = scene.model.objects.find(
-      (object) => object.uuid === wall.end.object
+      (object) => object.uuid === wall.end.object,
     ) as CornerModel | undefined;
 
-    let startWalls = startCorner?.walls.filter((_w) => _w.uuid !== wall.uuid);
-    let endWalls = endCorner?.walls.filter((_w) => _w.uuid !== wall.uuid);
+    let startWalls = startCorner?.walls.filter((_w) => _w !== wall.uuid);
+    let endWalls = endCorner?.walls.filter((_w) => _w !== wall.uuid);
 
     let prevWall: WallModel | undefined;
     let nextWall: WallModel | undefined;
 
     if (startWalls) {
-      prevWall = startWalls.sort(
+      let prevWallString = startWalls.sort(
         (a, b) =>
           Math2D.Calculation.calculateTheta(
-            new Vector3(a.position.x, a.position.y, a.position.z)
+            new Vector3(
+              scene.model.objectsBy[a]?.position?.x,
+              scene.model.objectsBy[a]?.position.y,
+              scene.model.objectsBy[a]?.position.z,
+            ),
           ) -
           Math2D.Calculation.calculateTheta(
-            new Vector3(b.position.x, b.position.y, b.position.z)
-          )
+            new Vector3(
+              scene.model.objectsBy[b]?.position.x,
+              scene.model.objectsBy[b].position.y,
+              scene.model.objectsBy[b].position.z,
+            ),
+          ),
       )[0];
+
+      prevWall = scene.model.objectsBy[prevWallString] as WallModel;
     }
 
     if (endWalls) {
-      nextWall = endWalls.sort(
+      let nextWallString = endWalls.sort(
         (a, b) =>
           Math2D.Calculation.calculateTheta(
-            new Vector3(a.position.x, a.position.y, a.position.z)
+            new Vector3(
+              scene.model.objectsBy[a]?.position?.x,
+              scene.model.objectsBy[a]?.position.y,
+              scene.model.objectsBy[a]?.position.z,
+            ),
           ) -
           Math2D.Calculation.calculateTheta(
-            new Vector3(b.position.x, b.position.y, b.position.z)
-          )
+            new Vector3(
+              scene.model.objectsBy[b]?.position.x,
+              scene.model.objectsBy[b].position.y,
+              scene.model.objectsBy[b].position.z,
+            ),
+          ),
       )[0];
+
+      nextWall = scene.model.objectsBy[nextWallString] as WallModel;
     }
 
     {
@@ -59,7 +79,7 @@ class WallUpdates {
         if (currentNormal && nextNormal) {
           let angle = GeometryCalculation.angleBetweenVectorsWithOrientation(
             currentNormal,
-            nextNormal
+            nextNormal,
           );
 
           wall.endAngle = angle / 2 - Math.PI / 2;
@@ -82,7 +102,7 @@ class WallUpdates {
         if (currentNormal && nextNormal) {
           let angle = GeometryCalculation.angleBetweenVectorsWithOrientation(
             currentNormal,
-            nextNormal
+            nextNormal,
           );
 
           wall.startAngle = angle / 2 - Math.PI / 2;
@@ -93,10 +113,10 @@ class WallUpdates {
 
   static updateCorners(updateWall: WallModel, scene: SceneController) {
     let startCorner = scene.model.objects.find(
-      (object) => object.uuid === updateWall.start.object
+      (object) => object.uuid === updateWall.start.object,
     ) as CornerModel | undefined;
     let endCorner = scene.model.objects.find(
-      (object) => object.uuid === updateWall.end.object
+      (object) => object.uuid === updateWall.end.object,
     ) as CornerModel | undefined;
 
     if (startCorner) {
@@ -105,13 +125,15 @@ class WallUpdates {
         y: updateWall.start.y,
         z: updateWall.start.z,
       };
-      startCorner.walls.map((wall) => {
+      startCorner.walls.map((wallUUID) => {
+        let wall = scene.model.objectsBy[wallUUID] as WallModel;
+
         if (wall.uuid !== updateWall.uuid && startCorner) {
           if (wall.end.object === startCorner.uuid) {
             wall.end.set(
               startCorner.position.x,
               startCorner.position.y,
-              startCorner.position.z
+              startCorner.position.z,
             );
           }
 
@@ -119,7 +141,7 @@ class WallUpdates {
             wall.start.set(
               startCorner.position.x,
               startCorner.position.y,
-              startCorner.position.z
+              startCorner.position.z,
             );
           }
 
@@ -136,13 +158,15 @@ class WallUpdates {
         y: updateWall.end.y,
         z: updateWall.end.z,
       };
-      endCorner.walls.map((wall) => {
+      endCorner.walls.map((wallUUID) => {
+        let wall = scene.model.objectsBy[wallUUID] as WallModel;
+
         if (wall.uuid !== updateWall.uuid && endCorner) {
           if (wall.end.object === endCorner.uuid) {
             wall.end.set(
               endCorner.position.x,
               endCorner.position.y,
-              endCorner.position.z
+              endCorner.position.z,
             );
           }
 
@@ -150,7 +174,7 @@ class WallUpdates {
             wall.start.set(
               endCorner.position.x,
               endCorner.position.y,
-              endCorner.position.z
+              endCorner.position.z,
             );
           }
 
@@ -167,20 +191,21 @@ class WallUpdates {
   static updateWallsByCorner(
     walls: WallModel[],
     corner: CornerModel,
-    scene: SceneController
+    scene: SceneController,
   ) {
     walls.map((wall) => {
       let startCorner = scene.model.objects.find(
-        (object) => object.uuid === wall.start.object
+        (object) => object.uuid === wall.start.object,
       ) as CornerModel | undefined;
       let endCorner = scene.model.objects.find(
-        (object) => object.uuid === wall.end.object
+        (object) => object.uuid === wall.end.object,
       ) as CornerModel | undefined;
 
       if (wall.end.object === corner.uuid) {
         wall.end.set(corner.position.x, corner.position.y, corner.position.z);
       } else {
-        endCorner?.walls.map((w) => {
+        endCorner?.walls.map((wUUID) => {
+          let w = scene.model.objectsBy[wUUID] as WallModel;
           this.updateAngle(w, scene);
           w.notifyObservers();
         });
@@ -189,7 +214,8 @@ class WallUpdates {
       if (wall.start.object === corner.uuid) {
         wall.start.set(corner.position.x, corner.position.y, corner.position.z);
       } else {
-        startCorner?.walls.map((w) => {
+        startCorner?.walls.map((wUUID) => {
+          let w = scene.model.objectsBy[wUUID] as WallModel;
           this.updateAngle(w, scene);
           w.notifyObservers();
         });

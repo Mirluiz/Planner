@@ -9,6 +9,8 @@ import {
 import { Wall } from "./Wall/Wall";
 import { Vector3 } from "three";
 
+export type DoorProps = Object3DProps & { face: Vector3 };
+
 class Door implements Object3D {
   private observers: Observer[] = [];
   face: Vector3;
@@ -25,7 +27,7 @@ class Door implements Object3D {
 
   type = Entity.DOOR;
 
-  constructor(props?: Object3DProps & { face: Vector3 }) {
+  constructor(props?: Partial<DoorProps>) {
     if (!props) {
       this.uuid = Helpers.uuid();
       this.dimension = { width: 0.1, depth: 1, height: 1 };
@@ -68,9 +70,7 @@ class Door implements Object3D {
     };
   }
 
-  static fromJson(
-    schema: Record<"face", Vector3> & Omit<Object3DSchema, "type">
-  ) {
+  static fromJson(schema: DoorProps) {
     return new Door({ ...schema });
   }
 

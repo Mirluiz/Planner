@@ -4,7 +4,10 @@ import { BaseMesh, Mesh, Observer, ColorManager } from "./../system";
 import { App } from "../App";
 
 class Corner extends BaseMesh implements Mesh, Observer {
-  constructor(readonly model: CornerModel, private app: App) {
+  constructor(
+    readonly model: CornerModel,
+    private app: App,
+  ) {
     super(model);
 
     model.addObserver(this);
@@ -38,9 +41,14 @@ class Corner extends BaseMesh implements Mesh, Observer {
           : ColorManager.colors["beige"],
     });
 
-    let highestPoint = this.model.walls.sort(
-      (a, b) => b.dimension.height - a.dimension.height
+    let highestPointUUID = this.model.walls.sort(
+      (a, b) =>
+        (this.app.sceneController.model.objectsBy[b]?.dimension?.height ?? 0) -
+        (this.app.sceneController.model.objectsBy[a]?.dimension?.height ?? 0),
     )[0];
+
+    let highestPoint =
+      this.app.sceneController.model.objectsBy[highestPointUUID] ?? 0;
 
     if (this.mesh instanceof THREE.Mesh) {
       this.mesh.material.dispose();
@@ -50,7 +58,7 @@ class Corner extends BaseMesh implements Mesh, Observer {
     this.mesh.position.set(
       this.model.position.x,
       this.model.position.y + (highestPoint?.dimension?.height ?? 1) + 0.1 / 2,
-      this.model.position.z
+      this.model.position.z,
     );
 
     if (this.focused) {
@@ -71,14 +79,19 @@ class Corner extends BaseMesh implements Mesh, Observer {
     });
     const mesh = new THREE.Mesh(geometry, material);
 
-    let highestPoint = this.model.walls.sort(
-      (a, b) => b.dimension.height - a.dimension.height
+    let highestPointUUID = this.model.walls.sort(
+      (a, b) =>
+        (this.app.sceneController.model.objectsBy[b]?.dimension?.height ?? 0) -
+        (this.app.sceneController.model.objectsBy[a]?.dimension?.height ?? 0),
     )[0];
+
+    let highestPoint =
+      this.app.sceneController.model.objectsBy[highestPointUUID] ?? 0;
 
     mesh.position.set(
       this.model.position.x,
       this.model.position.y + (highestPoint?.dimension?.height ?? 1) + 0.1 / 2,
-      this.model.position.z
+      this.model.position.z,
     );
 
     mesh.userData.object = this;

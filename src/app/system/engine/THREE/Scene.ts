@@ -55,7 +55,7 @@ class Scene {
 
     this.renderer.setSize(
       this.htmlElement.clientWidth,
-      this.htmlElement.clientHeight
+      this.htmlElement.clientHeight,
     );
     this.htmlElement.appendChild(this.renderer.domElement);
 
@@ -65,7 +65,7 @@ class Scene {
       this.htmlElement.clientHeight / 2, // top
       this.htmlElement.clientHeight / -2, // bottom
       1,
-      1000
+      1000,
     );
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -103,14 +103,14 @@ class Scene {
     const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
     this.scene.environment = pmremGenerator.fromScene(
       new RoomEnvironment(),
-      0.06
+      0.06,
     ).texture;
 
     this.initEvents();
     this.subscribeEvents();
 
     this.stats = new Stats();
-    document.body.appendChild(this.stats.dom);
+    // document.body.appendChild(this.stats.dom);
   }
 
   onPointerMove(event: MouseEvent) {
@@ -122,7 +122,7 @@ class Scene {
     } else {
       this.pointer = new Vector3(
         (event.offsetX / this.htmlElement.clientWidth) * 2 - 1,
-        -(event.offsetY / this.htmlElement.clientHeight) * 2 + 1
+        -(event.offsetY / this.htmlElement.clientHeight) * 2 + 1,
       );
     }
   }
@@ -132,13 +132,13 @@ class Scene {
       this?.controls?.target.set(
         this.localStorage.camera.target.x,
         this.localStorage.camera.target.y,
-        this.localStorage.camera.target.z
+        this.localStorage.camera.target.z,
       );
 
       this.camera?.position.set(
         this.localStorage.camera.pos.x,
         this.localStorage.camera.pos.y,
-        this.localStorage.camera.pos.z
+        this.localStorage.camera.pos.z,
       );
 
       this.camera.zoom = this.localStorage.camera.zoom;
@@ -156,7 +156,7 @@ class Scene {
     this.htmlElement?.addEventListener("mousedown", () => {
       const planeIntersect = Math2D.NetAlgorithms.planeIntersection(
         new Vector3(0, 0, 0),
-        this.raycaster.ray.clone()
+        this.raycaster.ray.clone(),
       ).clone();
 
       this.ground = {
@@ -229,7 +229,7 @@ class Scene {
           30,
           this.htmlElement.clientWidth / this.htmlElement.clientHeight,
           0.1,
-          100
+          100,
         );
 
         this.camera.position.set(pos.x, 10, pos.z);
@@ -251,7 +251,7 @@ class Scene {
           frustumSize / 2,
           frustumSize / -2,
           0.1,
-          far
+          far,
         );
 
         this.camera.position.set(0, far / 2, 0);
@@ -284,7 +284,7 @@ class Scene {
 
     this.raycaster.setFromCamera(
       new THREE.Vector2(this.pointer?.x, this.pointer?.y),
-      this.camera
+      this.camera,
     );
 
     this.renderer.render(this.scene, this.camera);
@@ -292,7 +292,7 @@ class Scene {
 
     const planeIntersect = Math2D.NetAlgorithms.planeIntersection(
       new Vector3(0, 0, 0),
-      this.raycaster.ray.clone()
+      this.raycaster.ray.clone(),
     ).clone();
 
     this.ground = {

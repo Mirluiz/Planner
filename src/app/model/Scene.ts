@@ -1,4 +1,4 @@
-import { Corner, Door, Pipe, Radiator, Wall } from "./";
+import { Corner, CornerProps, Door, DoorProps, Pipe, Radiator, Wall } from "./";
 import {
   Object3D,
   Geometry,
@@ -19,9 +19,19 @@ class Scene {
     position: Vector3;
     object: Mesh;
   }> = [];
-  objects: Array<Object3D> = [];
+  private _objects: Array<Object3D> = [];
+  objectsBy: { [key in string]: Object3D } = {};
 
   constructor() {}
+
+  set objects(objects) {
+    this._objects = objects;
+    this.updateBy();
+  }
+
+  get objects() {
+    return this._objects;
+  }
 
   set intersects(i) {
     this._intersects.map((value, index, array) => {
@@ -37,7 +47,7 @@ class Scene {
 
   addObject(object: Object3D) {
     this.objects.push(object);
-
+    this.updateBy();
     this.event.emit("objects_updated");
   }
 
@@ -60,12 +70,15 @@ class Scene {
         break;
       }
       case Entity.CORNER: {
-        let object = Corner.fromJson(schema);
-        if (object) this.addObject(object);
+        if (Scene.checkType<CornerProps>(schema, Entity.CORNER)) {
+          let object = Corner.fromJson(schema);
+          if (object) this.addObject(object);
+        }
+
         break;
       }
       case Entity.RADIATOR: {
-        // let object = Radiator.fromJson()
+        // let object = Radiator.fromJson();
         // this.addObject(new Radiator(schema));
         break;
       }
@@ -75,9 +88,9 @@ class Scene {
         break;
       }
       case Entity.DOOR: {
-        if ("face" in schema) {
-          // let object = Door.fromJson(schema);
-          // if (object) this.addObject(object);
+        if (Scene.checkType<DoorProps>(schema, Entity.DOOR)) {
+          let object = Door.fromJson(schema);
+          if (object) this.addObject(object);
         }
 
         break;
@@ -97,6 +110,16 @@ class Scene {
       this.objects.splice(objIndex, 1);
       this.event.emit("objects_updated");
     }
+  }
+
+  static checkType<T>(params: any, typeN: number): params is T {
+    return params?.type === typeN;
+  }
+
+  private updateBy() {
+    this.objects.map((object) => {
+      this.objectsBy[object.uuid] = object;
+    });
   }
 }
 

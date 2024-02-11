@@ -28,16 +28,16 @@ class Corner extends Base implements Controller {
     props: Partial<{
       pos: Vector3;
     }>,
-    model: CornerModel
+    model: CornerModel,
   ) {
     WallUpdates.updateWallsByCorner(
       this.sceneController.model.objects.filter(
-        (obj): obj is Wall => obj.type === Entity.WALL
+        (obj): obj is Wall => obj.type === Entity.WALL,
       ),
       model,
-      this.sceneController
+      this.sceneController,
     );
-    DoorUpdates.doorsByCorner(this.doors, model);
+    DoorUpdates.doorsByCorner(this.doors, model, this.sceneController);
 
     return model ?? null;
   }
