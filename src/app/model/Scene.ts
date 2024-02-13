@@ -1,4 +1,13 @@
-import { Corner, CornerProps, Door, DoorProps, Pipe, Radiator, Wall } from "./";
+import {
+  Corner,
+  CornerProps,
+  Door,
+  DoorProps,
+  Object3DSchemaWall,
+  Pipe,
+  Radiator,
+  Wall,
+} from "./";
 import {
   Object3D,
   Geometry,
@@ -56,12 +65,14 @@ class Scene {
     switch (schema.type) {
       case Entity.PIPE: {
         let object = Pipe.fromJson(schema);
-        if (object) this.addObject(object);
+        // if (object) this.addObject(object);
         break;
       }
       case Entity.WALL: {
-        let object = Wall.fromJson(schema);
-        if (object) this.addObject(object);
+        if (Scene.checkType<Object3DSchemaWall>(schema, Entity.WALL)) {
+          let object = Wall.fromJson(schema);
+          if (object) this.addObject(object);
+        }
         break;
       }
       case Entity.FITTING: {

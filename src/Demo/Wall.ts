@@ -39,16 +39,16 @@ class Wall {
     this.examples.map((cornerData, index) => {
       let wall = new WallModel({
         ...cornerProps,
-        start: new WallEnd(
-          cornerData.ends[0].x,
-          cornerData.ends[0].y,
-          cornerData.ends[0].z
-        ),
-        end: new WallEnd(
-          cornerData.ends[1].x,
-          cornerData.ends[1].y,
-          cornerData.ends[1].z
-        ),
+        start: new WallEnd({
+          x: cornerData.ends[0].x,
+          y: cornerData.ends[0].y,
+          z: cornerData.ends[0].z,
+        }),
+        end: new WallEnd({
+          x: cornerData.ends[1].x,
+          y: cornerData.ends[1].y,
+          z: cornerData.ends[1].z,
+        }),
       });
       wall.startAngle = Math.PI / 4;
       wall.endAngle = Math.PI / 4;

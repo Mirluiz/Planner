@@ -50,9 +50,6 @@ interface Schema {
 
   type: Entity;
 
-  start?: { x: number; y: number; z: number; object: string | null };
-  end?: { x: number; y: number; z: number; object: string | null };
-
   flow?: "blue" | "red";
 }
 

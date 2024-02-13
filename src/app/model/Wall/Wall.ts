@@ -14,9 +14,14 @@ import { GeometryCalculation } from "../../controller/Wall/GeometryCalculation";
 import { Scene } from "../../controller/Scene";
 
 export type WallProps = {
-  start: Geometry.Vector3;
-  end: Geometry.Vector3;
+  start: Geometry.Vector3 & { object: string | null };
+  end: Geometry.Vector3 & { object: string | null };
 } & Object3DProps;
+
+export type Object3DSchemaWall = Object3DSchema & {
+  start: { x: number; y: number; z: number; object: string | null };
+  end: { x: number; y: number; z: number; object: string | null };
+};
 
 class Wall implements Object3D, Geometry.Line {
   isWall = true;
@@ -37,8 +42,18 @@ class Wall implements Object3D, Geometry.Line {
   endAngle: number = 0;
 
   constructor(props?: Partial<WallProps>) {
-    this.start = new WallEnd(props?.start?.x, props?.start?.y, props?.start?.z);
-    this.end = new WallEnd(props?.end?.x, props?.end?.y, props?.end?.z);
+    this.start = new WallEnd({
+      x: props?.start?.x,
+      y: props?.start?.y,
+      z: props?.start?.z,
+      object: props?.start?.object ?? null,
+    });
+    this.end = new WallEnd({
+      x: props?.end?.x,
+      y: props?.end?.y,
+      z: props?.end?.z,
+      object: props?.end?.object ?? null,
+    });
 
     this.uuid = props?.uuid ?? Helpers.uuid();
     this.dimension = { width: 1, height: 2, depth: 1 };
@@ -66,13 +81,13 @@ class Wall implements Object3D, Geometry.Line {
       let reservedCenterVector = new Vector3(
         reservedPosition.x,
         reservedPosition.y,
-        reservedPosition.z,
+        reservedPosition.z
       );
 
       let centerVector = new Vector3(
         this.position.x,
         this.position.y,
-        this.position.z,
+        this.position.z
       );
 
       let fromCenterToStart = this.start.clone().sub(reservedCenterVector);
@@ -103,18 +118,35 @@ class Wall implements Object3D, Geometry.Line {
     midPoint
       .addVectors(this.start.clone(), this.end.clone())
       .multiplyScalar(0.5);
+    console.log(
+      "midPoint",
+      this.start,
+      this.start.clone(),
+      this.end.clone(),
+      midPoint
+    );
 
     this.position.x = midPoint.x;
     this.position.y = midPoint.y;
     this.position.z = midPoint.z;
   }
 
-  static fromJson(schema: Object3DSchema) {
+  static fromJson(schema: Object3DSchemaWall) {
     if (!schema.start || !schema.end) return;
 
     const wall = new Wall({
-      start: new WallEnd(schema.start.x, schema.start.y, schema.start.z),
-      end: new WallEnd(schema.end.x, schema.end.y, schema.end.z),
+      start: new WallEnd({
+        x: schema.start.x,
+        y: schema.start.y,
+        z: schema.start.z,
+        object: schema.start.object,
+      }),
+      end: new WallEnd({
+        x: schema.end.x,
+        y: schema.end.y,
+        z: schema.end.z,
+        object: schema.end.object,
+      }),
     });
 
     // wall.start.object
@@ -127,7 +159,7 @@ class Wall implements Object3D, Geometry.Line {
     return wall;
   }
 
-  toJson() {
+  toJson(): Object3DSchemaWall {
     return {
       uuid: this.uuid,
       dimension: this.dimension,

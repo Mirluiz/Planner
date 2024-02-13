@@ -6,8 +6,8 @@ import { WallEnd } from "../../app/model/Wall/WallEnd";
 
 describe("Line algorithms", () => {
   test("line ends intersection", () => {
-    let start = new WallEnd(-4, 0, 4);
-    let end = new WallEnd(4, 0, -4);
+    let start = new WallEnd({ x: -4, y: 0, z: 4 });
+    let end = new WallEnd({ x: 4, y: 0, z: -4 });
 
     const line = new Wall({ start: start, end: end });
     // const point = new THREE.Vector3(-4.2, 0, 4.2);

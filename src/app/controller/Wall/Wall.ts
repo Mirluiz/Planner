@@ -15,10 +15,7 @@ class Wall extends Base implements Controller {
   model: WallModel | null = null;
   view: WallView | null = null;
 
-  constructor(
-    readonly app: App,
-    readonly sceneController: SceneController,
-  ) {
+  constructor(readonly app: App, readonly sceneController: SceneController) {
     super(app, sceneController);
   }
 
@@ -63,7 +60,7 @@ class Wall extends Base implements Controller {
       start: Vector3;
       end: Vector3;
     }>,
-    model: WallModel,
+    model: WallModel
   ) {
     if (model) {
       if (props.start) {
@@ -95,8 +92,8 @@ class Wall extends Base implements Controller {
 
   start(pos: { x: number; y: number; z: number }) {
     const newWall = new WallModel({
-      start: new WallEnd(pos.x, pos.y, pos.z),
-      end: new WallEnd(pos.x, pos.y, pos.z),
+      start: new WallEnd({ x: pos.x, y: pos.y, z: pos.z }),
+      end: new WallEnd({ x: pos.x, y: pos.y, z: pos.z }),
     });
 
     const corner = newWall?.start
@@ -108,7 +105,11 @@ class Wall extends Base implements Controller {
 
     if (corner) {
       corner.walls.push(newWall.uuid);
-      newWall.start = new WallEnd(corner.position.x, 0, corner.position.z);
+      newWall.start = new WallEnd({
+        x: corner.position.x,
+        y: 0,
+        z: corner.position.z,
+      });
       newWall.start.object = corner.uuid;
     } else if (closest && closest?.distance < 1) {
       this.connect(newWall, closest.object);
@@ -131,7 +132,7 @@ class Wall extends Base implements Controller {
       ? GeometryCalculation.getClosestWall(
           this.model,
           this.model.end,
-          this.walls,
+          this.walls
         )
       : null;
 
@@ -146,13 +147,14 @@ class Wall extends Base implements Controller {
       }
     }
 
+    this.model.updateCenter();
     this.model = null;
   }
 
   moveEnd(
     wall: WallModel,
     end: "start" | "end",
-    pos: { x: number; y: number; z: number },
+    pos: { x: number; y: number; z: number }
   ) {
     wall[end].set(pos.x, pos.y, pos.z);
 
@@ -167,7 +169,7 @@ class Wall extends Base implements Controller {
     const { position } = snap;
     const wallToConnectEnd = GeometryCalculation.isItWallEnd(
       wallToConnect,
-      position,
+      position
     );
 
     if (wallToConnectEnd) {
@@ -203,13 +205,13 @@ class Wall extends Base implements Controller {
        */
       let dividedWallFromPrevCorner = new WallModel({
         start: wallToConnect.start.clone(),
-        end: new WallEnd(position.x, position.y, position.z),
+        end: new WallEnd({ x: position.x, y: position.y, z: position.z }),
       });
       dividedWallFromPrevCorner.start = wallToConnect.start;
       dividedWallFromPrevCorner.end.object = corner.uuid;
 
       let dividedWallToNextCorner = new WallModel({
-        start: new WallEnd(position.x, position.y, position.z),
+        start: new WallEnd({ x: position.x, y: position.y, z: position.z }),
         end: wallToConnect.end.clone(),
       });
       dividedWallToNextCorner.start.object = corner.uuid;
@@ -226,12 +228,12 @@ class Wall extends Base implements Controller {
       this.sceneController.model?.addObject(corner);
 
       let startCorner = this.sceneController.model.objects.find(
-        (object) => object.uuid === wallToConnect.start.object,
+        (object) => object.uuid === wallToConnect.start.object
       ) as Corner;
 
       if (startCorner) {
         let wallIndex = startCorner.walls.findIndex(
-          (wall) => wall === wallToConnect.uuid,
+          (wall) => wall === wallToConnect.uuid
         );
 
         if (wallIndex !== -1) {
@@ -243,7 +245,7 @@ class Wall extends Base implements Controller {
 
       if (wallToConnect.end.object) {
         let wallIndex = startCorner.walls.findIndex(
-          (wall) => wall === wallToConnect.uuid,
+          (wall) => wall === wallToConnect.uuid
         );
 
         if (wallIndex !== -1) {
@@ -264,7 +266,7 @@ class Wall extends Base implements Controller {
   clearTempCorner() {
     let corner = this.sceneController.model?.objects.find(
       (obj): obj is Corner =>
-        obj instanceof Corner && obj.walls.some((w) => w === this.model?.uuid),
+        obj instanceof Corner && obj.walls.some((w) => w === this.model?.uuid)
     );
 
     if (corner) {
@@ -292,12 +294,16 @@ class Wall extends Base implements Controller {
   }
 
   startDraw(props: { x: number; y: number; z: number }) {
+    this.model?.updateCenter();
+
     if (this.model) {
       this.end({ ...props });
       this.start({ ...props });
     } else {
       this.start({ ...props });
     }
+
+    console.log("this.model?.end", this.model?.end);
   }
 
   draw(props: { x: number; y: number; z: number }) {

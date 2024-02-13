@@ -69,20 +69,19 @@ class Pipe implements Object3D, Geometry.Line {
   }
 
   static fromJson(schema: Object3DSchema) {
-    if (!schema.start || !schema.end || !schema.flow) return;
-
-    const pipe = new Pipe({
-      start: new PipeEnd(schema.start.x, schema.start.y, schema.start.z),
-      end: new PipeEnd(schema.end.x, schema.end.y, schema.end.z),
-      flow: schema.flow,
-    });
-
-    pipe.position = schema.position;
-    pipe.rotation = schema.rotation;
-    pipe.uuid = schema.uuid;
-    pipe.dimension = schema.dimension;
-
-    return pipe;
+    // if (!schema.start || !schema.end || !schema.flow) return;
+    //
+    // const pipe = new Pipe({
+    //   start: new PipeEnd(schema.start.x, schema.start.y, schema.start.z),
+    //   end: new PipeEnd(schema.end.x, schema.end.y, schema.end.z),
+    //   flow: schema.flow,
+    // });
+    //
+    // pipe.position = schema.position;
+    // pipe.rotation = schema.rotation;
+    // pipe.uuid = schema.uuid;
+    // pipe.dimension = schema.dimension;
+    // return pipe;
   }
 
   toJson() {

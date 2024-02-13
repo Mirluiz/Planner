@@ -21,7 +21,16 @@ const Top = () => {
       }}
     >
       <Grid>
-        <Button size={"small"}>New</Button>
+        <Button
+          size={"small"}
+          onClick={() => {
+            database?.save([], () => {
+              app?.sceneController.event.emit("scene_update");
+            });
+          }}
+        >
+          New
+        </Button>
         <Button
           size={"small"}
           onClick={() => {
@@ -30,7 +39,7 @@ const Top = () => {
             );
 
             if (schemas) {
-              // setBackDrop(true);
+              setBackDrop(true);
 
               database?.save(schemas, () => {
                 setBackDrop(false);
