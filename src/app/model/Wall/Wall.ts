@@ -81,13 +81,13 @@ class Wall implements Object3D, Geometry.Line {
       let reservedCenterVector = new Vector3(
         reservedPosition.x,
         reservedPosition.y,
-        reservedPosition.z
+        reservedPosition.z,
       );
 
       let centerVector = new Vector3(
         this.position.x,
         this.position.y,
-        this.position.z
+        this.position.z,
       );
 
       let fromCenterToStart = this.start.clone().sub(reservedCenterVector);
@@ -118,13 +118,6 @@ class Wall implements Object3D, Geometry.Line {
     midPoint
       .addVectors(this.start.clone(), this.end.clone())
       .multiplyScalar(0.5);
-    console.log(
-      "midPoint",
-      this.start,
-      this.start.clone(),
-      this.end.clone(),
-      midPoint
-    );
 
     this.position.x = midPoint.x;
     this.position.y = midPoint.y;

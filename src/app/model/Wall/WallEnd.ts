@@ -16,8 +16,10 @@ class WallEnd extends Vector3 {
 
   clone(): this {
     let ret = super.clone();
-    console.log("===", this, ret);
     ret.object = this.object;
+    ret.x = this.x;
+    ret.y = this.y;
+    ret.z = this.z;
 
     return ret;
   }
