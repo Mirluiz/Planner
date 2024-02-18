@@ -4,7 +4,7 @@ import { Wall as WallView } from "../app/view/Wall";
 import { Room as RoomController } from "../app/controller/Room";
 import { Object3D as Object3DController } from "../app/controller/Object3D";
 import { Scene as SceneController } from "./controller/Scene";
-import { Graph as GraphController } from "../app/controller/Graph";
+import { GraphManager } from "./system/service/GraphManager";
 import { Pipe as PipeController } from "../app/controller/Pipe";
 import { EventSystem, Database, Object3D, Storage } from "./system";
 import { WallElement as WallElementController } from "./controller";
@@ -13,28 +13,26 @@ import { Corner as CornerController } from "./controller/Wall/Corner";
 class App {
   database: Database = new Database();
   event: EventSystem = new EventSystem();
-  active: Object3D | null = null;
+  graphManager: GraphManager;
 
-  graphController: GraphController;
   wallController: WallController;
   wallElementController: WallElementController;
   pipeController: PipeController;
   sceneController: SceneController;
   roomController: RoomController;
   cornerController: CornerController;
-  // object3DController: Object3DController;
 
   constructor(props: { canvas: HTMLElement | null }) {
-    this.graphController = new GraphController();
-
     this.sceneController = new SceneController(props, this);
+
+    this.graphManager = new GraphManager(this);
     this.pipeController = new PipeController(this, this.sceneController);
     this.roomController = new RoomController(this, this.sceneController);
     this.wallController = new WallController(this, this.sceneController);
     this.cornerController = new CornerController(this, this.sceneController);
     this.wallElementController = new WallElementController(
       this,
-      this.sceneController
+      this.sceneController,
     );
   }
 
@@ -67,7 +65,7 @@ class App {
       },
       () => {
         console.log("saved");
-      }
+      },
     );
   }
 

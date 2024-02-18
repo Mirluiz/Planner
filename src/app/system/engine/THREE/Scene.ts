@@ -74,7 +74,7 @@ class Scene {
 
     const axis = new THREE.AxesHelper(20);
 
-    this.scene.add(axis);
+    // this.scene.add(axis);
 
     if (this.netBinding) {
       const netSize = 50;

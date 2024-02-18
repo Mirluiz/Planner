@@ -5,13 +5,10 @@ import {
   Object3D,
   Object3DProps,
   Object3DSchema,
-  Math2D,
 } from "../../system";
 import { Vector3 } from "three";
 import { Observer } from "../../system/interfaces/Observer";
 import { WallEnd } from "./WallEnd";
-import { GeometryCalculation } from "../../controller/Wall/GeometryCalculation";
-import { Scene } from "../../controller/Scene";
 
 export type WallProps = {
   start: Geometry.Vector3 & { object: string | null };

@@ -1,5 +1,5 @@
 import { HolePolygon, ConcavePolygon, ConvexPolygon } from "./";
-import { Graph, Vertex } from "../../../controller/Graph";
+import { Graph, Vertex } from "../Graph";
 import { Vector3 } from "three";
 
 class Polygon {
@@ -58,7 +58,7 @@ class Polygon {
       let innerCycle = graph.bfs(innerVertices[0], innerVertices[1]);
 
       const hasIntersections = cycle.filter((value) =>
-        innerCycle.includes(value.uuid)
+        innerCycle.includes(value.uuid),
       );
 
       if (hasIntersections.length === 0) {
@@ -75,7 +75,7 @@ class Polygon {
 
     {
       let isCCL = ConcavePolygon.isCycleCounterclockwise(
-        cycle.map((i) => new Vector3(i.position.x, i.position.y, i.position.z))
+        cycle.map((i) => new Vector3(i.position.x, i.position.y, i.position.z)),
       );
 
       if (!isCCL) {

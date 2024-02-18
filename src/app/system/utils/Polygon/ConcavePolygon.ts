@@ -1,4 +1,4 @@
-import { Graph, Vertex } from "../../../controller/Graph";
+import { Graph, Vertex } from "../Graph";
 import { Geometry } from "../../interfaces";
 import Vector3 = Geometry.Vector3;
 import Line = Geometry.Line;
@@ -43,7 +43,7 @@ class ConcavePolygon {
     v0: Vertex,
     v1: Vertex,
     v2: Vertex,
-    vertices: Vertex[]
+    vertices: Vertex[],
   ): boolean {
     if (!v2) return false;
 
@@ -65,7 +65,7 @@ class ConcavePolygon {
         voVector,
         v1Vector,
         v2Vector,
-        new Vector3(vertex.position.x, vertex.position.y, vertex.position.z)
+        new Vector3(vertex.position.x, vertex.position.y, vertex.position.z),
       );
 
       if (
@@ -85,19 +85,19 @@ class ConcavePolygon {
     v0: Vector3,
     v1: Vector3,
     v2: Vector3,
-    p: Vector3
+    p: Vector3,
   ): boolean {
     const areaOriginal = Math.abs(
-      (v1.x - v0.x) * (v2.z - v0.z) - (v2.x - v0.x) * (v1.z - v0.z)
+      (v1.x - v0.x) * (v2.z - v0.z) - (v2.x - v0.x) * (v1.z - v0.z),
     );
     const area1 = Math.abs(
-      (p.x - v0.x) * (v1.z - v0.z) - (v1.x - v0.x) * (p.z - v0.z)
+      (p.x - v0.x) * (v1.z - v0.z) - (v1.x - v0.x) * (p.z - v0.z),
     );
     const area2 = Math.abs(
-      (p.x - v1.x) * (v2.z - v1.z) - (v2.x - v1.x) * (p.z - v1.z)
+      (p.x - v1.x) * (v2.z - v1.z) - (v2.x - v1.x) * (p.z - v1.z),
     );
     const area3 = Math.abs(
-      (p.x - v2.x) * (v0.z - v2.z) - (v0.x - v2.x) * (p.z - v2.z)
+      (p.x - v2.x) * (v0.z - v2.z) - (v0.x - v2.x) * (p.z - v2.z),
     );
 
     return Math.abs(area1 + area2 + area3 - areaOriginal) < 1e-6; // Use an epsilon to handle floating-point errors
@@ -151,7 +151,7 @@ class ConcavePolygon {
 
       let intersect = this.intersect(
         { origin, direction: new Vector3(1, 0, 0) },
-        line
+        line,
       );
 
       if (intersect) {
@@ -181,7 +181,7 @@ class ConcavePolygon {
 
   static intersect(
     ray: { origin: Vector3; direction: Vector3 },
-    line: Line
+    line: Line,
   ): { position: Vector3; line: Line; distance: number } | null {
     let { direction, origin } = ray;
     let lineDirection = line.end.clone().sub(line.start.clone()).normalize();
@@ -203,7 +203,7 @@ class ConcavePolygon {
       let intersectionPosition = new Vector3(
         ray.origin.x + t * ray.direction.x,
         0,
-        ray.origin.z + t * ray.direction.z
+        ray.origin.z + t * ray.direction.z,
       );
 
       let isIntersectionLefter =
@@ -242,7 +242,7 @@ class ConcavePolygon {
   static getTriangles(cycle: Array<Vertex>, graph: Graph): Vertex[] {
     {
       let isCCL = ConcavePolygon.isCycleCounterclockwise(
-        cycle.map((i) => new Vector3(i.position.x, i.position.y, i.position.z))
+        cycle.map((i) => new Vector3(i.position.x, i.position.y, i.position.z)),
       );
 
       if (!isCCL) {

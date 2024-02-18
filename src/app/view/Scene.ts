@@ -85,7 +85,7 @@ class Scene {
         let diff = new Vector3(
           this.engine.mouseDownPosition.x - this.engine.groundInters.x,
           this.engine.mouseDownPosition.y - this.engine.groundInters.y,
-          this.engine.mouseDownPosition.z - this.engine.groundInters.z
+          this.engine.mouseDownPosition.z - this.engine.groundInters.z,
         );
 
         let updatedPosition = this.dragElement?.initialData.position
@@ -138,6 +138,7 @@ class Scene {
     });
 
     let intersect = intersections[0];
+
     if (intersect) {
       intersect.object.hovered = true;
     }
@@ -151,7 +152,7 @@ class Scene {
     let ground = new Vector3(
       this.engine?.groundInters.x,
       this.engine?.groundInters.y,
-      this.engine?.groundInters.z
+      this.engine?.groundInters.z,
     );
 
     if (intersection?.object?.model) {
@@ -163,8 +164,8 @@ class Scene {
               new Vector3(
                 intersection.object.model.position.x,
                 intersection.object.model.position.y,
-                intersection.object.model.position.z
-              )
+                intersection.object.model.position.z,
+              ),
             ),
           object: intersection.object,
           position: intersection.position.clone(),

@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { BaseMesh, Mesh, Observer, ColorManager, Storage } from "./../system";
 import { Room as RoomModel } from "../model/Room";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import { Vector3 } from "three";
 
 class Room extends BaseMesh implements Mesh, Observer {
   constructor(readonly model: RoomModel) {
@@ -11,44 +12,35 @@ class Room extends BaseMesh implements Mesh, Observer {
   }
 
   trigger() {
-    this.reRender();
+    this.reRender2D();
   }
 
-  reRender() {
+  reRender2D() {
     if (!this.mesh) return;
 
-    const geometry = this.getGeometry();
+    let geometry = this.getGeometry();
 
-    const material = new THREE.MeshBasicMaterial({
-      color: this.hovered ? ColorManager.colors["light_grey"] : 0xffffff,
-    });
+    if (this.mesh instanceof THREE.Mesh) {
+      this.mesh.geometry.dispose();
+      this.mesh.geometry = new THREE.BufferGeometry().setFromPoints(geometry);
+      this.mesh.geometry.needsUpdate = true;
 
-    let textMesh = this.mesh.children[0];
-    if (textMesh instanceof THREE.Mesh) {
-      textMesh.geometry.dispose();
-      textMesh.material.dispose();
-      textMesh.removeFromParent();
-    }
-
-    // this.mesh.geometry.dispose();
-    // this.mesh.geometry = geometry;
-    // this.mesh.material = material;
-
-    let txtMesh = this.getText();
-    if (txtMesh) {
-      this.mesh.add(txtMesh);
+      this.mesh.material.dispose();
+      this.mesh.material = new THREE.MeshBasicMaterial({
+        color: this.hovered ? ColorManager.colors["light_grey"] : 0x916e53,
+      });
     }
 
     this.mesh.updateMatrix();
   }
 
-  render() {
+  render2D() {
     this.destroy();
 
-    let geometry = this.getGeometry();
+    let geometry = new THREE.BufferGeometry().setFromPoints(this.getGeometry());
 
     const material = new THREE.MeshBasicMaterial({
-      color: this.hovered ? ColorManager.colors["light_grey"] : 0xffffff,
+      color: this.hovered ? ColorManager.colors["light_grey"] : 0x916e53,
     });
     const mesh = new THREE.Mesh(geometry, material);
 
@@ -64,19 +56,13 @@ class Room extends BaseMesh implements Mesh, Observer {
   }
 
   private getGeometry() {
-    let geometry = new THREE.BufferGeometry();
-
-    let verNumbers: number[] = [];
+    let verNumbers: Vector3[] = [];
 
     this.model.triangulation.map((v) => {
-      verNumbers.push(v.position.x, v.position.y, v.position.z);
+      verNumbers.push(new Vector3(v.position.x, v.position.y, v.position.z));
     });
 
-    let vert = new Float32Array(verNumbers);
-
-    geometry.setAttribute("position", new THREE.BufferAttribute(vert, 3));
-
-    return geometry;
+    return verNumbers;
   }
 
   private getText(info?: string) {
@@ -93,7 +79,7 @@ class Room extends BaseMesh implements Mesh, Observer {
           size: 120 / scale,
           height: 1 / scale,
           bevelThickness: 1 / scale,
-        }
+        },
       );
 
       let center = new THREE.Vector3();
@@ -103,8 +89,8 @@ class Room extends BaseMesh implements Mesh, Observer {
           new THREE.Vector3(
             corner.position.x,
             corner.position.y,
-            corner.position.z
-          )
+            corner.position.z,
+          ),
         );
       });
       center.setX(center.x / this.model.corners.length);

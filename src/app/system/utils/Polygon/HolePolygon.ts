@@ -1,4 +1,4 @@
-import { Graph, Vertex } from "../../../controller/Graph";
+import { Graph, Vertex } from "../Graph";
 import { Geometry } from "../../interfaces";
 import { ConcavePolygon } from "./ConcavePolygon";
 import Vector3 = Geometry.Vector3;
@@ -8,11 +8,11 @@ class HolePolygon {
   private static connectInnerOuter(
     inner: Vertex[],
     outer: Vertex[],
-    graph: Graph
+    graph: Graph,
   ) {
     {
       let isCCL = ConcavePolygon.isCycleCounterclockwise(
-        inner.map((i) => new Vector3(i.position.x, i.position.y, i.position.z))
+        inner.map((i) => new Vector3(i.position.x, i.position.y, i.position.z)),
       );
 
       if (isCCL) {
@@ -21,7 +21,7 @@ class HolePolygon {
     }
     {
       let isCCL = ConcavePolygon.isCycleCounterclockwise(
-        outer.map((i) => new Vector3(i.position.x, i.position.y, i.position.z))
+        outer.map((i) => new Vector3(i.position.x, i.position.y, i.position.z)),
       );
 
       if (!isCCL) {
@@ -55,7 +55,7 @@ class HolePolygon {
   private static getVisiblePair(
     inner: Vertex[],
     outer: Vertex[],
-    graph: Graph
+    graph: Graph,
   ) {
     let pair: Vertex | null = null;
     let intersections: Array<{
@@ -74,24 +74,24 @@ class HolePolygon {
         start: new Vector3(
           vertex.position.x,
           vertex.position.y,
-          vertex.position.z
+          vertex.position.z,
         ),
         end: new Vector3(
           nextVertex.position.x,
           nextVertex.position.y,
-          nextVertex.position.z
+          nextVertex.position.z,
         ),
         connections: { start: vertex, end: nextVertex },
       };
       let origin = new Vector3(
         maxRight.position.x,
         maxRight.position.y,
-        maxRight.position.z
+        maxRight.position.z,
       );
 
       let intersect = this.intersect(
         { origin, direction: new Vector3(1, 0, 0) },
-        line
+        line,
       );
 
       if (intersect) {
@@ -122,7 +122,7 @@ class HolePolygon {
   //TODO: move to line
   private static intersect(
     ray: { origin: Vector3; direction: Vector3 },
-    line: Line
+    line: Line,
   ): { position: Vector3; line: Line; distance: number } | null {
     let { direction, origin } = ray;
     let lineDirection = line.end.clone().sub(line.start.clone()).normalize();
@@ -144,7 +144,7 @@ class HolePolygon {
       let intersectionPosition = new Vector3(
         ray.origin.x + t * ray.direction.x,
         0,
-        ray.origin.z + t * ray.direction.z
+        ray.origin.z + t * ray.direction.z,
       );
 
       let isIntersectionLefter =

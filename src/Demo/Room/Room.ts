@@ -261,7 +261,7 @@ class Room {
     });
 
     wallController.reset();
-    roomController.updateGraph();
+    this.app.graphManager.update();
   }
 }
 

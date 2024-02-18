@@ -6,6 +6,7 @@ import { Controller } from "./Controller";
 import { Base } from "./Base";
 import { App } from "../App";
 import { Scene as SceneController } from "./Scene";
+import { Polygon } from "../system/utils/Polygon";
 
 class Room extends Base implements Controller {
   model: RoomModel | null = null;
@@ -24,9 +25,11 @@ class Room extends Base implements Controller {
   create(props: { [key: string]: any }) {
     return this.model;
   }
+
   update(props: { [key: string]: any }) {
     return this.model;
   }
+
   remove() {}
 
   reset() {}
@@ -42,7 +45,7 @@ class Room extends Base implements Controller {
   updateByCorners(corners: Array<Array<Corner>>) {
     this.sceneController.model.objects.map((obj) => {
       if (obj instanceof RoomModel) {
-        // obj.destroy();
+        obj.destroy();
       }
     });
 
@@ -64,8 +67,15 @@ class Room extends Base implements Controller {
       });
 
       newRoom.triangulation = this.getTriangles(roomCorners);
+      console.log("newRoom", newRoom);
 
       this.sceneController.model.addObject(newRoom);
+
+      if (this.view) {
+        let newView = new RoomView(newRoom);
+        this.sceneController.view?.engine?.scene.add(newView?.render2D());
+      }
+      newRoom.notifyObservers();
     });
   }
 
@@ -78,8 +88,7 @@ class Room extends Base implements Controller {
       };
     });
 
-    // return Polygon.getTriangles(vertices, this.graph);
-    return [];
+    return Polygon.getTriangles(vertices, this.app.graphManager.graph);
   }
 
   private angleBetweenVectorsWithOrientation(

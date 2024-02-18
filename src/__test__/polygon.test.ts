@@ -1,5 +1,5 @@
 import { describe, test } from "@jest/globals";
-import { Graph, Vertex } from "../app/controller/Graph";
+import { Graph, Vertex } from "../app/system/utils/Graph";
 import { Polygon } from "../app/system/utils/Polygon/Polygon";
 import { Vector3 } from "three";
 import { ConcavePolygon } from "../app/system/utils/Polygon";
@@ -521,7 +521,7 @@ describe("Polygon clockwise", () => {
 
     let vertexCycle = graph.getVertexCycle(cycles[0]);
     let points = vertexCycle.map(
-      (v) => new Vector3(v.position.x, 0, v.position.y)
+      (v) => new Vector3(v.position.x, 0, v.position.y),
     );
     let triangles = ConcavePolygon.isCycleCounterclockwise(points);
 
@@ -556,7 +556,7 @@ describe("Polygon clockwise", () => {
 
     let vertexCycle = graph.getVertexCycle(cycles[0]);
     let points = vertexCycle.map(
-      (v) => new Vector3(v.position.x, 0, v.position.y)
+      (v) => new Vector3(v.position.x, 0, v.position.y),
     );
     let triangles = ConcavePolygon.isCycleCounterclockwise(points);
 
@@ -591,7 +591,7 @@ describe("Polygon clockwise", () => {
 
     let vertexCycle = graph.getVertexCycle(cycles[0]);
     let points = vertexCycle.map(
-      (v) => new Vector3(v.position.x, 0, v.position.y)
+      (v) => new Vector3(v.position.x, 0, v.position.y),
     );
   });
 
@@ -613,7 +613,7 @@ describe("Polygon clockwise", () => {
     const ver3 = { uuid: "2", position: { x: 0, y: 0, z: 0 } };
 
     let points = [ver0, ver1, ver2, ver3].map(
-      (v) => new Vector3(v.position.x, v.position.y, v.position.z)
+      (v) => new Vector3(v.position.x, v.position.y, v.position.z),
     );
 
     console.log("points", points);
