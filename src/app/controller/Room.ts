@@ -11,7 +11,10 @@ class Room extends Base implements Controller {
   model: RoomModel | null = null;
   view: RoomView | null = null;
 
-  constructor(readonly app: App, readonly sceneController: SceneController) {
+  constructor(
+    readonly app: App,
+    readonly sceneController: SceneController,
+  ) {
     super(app, sceneController);
 
     this.model = new RoomModel();
@@ -32,7 +35,7 @@ class Room extends Base implements Controller {
     return this.sceneController.model.objects.filter(
       (obj): obj is RoomModel => {
         return obj instanceof RoomModel;
-      }
+      },
     );
   }
 
@@ -79,67 +82,9 @@ class Room extends Base implements Controller {
     return [];
   }
 
-  updateGraph() {
-    // this.graph.graph = {};
-    // this.graph.vertices = {};
-    //
-    // let walls = this.scene.objects.filter(
-    //   (obj): obj is WallModel => obj instanceof WallModel
-    // );
-    //
-    // let corners = this.scene.objects.filter(
-    //   (obj): obj is Corner => obj instanceof Corner
-    // );
-    //
-    // walls.map((wall) => {
-    //   let from: Corner | undefined = corners.find((obj): obj is Corner =>
-    //     obj.walls.some((w) => w.uuid === wall.uuid)
-    //   );
-    //   let to: Corner | undefined = corners.find(
-    //     (obj): obj is Corner =>
-    //       obj.walls.some((w) => w.uuid === wall.uuid) && obj.uuid !== from?.uuid
-    //   );
-    //
-    //   if (from && to) {
-    //     this.graph?.addEdge(
-    //       { uuid: from.uuid, position: from.position },
-    //       { uuid: to.uuid, position: to.position }
-    //     );
-    //   }
-    // });
-    //
-    // if (!this.graph) return;
-    //
-    // let cycles = this.graph.getCycles();
-    //
-    // let roomCorners: Array<Array<Corner>> = [];
-    //
-    // cycles.map((cycle) => {
-    //   let _corners: Array<Corner> = [];
-    //   let vectors: Array<Vector3> = [];
-    //
-    //   cycle.map((uuid) => {
-    //     let corner: Corner | undefined = corners.find(
-    //       (obj): obj is Corner => obj.uuid === uuid
-    //     );
-    //
-    //     if (corner) {
-    //       _corners.push(corner);
-    //       vectors.push(
-    //         new Vector3(corner.position.x, corner.position.y, corner.position.z)
-    //       );
-    //     }
-    //   });
-    //
-    //   roomCorners.push(_corners);
-    // });
-    //
-    // this.updateByCorners(roomCorners);
-  }
-
   private angleBetweenVectorsWithOrientation(
     vectorA: Vector3,
-    vectorB: Vector3
+    vectorB: Vector3,
   ) {
     const crossProduct = vectorA.x * vectorB.z - vectorA.z * vectorB.x;
     const dotProduct = vectorA.x * vectorB.x + vectorA.z * vectorB.z;
