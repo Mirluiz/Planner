@@ -67,14 +67,12 @@ class Room extends Base implements Controller {
       });
 
       newRoom.triangulation = this.getTriangles(roomCorners);
-      console.log("newRoom", newRoom);
 
       this.sceneController.model.addObject(newRoom);
 
-      if (this.view) {
-        let newView = new RoomView(newRoom);
-        this.sceneController.view?.engine?.scene.add(newView?.render2D());
-      }
+      let newView = new RoomView(newRoom);
+      this.sceneController.view?.engine?.scene.add(newView?.render2D());
+
       newRoom.notifyObservers();
     });
   }

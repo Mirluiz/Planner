@@ -42,7 +42,7 @@ class Scene {
 
     this.localStorage = new LocalStorage();
 
-    this.renderer = new THREE.WebGLRenderer();
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
 
     this.renderer.setClearColor(0xffffff);
 
@@ -98,13 +98,22 @@ class Scene {
     this.renderer.domElement.setAttribute("tabindex", "0");
     this.renderer.domElement.focus();
 
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+
+    this.renderer.useLegacyLights = false;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
+
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.NoToneMapping;
+    this.renderer.toneMappingExposure = 1;
+
     this.renderer.outputEncoding = THREE.sRGBEncoding;
 
-    const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
-    this.scene.environment = pmremGenerator.fromScene(
-      new RoomEnvironment(),
-      0.06,
-    ).texture;
+    // const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+    // this.scene.environment = pmremGenerator.fromScene(
+    //   new RoomEnvironment(),
+    //   0.06,
+    // ).texture;
 
     this.initEvents();
     this.subscribeEvents();

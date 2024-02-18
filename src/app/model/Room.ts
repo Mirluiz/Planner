@@ -61,7 +61,7 @@ class Room implements Object3D {
         Math.abs(
           v0.position.x * (v1.position.z - v2.position.z) +
             v1.position.x * (v2.position.z - v0.position.z) +
-            v2.position.x * (v0.position.z - v1.position.z)
+            v2.position.x * (v0.position.z - v1.position.z),
         ) / 2;
 
       _i += 3;
@@ -72,7 +72,7 @@ class Room implements Object3D {
 
   destroy() {
     for (const observer of this.observers) {
-      observer.trigger();
+      observer.destroy();
     }
   }
 
