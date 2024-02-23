@@ -48,17 +48,31 @@ class WallElement extends Base implements Controller {
 
       let firstObject = snapsByDistance[0];
 
-      if (firstObject && firstObject.distance < 2 && firstObject.object) {
+      if (
+        firstObject &&
+        firstObject.distance < 2 + firstObject.object.dimension.depth / 2 &&
+        firstObject.object
+      ) {
+        let face = firstObject.position
+          .clone()
+          .sub(new Vector3(pos?.x, pos?.y, pos?.z))
+          .normalize();
         let angle = firstObject.object.end
           .clone()
           .sub(firstObject.object.start.clone())
           .normalize();
+        let wallDepthOffset = new Vector3(
+          firstObject.position.x,
+          firstObject.position.y,
+          firstObject.position.z,
+        ).sub(
+          new Vector3(face.x, face.y, face.z).multiplyScalar(
+            firstObject.object.dimension.depth / 2,
+          ),
+        );
         model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
-        model.position = { ...firstObject.position };
-        model.face = firstObject.position
-          .clone()
-          .sub(new Vector3(pos?.x, pos?.y, pos?.z))
-          .normalize();
+        model.position = { ...wallDepthOffset };
+        model.face = face;
 
         model.attachedWall = {
           wall: firstObject.object,
@@ -113,17 +127,33 @@ class WallElement extends Base implements Controller {
 
       let firstObject = snapsByDistance[0];
 
-      if (firstObject && firstObject.distance < 2 && firstObject.object) {
+      if (
+        firstObject &&
+        firstObject.distance < 2 + firstObject.object.dimension.depth / 2 &&
+        firstObject.object
+      ) {
+        let face = firstObject.position
+          .clone()
+          .sub(new Vector3(props?.pos?.x, props?.pos?.y, props?.pos?.z))
+          .normalize();
         let angle = firstObject.object.end
           .clone()
           .sub(firstObject.object.start.clone())
           .normalize();
+        let wallDepthOffset = new Vector3(
+          firstObject.position.x,
+          firstObject.position.y,
+          firstObject.position.z,
+        ).sub(
+          new Vector3(face.x, face.y, face.z).multiplyScalar(
+            firstObject.object.dimension.depth / 2,
+          ),
+        );
+
         model.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
-        model.position = { ...firstObject.position };
-        model.face = firstObject.position
-          .clone()
-          .sub(new Vector3(props?.pos?.x, props?.pos?.y, props?.pos?.z))
-          .normalize();
+        // model.position = { ...firstObject.position };
+        model.position = { ...wallDepthOffset };
+        model.face = face;
 
         model.attachedWall = {
           wall: firstObject.object,

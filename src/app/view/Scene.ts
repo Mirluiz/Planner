@@ -8,9 +8,9 @@ import { BaseMesh, Mesh } from "../system/engine/THREE/Mesh";
 class Scene {
   controller: App["sceneController"];
   model: App["sceneController"]["model"];
-
   mode: "draw" | null = null;
 
+  mouseDragged: boolean = false;
   mousePressed: boolean = false;
 
   engine: THREEScene | null = null;
@@ -45,8 +45,15 @@ class Scene {
       if (event.button === 0) {
         this.mousePressed = true;
 
-        this.model.intersects.map((intersect) => {
-          intersect.object.focused = false;
+        this.engine?.scene.children.map((child) => {
+          if (this.isBaseMesh(child.userData?.object)) {
+            let focused = child.userData.object.focused;
+            child.userData.object.focused = false;
+
+            if (focused) {
+              child.userData.object.reRender2D();
+            }
+          }
         });
 
         this.updateFocusedObject();
@@ -58,19 +65,14 @@ class Scene {
     this.engine?.htmlElement?.addEventListener("mouseup", () => {
       if (!this.engine) return;
 
-      this.mousePressed = false;
-      let intersection = this.model.intersects[0];
-
       if (this.dragElement?.object) {
         this.dragElement.object.focused = false;
         this.dragElement.object.model?.notifyObservers();
         this.dragElement = null;
-      } else {
-        if (intersection && !this.mode) {
-          intersection.object.focused = true;
-          this.controller.model.event.emit("objects_updated");
-        }
       }
+
+      this.mousePressed = false;
+      this.mouseDragged = false;
     });
 
     this.engine?.htmlElement?.addEventListener("mousemove", (event) => {
@@ -78,6 +80,10 @@ class Scene {
 
       this.engine.onPointerMove(event);
       this.updateIntersection(this.engine.intersects);
+
+      if (this.mousePressed) {
+        this.mouseDragged = true;
+      }
 
       if (this.mousePressed && this.focusedElement) {
         this.updateDraggedObject();
@@ -108,6 +114,16 @@ class Scene {
     this.engine?.htmlElement?.addEventListener("keydown", (event) => {
       if (event.code == "Escape") {
         console.log("esc pressed");
+      }
+    });
+
+    this.engine?.htmlElement?.addEventListener("dblclick", () => {
+      let intersection = this.model.intersects[0];
+
+      if (intersection) {
+        intersection.object.focused = true;
+        intersection.object.reRender2D();
+        this.controller.model.event.emit("objects_updated");
       }
     });
   }

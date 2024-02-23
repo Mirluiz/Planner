@@ -75,10 +75,9 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
       this.mesh.material.dispose();
       this.mesh.material = new THREE.MeshStandardMaterial({
-        color:
-          this.hovered || this.focused
-            ? ColorManager.colors["cyan"]
-            : ColorManager.colors["brown"],
+        color: this.focused
+          ? ColorManager.colors["cyan"]
+          : ColorManager.colors["brown"],
       });
     }
 
@@ -107,10 +106,9 @@ class Wall extends BaseMesh implements Mesh, Observer {
     let geometry = new THREE.BoxGeometry().setFromPoints(this.getGeometry());
 
     const material = new THREE.MeshStandardMaterial({
-      color:
-        this.hovered || this.focused
-          ? ColorManager.colors["cyan"]
-          : ColorManager.colors["brown"],
+      color: this.focused
+        ? ColorManager.colors["cyan"]
+        : ColorManager.colors["brown"],
     });
     const mesh = new THREE.Mesh(geometry, material);
 
@@ -145,7 +143,7 @@ class Wall extends BaseMesh implements Mesh, Observer {
   }
 
   private getGeometry() {
-    let depth = 0.2;
+    let { depth } = this.model.dimension;
     let ln = this.model.start.distanceTo(this.model.end);
     let h = this.model.dimension.height;
 

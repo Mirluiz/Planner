@@ -35,10 +35,9 @@ class Corner extends BaseMesh implements Mesh, Observer {
     if (!this.mesh) return;
 
     const material = new THREE.MeshBasicMaterial({
-      color:
-        this.hovered || this.temporary
-          ? ColorManager.colors["lime"]
-          : ColorManager.colors["beige"],
+      color: this.temporary
+        ? ColorManager.colors["lime"]
+        : ColorManager.colors["beige"],
     });
 
     let highestPointUUID = this.model.walls.sort(

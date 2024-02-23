@@ -8,16 +8,18 @@ class GeometryCalculation {
     corners.sort(
       (a, b) =>
         vector.distanceTo(
-          new Vector3(a.position.x, a.position.y, a.position.z)
+          new Vector3(a.position.x, a.position.y, a.position.z),
         ) -
-        vector.distanceTo(new Vector3(b.position.x, b.position.y, b.position.z))
+        vector.distanceTo(
+          new Vector3(b.position.x, b.position.y, b.position.z),
+        ),
     );
 
     let closest: Corner | undefined = corners[0];
 
     return closest &&
       vector.distanceTo(
-        new Vector3(closest.position.x, closest.position.y, closest.position.z)
+        new Vector3(closest.position.x, closest.position.y, closest.position.z),
       ) < 0.5
       ? closest
       : null;
@@ -26,7 +28,7 @@ class GeometryCalculation {
   static getClosestWall(
     wall: WallModel,
     vector: Vector3,
-    walls: WallModel[]
+    walls: WallModel[],
   ): {
     distance: number;
     position: Vector3;
@@ -35,7 +37,7 @@ class GeometryCalculation {
     let snapsByDistance = Math2D.Line.seekSnap(walls, vector);
 
     let excludeItself = snapsByDistance.filter(
-      (snap) => snap.object.uuid !== wall?.uuid
+      (snap) => snap.object.uuid !== wall?.uuid,
     );
 
     return excludeItself[0] ?? null;
@@ -43,7 +45,7 @@ class GeometryCalculation {
 
   static getWallSnap(
     wall1: WallModel,
-    wall2: WallModel
+    wall2: WallModel,
   ): {
     distance: number;
     position: Vector3;
@@ -89,7 +91,7 @@ class GeometryCalculation {
 
   static angleBetweenVectorsWithOrientation(
     vectorA: Vector3,
-    vectorB: Vector3
+    vectorB: Vector3,
   ) {
     const crossProduct = vectorA.x * vectorB.z - vectorA.z * vectorB.x;
     const dotProduct = vectorA.x * vectorB.x + vectorA.z * vectorB.z;
@@ -98,7 +100,8 @@ class GeometryCalculation {
   }
 
   static isItWallEnd(wall: WallModel, pos: Vector3): WallEnd | null {
-    return Math2D.Line.isEnd(wall, pos) === "start" ? wall.start : wall.end;
+    let end = Math2D.Line.isEnd(wall, pos);
+    return end ? (end === "start" ? wall.start : wall.end) : null;
   }
 }
 

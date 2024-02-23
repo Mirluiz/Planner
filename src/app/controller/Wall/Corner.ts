@@ -38,6 +38,7 @@ class Corner extends Base implements Controller {
       this.sceneController,
     );
     DoorUpdates.doorsByCorner(this.doors, model, this.sceneController);
+    this.app.graphManager.update();
 
     return model ?? null;
   }

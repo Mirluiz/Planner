@@ -109,17 +109,10 @@ class Scene {
 
     this.renderer.outputEncoding = THREE.sRGBEncoding;
 
-    // const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
-    // this.scene.environment = pmremGenerator.fromScene(
-    //   new RoomEnvironment(),
-    //   0.06,
-    // ).texture;
-
     this.initEvents();
     this.subscribeEvents();
 
     this.stats = new Stats();
-    // document.body.appendChild(this.stats.dom);
   }
 
   onPointerMove(event: MouseEvent) {

@@ -15,9 +15,9 @@ const Room = () => {
       app?.sceneController.view?.engine?.scene.children.map((child) => {
         if (
           child.userData?.object?.focused &&
-          child.userData?.object instanceof RoomModel
+          child.userData?.object.model instanceof RoomModel
         ) {
-          focusedElement = child.userData?.object;
+          focusedElement = child.userData?.object.model;
           return;
         }
       });
@@ -30,6 +30,7 @@ const Room = () => {
     <>
       {focused && (
         <Grid
+          className={"noselect"}
           sx={{
             display: "flex",
             flexDirection: "column",

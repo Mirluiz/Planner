@@ -16,9 +16,9 @@ const LineType = () => {
       app?.sceneController.view?.engine?.scene.children.map((child) => {
         if (
           child.userData?.object?.focused &&
-          child.userData?.object instanceof Wall
+          child.userData?.object.model instanceof Wall
         ) {
-          focusedElement = child.userData?.object;
+          focusedElement = child.userData?.object.model;
           return;
         }
       });
@@ -46,9 +46,10 @@ const LineType = () => {
 
   const getNameByObject = (str: string) => {
     let object = app?.sceneController.model.objects.find(
-      (object) => object.uuid === str
+      (object) => object.uuid === str,
     ) as Object3D;
     let ret = "";
+    console.log("object", object);
 
     switch (object.type) {
       case Entity.CORNER:
@@ -68,6 +69,7 @@ const LineType = () => {
     <>
       {focused && (
         <Grid
+          className={"noselect"}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -78,14 +80,14 @@ const LineType = () => {
           }}
         >
           <Typography>
-            Название {focused?.type && getNameByType(focused.type)}
+            Название - {focused?.type && getNameByType(focused.type)}
           </Typography>
           <Typography>
-            Начало{" "}
+            Начало -
             {focused?.start.object && getNameByObject(focused.start.object)}
           </Typography>
           <Typography>
-            Конец {focused?.end.object && getNameByObject(focused.end.object)}
+            Конец - {focused?.end.object && getNameByObject(focused.end.object)}
           </Typography>
         </Grid>
       )}

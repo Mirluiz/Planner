@@ -53,7 +53,7 @@ class Wall implements Object3D, Geometry.Line {
     });
 
     this.uuid = props?.uuid ?? Helpers.uuid();
-    this.dimension = { width: 1, height: 2, depth: 1 };
+    this.dimension = { width: 1, height: 2, depth: 0.2 };
     this.rotation = props?.rotation ?? { w: 0, x: 0, y: 0, z: 0 };
     this.position = props?.position ?? { x: 0, y: 0, z: 0 };
   }
