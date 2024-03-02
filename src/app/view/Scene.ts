@@ -145,7 +145,14 @@ class Scene {
         return;
       }
 
-      if (this.isBaseMesh(intersect.object?.userData?.object)) {
+      let parent = this.getParent(intersect.object);
+
+      if (parent && this.isBaseMesh(parent?.userData?.object)) {
+        intersections.push({
+          object: parent.userData.object,
+          position: intersect.point,
+        });
+      } else if (this.isBaseMesh(intersect.object?.userData?.object)) {
         intersections.push({
           object: intersect.object.userData.object,
           position: intersect.point,
@@ -154,8 +161,9 @@ class Scene {
     });
 
     let intersect = intersections[0];
+    console.log("intersect", intersect);
 
-    if (intersect) {
+    if (intersect && !this.dragElement) {
       intersect.object.hovered = true;
     }
 
@@ -165,6 +173,7 @@ class Scene {
   private updateFocusedObject() {
     this.focusedElement = null;
     let intersection = this.model.intersects[0];
+
     let ground = new Vector3(
       this.engine?.groundInters.x,
       this.engine?.groundInters.y,
@@ -207,6 +216,24 @@ class Scene {
 
   isBaseMesh(object: any): object is Mesh {
     return object && "isBaseMesh" in object;
+  }
+
+  getParent(mesh: THREE.Object3D) {
+    let ret: THREE.Object3D | undefined;
+
+    const getParent = (mesh: THREE.Object3D): undefined | THREE.Object3D => {
+      if (mesh.parent instanceof THREE.Scene || !mesh.parent) {
+        return mesh;
+      } else if (mesh.parent) {
+        return getParent(mesh.parent);
+      }
+    };
+
+    if (mesh.parent) {
+      ret = getParent(mesh.parent);
+    }
+
+    return ret;
   }
 }
 

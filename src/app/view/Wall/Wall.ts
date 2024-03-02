@@ -1,14 +1,16 @@
 import * as THREE from "three";
-import { Wall as WallModel } from "../model";
-import { Wall as WallController } from "../controller/Wall/Wall";
-import { BaseMesh, ColorManager, Mesh, Observer, Storage } from "./../system";
+import { Wall as WallModel } from "../../model";
+import { Wall as WallController } from "../../controller/Wall/Wall";
+import { BaseMesh, ColorManager, Mesh, Observer, Storage } from "../../system";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Vector3 } from "three";
+import { WallEnd } from "../../model/Wall/WallEnd";
+import { App } from "../../App";
 
 class Wall extends BaseMesh implements Mesh, Observer {
   constructor(
     readonly model: WallModel,
-    private controller: WallController,
+    private app: App,
   ) {
     super(model);
 
@@ -24,34 +26,44 @@ class Wall extends BaseMesh implements Mesh, Observer {
     meshIntersectionPosition?: { x: number; y: number; z: number };
   }) {
     let { position, meshIntersectionPosition } = props;
+    let hoveredElement = this.onHovered();
 
-    if (position && meshIntersectionPosition) {
-      let meshIPVec = new Vector3(
-        meshIntersectionPosition.x,
-        meshIntersectionPosition.y,
-        meshIntersectionPosition.z,
-      );
-      let mousePos = new Vector3(position.x, position.y, position.z);
-      let newMidPosition = mousePos.clone().sub(meshIPVec);
+    if (hoveredElement) {
+      // if (position && meshIntersectionPosition) {
+      //   let mousePos = new Vector3(position.x, position.y, position.z);
+      //   hoveredElement.set(mousePos.x, mousePos.y, mousePos.z);
+      //
+      //   this.app.wallController.update({}, this.model);
+      // }
+    } else {
+      if (position && meshIntersectionPosition) {
+        let meshIPVec = new Vector3(
+          meshIntersectionPosition.x,
+          meshIntersectionPosition.y,
+          meshIntersectionPosition.z,
+        );
+        let mousePos = new Vector3(position.x, position.y, position.z);
+        let newMidPosition = mousePos.clone().sub(meshIPVec);
 
-      let difference = newMidPosition.sub(
-        new Vector3(
-          this.model.position.x,
-          this.model.position.y,
-          this.model.position.z,
-        ),
-      );
+        let difference = newMidPosition.sub(
+          new Vector3(
+            this.model.position.x,
+            this.model.position.y,
+            this.model.position.z,
+          ),
+        );
 
-      let startModelPos = this.model.start.clone().add(difference);
-      let endModelPos = this.model.end.clone().add(difference);
+        let startModelPos = this.model.start.clone().add(difference);
+        let endModelPos = this.model.end.clone().add(difference);
 
-      this.controller.update(
-        {
-          start: startModelPos.clone(),
-          end: endModelPos.clone(),
-        },
-        this.model,
-      );
+        this.app.wallController.update(
+          {
+            start: startModelPos.clone(),
+            end: endModelPos.clone(),
+          },
+          this.model,
+        );
+      }
     }
   }
 
@@ -70,14 +82,23 @@ class Wall extends BaseMesh implements Mesh, Observer {
 
     if (this.mesh instanceof THREE.Mesh) {
       this.mesh.geometry.dispose();
+
+      let endMesh = this.mesh.children[0];
+      if (endMesh instanceof THREE.Mesh) {
+        endMesh.geometry.dispose();
+        endMesh.material.dispose();
+        endMesh.removeFromParent();
+      }
+
       this.mesh.geometry = new THREE.BoxGeometry().setFromPoints(geometry);
       this.mesh.geometry.needsUpdate = true;
 
       this.mesh.material.dispose();
       this.mesh.material = new THREE.MeshStandardMaterial({
-        color: this.focused
-          ? ColorManager.colors["cyan"]
-          : ColorManager.colors["brown"],
+        color:
+          this.focused || this.hovered
+            ? ColorManager.colors["cyan"]
+            : ColorManager.colors["brown"],
       });
     }
 
@@ -86,6 +107,46 @@ class Wall extends BaseMesh implements Mesh, Observer {
       this.model.position.y,
       this.model.position.z,
     );
+
+    {
+      const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);
+      const material = new THREE.MeshBasicMaterial({
+        color: ColorManager.colors["blue"],
+      });
+      const mesh = new THREE.Mesh(geometry, material);
+
+      mesh.position.set(
+        this.model.end.x,
+        this.model.end.y + 2,
+        this.model.end.z,
+      );
+
+      mesh.userData.object = this;
+      mesh.name = "Wall End";
+      mesh.scale.set(2, 1, 2);
+
+      this.mesh.attach(mesh);
+    }
+
+    {
+      const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);
+      const material = new THREE.MeshBasicMaterial({
+        color: ColorManager.colors["blue"],
+      });
+      const mesh = new THREE.Mesh(geometry, material);
+
+      mesh.position.set(
+        this.model.start.x,
+        this.model.start.y + 2,
+        this.model.start.z,
+      );
+
+      mesh.userData.object = this;
+      mesh.name = "Wall End";
+      mesh.scale.set(2, 1, 2);
+
+      this.mesh.attach(mesh);
+    }
 
     this.mesh.position.copy(midPoint);
 
@@ -106,9 +167,10 @@ class Wall extends BaseMesh implements Mesh, Observer {
     let geometry = new THREE.BoxGeometry().setFromPoints(this.getGeometry());
 
     const material = new THREE.MeshStandardMaterial({
-      color: this.focused
-        ? ColorManager.colors["cyan"]
-        : ColorManager.colors["brown"],
+      color:
+        this.focused || this.hovered
+          ? ColorManager.colors["cyan"]
+          : ColorManager.colors["brown"],
     });
     const mesh = new THREE.Mesh(geometry, material);
 
@@ -130,6 +192,46 @@ class Wall extends BaseMesh implements Mesh, Observer {
     }
 
     this.mesh = mesh;
+
+    {
+      const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);
+      const material = new THREE.MeshBasicMaterial({
+        color: ColorManager.colors["blue"],
+      });
+      const mesh = new THREE.Mesh(geometry, material);
+
+      mesh.position.set(
+        this.model.end.x,
+        this.model.end.y + 2,
+        this.model.end.z,
+      );
+
+      mesh.userData.object = this;
+      mesh.name = "Wall End";
+      mesh.scale.set(2, 1, 2);
+
+      this.mesh.attach(mesh);
+    }
+
+    {
+      const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 32);
+      const material = new THREE.MeshBasicMaterial({
+        color: ColorManager.colors["blue"],
+      });
+      const mesh = new THREE.Mesh(geometry, material);
+
+      mesh.position.set(
+        this.model.start.x,
+        this.model.start.y + 2,
+        this.model.start.z,
+      );
+
+      mesh.userData.object = this;
+      mesh.name = "Wall End";
+      mesh.scale.set(2, 1, 2);
+
+      this.mesh.attach(mesh);
+    }
 
     return this.mesh;
   }
@@ -298,6 +400,26 @@ class Wall extends BaseMesh implements Mesh, Observer {
     }
 
     return textMesh;
+  }
+
+  onHovered() {
+    if (!this.app?.sceneController?.view?.engine) return;
+
+    let props: { x: number; y: number; z: number } =
+      this.app.sceneController.view.engine.groundInters;
+    let end =
+      this.model.end.distanceTo(new Vector3(props.x, props.y, props.z)) <= 1
+        ? this.model.end
+        : null;
+
+    if (!end) {
+      end =
+        this.model.start.distanceTo(new Vector3(props.x, props.y, props.z)) <= 1
+          ? this.model.start
+          : null;
+    }
+
+    return end;
   }
 }
 

@@ -32,14 +32,46 @@ class Door extends BaseMesh implements Mesh, Observer {
     this.reRender2D();
   }
 
-  // update(props: {
-  //   position?: { x: number; y: number; z: number };
-  //   meshIntersectionPosition?: { x: number; y: number; z: number };
-  // }) {
-  //   if (props.position) this.model.position = { ...props.position };
-  //
-  //   if (props.position) this.seekSnap(props.position);
-  // }
+  update(props: {
+    position?: { x: number; y: number; z: number };
+    meshIntersectionPosition?: { x: number; y: number; z: number };
+  }) {
+    let { position, meshIntersectionPosition } = props;
+
+    if (position && meshIntersectionPosition) {
+      let meshIPVec = new Vector3(
+        meshIntersectionPosition.x,
+        meshIntersectionPosition.y,
+        meshIntersectionPosition.z,
+      );
+      let mousePos = new Vector3(position.x, position.y, position.z);
+      let newMidPosition = mousePos.clone().sub(meshIPVec);
+
+      let difference = newMidPosition.sub(
+        new Vector3(
+          this.model.position.x,
+          this.model.position.y,
+          this.model.position.z,
+        ),
+      );
+
+      let updatedPos = new Vector3(
+        this.model.position.x,
+        this.model.position.y,
+        this.model.position.z,
+      )
+        .clone()
+        .add(difference);
+      // let endModelPos = this.model.end.clone().add(difference);
+
+      this.app.wallElementController.update(
+        {
+          pos: updatedPos.clone(),
+        },
+        this.model,
+      );
+    }
+  }
 
   reRender3D() {
     if (!this.mesh) return;
@@ -117,12 +149,6 @@ class Door extends BaseMesh implements Mesh, Observer {
     let face = Math.atan2(this.model.face.z, this.model.face.x);
     this.mesh.rotation.y = Math.PI / 2 - face;
 
-    console.log(
-      "this.mesh.rotation.y",
-      this.mesh.rotation.y,
-      this.model.face.y,
-    );
-
     this.mesh.updateMatrixWorld();
     this.mesh.updateMatrix();
   }
@@ -147,6 +173,7 @@ class Door extends BaseMesh implements Mesh, Observer {
       uuid: this.model.uuid,
       temporary: this.temporary,
     };
+    mesh.userData.object = this;
 
     this.mesh = mesh;
 

@@ -18,6 +18,7 @@ class Door implements Object3D {
   attachedWall: {
     wall: Wall;
     centerOffset: number;
+    faceClockwise: 1 | -1;
   } | null = null;
 
   uuid;

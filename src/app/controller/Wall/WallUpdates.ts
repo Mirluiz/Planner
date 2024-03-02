@@ -228,6 +228,45 @@ class WallUpdates {
       wall.notifyObservers();
     });
   }
+
+  static updateWallsByEnd(
+    walls: WallModel[],
+    corner: CornerModel,
+    scene: SceneController,
+  ) {
+    walls.map((wall) => {
+      let startCorner = scene.model.objects.find(
+        (object) => object.uuid === wall.start.object,
+      ) as CornerModel | undefined;
+      let endCorner = scene.model.objects.find(
+        (object) => object.uuid === wall.end.object,
+      ) as CornerModel | undefined;
+
+      if (wall.end.object === corner.uuid) {
+        wall.end.set(corner.position.x, corner.position.y, corner.position.z);
+      } else {
+        endCorner?.walls.map((wUUID) => {
+          let w = scene.model.objectsBy[wUUID] as WallModel;
+          this.updateAngle(w, scene);
+          w.notifyObservers();
+        });
+      }
+
+      if (wall.start.object === corner.uuid) {
+        wall.start.set(corner.position.x, corner.position.y, corner.position.z);
+      } else {
+        startCorner?.walls.map((wUUID) => {
+          let w = scene.model.objectsBy[wUUID] as WallModel;
+          this.updateAngle(w, scene);
+          w.notifyObservers();
+        });
+      }
+
+      wall.updateCenter();
+      this.updateAngle(wall, scene);
+      wall.notifyObservers();
+    });
+  }
 }
 
 export { WallUpdates };

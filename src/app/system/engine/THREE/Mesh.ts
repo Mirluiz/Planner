@@ -20,7 +20,7 @@ interface Mesh {
     props: Partial<{
       position: { x: number; y: number; z: number };
       meshIntersectionPosition: { x: number; y: number; z: number };
-    }>
+    }>,
   ) => void;
   onUpdate?: () => void;
   destroy: () => void;

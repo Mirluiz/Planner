@@ -121,7 +121,7 @@ class Wall extends Base implements Controller {
 
     this.sceneController.model?.addObject(newWall);
     this.model = newWall;
-    this.view = new WallView(this.model, this);
+    this.view = new WallView(this.model, this.app);
     // let view = new WallView(newWall, this);
     // this.sceneController.view?.engine?.scene.add(view?.render2D());
   }
@@ -240,12 +240,12 @@ class Wall extends Base implements Controller {
 
       let dividedWallFromPrevCornerView = new WallView(
         dividedWallFromPrevCorner,
-        this,
+        this.app,
       );
 
       let dividedWallToNextCornerView = new WallView(
         dividedWallToNextCorner,
-        this,
+        this.app,
       );
 
       let cornerView = new CornerView(corner, this.app);

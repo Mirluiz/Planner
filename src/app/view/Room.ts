@@ -31,9 +31,6 @@ class Room extends BaseMesh implements Mesh, Observer {
       this.mesh.material = new THREE.MeshBasicMaterial({
         color: this.focused ? ColorManager.colors["light_grey"] : 0x916e53,
       });
-
-      this.mesh.material.transparent = true;
-      // this.mesh.material.opacity = 0.5;
     }
 
     this.mesh.updateMatrix();
@@ -45,7 +42,7 @@ class Room extends BaseMesh implements Mesh, Observer {
     let geometry = new THREE.BufferGeometry().setFromPoints(this.getGeometry());
 
     const material = new THREE.MeshBasicMaterial({
-      color: this.focused ? ColorManager.colors["light_grey"] : 0x916e53,
+      color: ColorManager.colors["light_grey"],
     });
     const mesh = new THREE.Mesh(geometry, material);
 

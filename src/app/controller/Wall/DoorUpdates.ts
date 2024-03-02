@@ -46,7 +46,14 @@ class DoorUpdates {
                 .clone()
                 .sub(_wall.start.clone())
                 .normalize();
-              door.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
+
+              if (door.attachedWall.faceClockwise) {
+                door.face = new Vector3(
+                  -door.attachedWall.faceClockwise * angle.z,
+                  0,
+                  door.attachedWall.faceClockwise * angle.x,
+                );
+              }
 
               door.position = { x: finalPos.x, y: finalPos.y, z: finalPos.z };
               door.notifyObservers();
@@ -116,7 +123,14 @@ class DoorUpdates {
           door.position = { x: finalPos.x, y: finalPos.y, z: finalPos.z };
 
           let angle = _wall.end.clone().sub(_wall.start.clone()).normalize();
-          door.rotation.y = Math.PI - Math.atan2(angle.z, angle.x);
+
+          if (door.attachedWall.faceClockwise) {
+            door.face = new Vector3(
+              -door.attachedWall.faceClockwise * angle.z,
+              0,
+              door.attachedWall.faceClockwise * angle.x,
+            );
+          }
 
           door.notifyObservers();
         }

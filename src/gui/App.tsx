@@ -64,11 +64,11 @@ const App = () => {
         // const evaluator = new Evaluator();
         // const result = evaluator.evaluate(brush1, brush2, SUBTRACTION);
 
-        demo.run();
+        // demo.run();
         // door.run();
         // angle.run();
         // corner.run();
-        // wall.run();
+        wall.run();
 
         app.sceneController.event.emit("scene_update");
         // app.sceneController.view?.engine.scene.add(result);

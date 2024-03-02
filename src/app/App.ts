@@ -1,6 +1,4 @@
 import { Wall as WallController } from "../app/controller/Wall/Wall";
-import { Wall as WallModel } from "../app/model/Wall/Wall";
-import { Wall as WallView } from "../app/view/Wall";
 import { Room as RoomController } from "../app/controller/Room";
 import { Object3D as Object3DController } from "../app/controller/Object3D";
 import { Scene as SceneController } from "./controller/Scene";

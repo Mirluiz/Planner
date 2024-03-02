@@ -74,11 +74,14 @@ class WallElement extends Base implements Controller {
         model.position = { ...wallDepthOffset };
         model.face = face;
 
+        let clockWise = angle.x * face.z - angle.z * face.x;
+
         model.attachedWall = {
           wall: firstObject.object,
           centerOffset:
             firstObject.object.start.distanceTo(firstObject.position) /
             firstObject.object.start.clone().distanceTo(firstObject.object.end),
+          faceClockwise: Math.sign(clockWise) > 0 ? 1 : -1,
         };
       }
     }
@@ -155,11 +158,14 @@ class WallElement extends Base implements Controller {
         model.position = { ...wallDepthOffset };
         model.face = face;
 
+        let clockWise = angle.x * face.z - angle.z * face.x;
+
         model.attachedWall = {
           wall: firstObject.object,
           centerOffset:
             firstObject.object.start.distanceTo(firstObject.position) /
             firstObject.object.start.clone().distanceTo(firstObject.object.end),
+          faceClockwise: Math.sign(clockWise) > 0 ? 1 : -1,
         };
       }
     }

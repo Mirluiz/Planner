@@ -1,4 +1,4 @@
-export * from "./Wall";
+export * from "./Wall/Wall";
 export * from "./Scene";
 export * from "./Pipe";
 export * from "./Room";
