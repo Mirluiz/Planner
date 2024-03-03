@@ -8,14 +8,15 @@ export type DBData = {
 
 class Database {
   dbName = "local";
-  table = "data";
+  table = "data"; 
+  
 
-  private indexedDB: IDBFactory;
+  private indexedDB: IDBFactory;  
   public database?: IDBDatabase;
-  public results?: DBData;
+  public results?: DBData; 
 
   constructor() {
-    this.indexedDB = window.indexedDB;
+    this.indexedDB = window.indexedDB; 
 
     this.set(
       {

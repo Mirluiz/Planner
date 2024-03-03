@@ -8,7 +8,7 @@ interface Mesh {
   focused: boolean
   hovered: boolean
 
-  model: Object3D
+  model: Object3D | null
 
   render2D: () => THREE.Object3D | null
   reRender2D: () => void

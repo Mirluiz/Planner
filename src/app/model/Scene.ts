@@ -24,10 +24,7 @@ import { Window } from "./Window";
 class Scene {
   event: EventSystem = new EventSystem();
 
-  _intersects: Array<{
-    position: Vector3;
-    object: Mesh;
-  }> = [];
+ 
   private _objects: Array<Object3D> = [];
   objectsBy: { [key in string]: Object3D } = {};
 
@@ -42,17 +39,6 @@ class Scene {
     return this._objects;
   }
 
-  set intersects(i) {
-    this._intersects.map((value, index, array) => {
-      value.object?.model?.notifyObservers();
-    });
-
-    this._intersects = i;
-  }
-
-  get intersects() {
-    return this._intersects;
-  }
 
   addObject(object: Object3D) {
     this.objects.push(object);

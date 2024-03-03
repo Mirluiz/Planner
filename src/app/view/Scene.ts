@@ -126,94 +126,37 @@ class Scene {
     })
   }
 
-  private updateIntersection(intersects: THREE.Intersection[]) {
-    let intersections: Array<{
-      position: Vector3
-      object: Mesh
-    }> = []
 
-    this.engine?.scene.children.map((child) => {
-      if (this.isBaseMesh(child.userData?.object)) {
-        child.userData.object.hovered = false
-
-        child.userData.object.onHoverEnd()
-      }
-    })
-
-    intersects.map((intersect) => {
-      if (intersect.object.userData.object?.temporary) {
-        return
-      }
-
-      let parent = this.getParent(intersect.object)
-
-      if (parent && this.isBaseMesh(parent?.userData?.object)) {
-        intersections.push({
-          object: parent.userData.object,
-          position: intersect.point
-        })
-        parent.userData.object.onHover(
-          new Vector3(
-            this.engine?.groundInters.x,
-            this.engine?.groundInters.y,
-            this.engine?.groundInters.z
-          )
-        )
-      } else if (this.isBaseMesh(intersect.object?.userData?.object)) {
-        intersections.push({
-          object: intersect.object.userData.object,
-          position: intersect.point
-        })
-
-        intersect.object.userData.object.onHover(
-          new Vector3(
-            this.engine?.groundInters.x,
-            this.engine?.groundInters.y,
-            this.engine?.groundInters.z
-          )
-        )
-      }
-    })
-
-    let intersect = intersections[0]
-    console.log('intersect', intersect)
-
-    if (intersect && !this.dragElement) {
-      intersect.object.hovered = true
-    }
-
-    this.model.intersects = intersections
-  }
 
   private updateFocusedObject() {
-    this.focusedElement = null
-    let intersection = this.model.intersects[0]
+    // this.focusedElement = null
+    // let intersection = this.model.intersects[0]
 
-    let ground = new Vector3(
-      this.engine?.groundInters.x,
-      this.engine?.groundInters.y,
-      this.engine?.groundInters.z
-    )
+    // let ground = new Vector3(
+    //   this.engine?.groundInters.x,
+    //   this.engine?.groundInters.y,
+    //   this.engine?.groundInters.z
+    // )
 
-    if (intersection?.object?.model) {
-      this.focusedElement =
-        {
-          centerOffset: ground
-            .clone()
-            .sub(
-              new Vector3(
-                intersection.object.model.position.x,
-                intersection.object.model.position.y,
-                intersection.object.model.position.z
-              )
-            ),
-          object: intersection.object,
-          position: intersection.position.clone(),
-          initialData: {
-            position: ground
-          }
-        } ?? null
-    }
+    // if (intersection?.object?.model) {
+    //   this.focusedElement =
+    //     {
+    //       centerOffset: ground
+    //         .clone()
+    //         .sub(
+    //           new Vector3(
+    //             intersection.object.model.position.x,
+    //             intersection.object.model.position.y,
+    //             intersection.object.model.position.z
+    //           )
+    //         ),
+    //       object: intersection.object,
+    //       position: intersection.position.clone(),
+    //       initialData: {
+    //         position: ground
+    //       }
+    //     } ?? null
+    // }
   }
 
   private updateDraggedObject() {
@@ -229,27 +172,9 @@ class Scene {
     }
   }
 
-  isBaseMesh(object: any): object is Mesh {
-    return object && 'isBaseMesh' in object
-  }
+ 
 
-  getParent(mesh: THREE.Object3D) {
-    let ret: THREE.Object3D | undefined
-
-    const getParent = (mesh: THREE.Object3D): undefined | THREE.Object3D => {
-      if (mesh.parent instanceof THREE.Scene || !mesh.parent) {
-        return mesh
-      } else if (mesh.parent) {
-        return getParent(mesh.parent)
-      }
-    }
-
-    if (mesh.parent) {
-      ret = getParent(mesh.parent)
-    }
-
-    return ret
-  }
+ 
 }
 
 export { Scene }
