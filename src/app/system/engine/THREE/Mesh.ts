@@ -3,10 +3,14 @@ import { Engine, Object3D, Object3DProps } from '../../interfaces'
 import { BufferGeometry } from 'three/src/core/BufferGeometry'
 import { Material } from 'three/src/materials/Material'
 import { MeshBasicMaterial } from 'three/src/materials/MeshBasicMaterial'
+import { Helpers } from '../../utils'
 
 interface Mesh {
+  uuid: string
   focused: boolean
   hovered: boolean
+
+  position: THREE.Vector3
 
   model: Object3D | null
 
@@ -31,15 +35,21 @@ interface Mesh {
 }
 
 class BaseMesh implements Mesh {
+  uuid: string
+
   focused = false
   hovered = false
   temporary = false
 
   isBaseMesh = true
 
+  position: THREE.Vector3 = new THREE.Vector3()
+
   private _mesh: THREE.Object3D | null = null
 
-  constructor(readonly model: Object3D) {}
+  constructor(readonly model: Object3D | null) {
+    this.uuid = Helpers.uuid()
+  }
 
   get mesh() {
     return this._mesh
@@ -118,8 +128,13 @@ class BaseMesh implements Mesh {
     return this.mesh
   }
 
-  update(props: Partial<Object3DProps>) {}
-  create(props: Partial<Object3DProps>) {}
+  update(props: Partial<Object3DProps>) {
+    throw new Error('not implemented')
+  }
+
+  create(props: Partial<Object3DProps>) {
+    throw new Error('not implemented')
+  }
 
   onHover(pos: THREE.Vector3) {
     throw new Error('not implemented')

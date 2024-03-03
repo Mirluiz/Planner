@@ -1,25 +1,25 @@
-import React from "react";
-import { Button, Grid, IconButton, Menu, MenuItem } from "@mui/material";
-import OtherHousesOutlinedIcon from "@mui/icons-material/OtherHousesOutlined";
-import { useSceneContext } from "../../System/PiperContext";
-import { Wall, Door } from "../../../app/view";
-import { Door as DoorModel } from "../../../app/model";
+import React from 'react'
+import { Button, Grid, IconButton, Menu, MenuItem } from '@mui/material'
+import OtherHousesOutlinedIcon from '@mui/icons-material/OtherHousesOutlined'
+import { useSceneContext } from '../../System/PiperContext'
+import { Wall, Door } from '../../../app/view'
+import { Door as DoorModel } from '../../../app/model'
 
 const House = () => {
-  const { app } = useSceneContext();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const { app } = useSceneContext()
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   return (
     <>
       <IconButton onClick={handleClick} sx={{ marginTop: 1 }}>
-        <OtherHousesOutlinedIcon fontSize={"large"} />
+        <OtherHousesOutlinedIcon fontSize={'large'} />
       </IconButton>
 
       <Menu
@@ -28,30 +28,28 @@ const House = () => {
         open={open}
         onClose={handleClose}
         MenuListProps={{
-          "aria-labelledby": "basic-button",
+          'aria-labelledby': 'basic-button'
         }}
       >
         <MenuItem
           onClick={() => {
-            handleClose();
+            handleClose()
 
-            if (!app?.sceneController.view) return;
+            if (!app?.sceneController.view) return
 
-            app.sceneController.view.mode = "draw";
-            app.sceneController.activeController = app.wallController;
+            app.sceneController.activeController = app.wallController
           }}
         >
           Wall
         </MenuItem>
         <MenuItem
           onClick={() => {
-            handleClose();
+            handleClose()
 
-            if (!app?.sceneController.view) return;
+            if (!app?.sceneController.view) return
 
-            app.sceneController.view.mode = "draw";
-            app.sceneController.activeController = app.wallElementController;
-            app.wallElementController.createGhost();
+            app.sceneController.activeController = app.wallElementController
+            app.wallElementController.createGhost()
 
             // let active: Door | null = new Door(new DoorModel(), app);
             // app.sceneController.view.engine?.scene.add(active.render());
@@ -95,17 +93,15 @@ const House = () => {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            handleClose();
-            if (!app?.sceneController.view) return;
-
-            app.sceneController.view.mode = "draw";
+            handleClose()
+            if (!app?.sceneController.view) return
           }}
         >
           Window
         </MenuItem>
       </Menu>
     </>
-  );
-};
+  )
+}
 
-export { House };
+export { House }
