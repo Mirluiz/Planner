@@ -4,6 +4,11 @@ import { App } from '../App'
 import { log } from 'console'
 
 class DemoBox extends BaseMesh implements Mesh, Observer {
+  leftTopEar: boolean = false
+  rightTopEar: boolean = false
+  leftBottomEar: boolean = false
+  rightBottomEar: boolean = false
+
   constructor(private app: App) {
     super(null)
   }

@@ -90,7 +90,7 @@ class Intersection {
     return ret
   }
 
-  getClickedObjectInfo() {
+  getInfo() {
     let info: {
       centerOffset: Vector3
       position: Vector3

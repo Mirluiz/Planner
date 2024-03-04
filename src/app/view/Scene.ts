@@ -56,7 +56,7 @@ class Scene {
         this.mouseDragged = true
 
         if (this.intersection.priorityObject && !this.drag.element) {
-          let dragObject = this.intersection.getClickedObjectInfo()
+          let dragObject = this.intersection.getInfo()
 
           if (dragObject) {
             this.drag.start({
