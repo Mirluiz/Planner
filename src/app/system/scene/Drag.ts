@@ -1,53 +1,51 @@
+import * as THREE from 'three'
 import { Vector3 } from 'three'
 import { Mesh } from '../engine/THREE/Mesh'
-import { Scene } from '../engine'
 
 class Drag {
   element: {
     centerOffset: Vector3
     position: Vector3
-    object: Mesh
     initialData: { position: Vector3 }
   } | null = null
 
-  constructor(readonly engine: Scene) {}
+  constructor(readonly mesh: Mesh) {}
 
-  start(props: {
-    centerOffset: Vector3
-    position: Vector3
-    object: Mesh
-    initialData: { position: Vector3 }
-  }) {
-    this.element = {
-      centerOffset: props.centerOffset.clone(),
-      object: props.object,
-      position: props.position.clone(),
-      initialData: {
-        position: props.initialData.position.clone()
-      }
+  init(props: { position: Vector3 }) {
+    this.element =
+      {
+        centerOffset: props.position
+          .clone()
+          .sub(new THREE.Vector3(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z)),
+        position: this.mesh.position.clone(),
+        initialData: {
+          position: props.position
+        }
+      } ?? null
+  }
+
+  update(props: { position: Vector3; net: boolean }) {
+    if (!this.element) {
+      this.init(props)
     }
-  }
 
-  end() {
-    this.element = null
-  }
+    let { position } = props
 
-  update(props: { newPosition: { x: number; y: number; z: number } }) {
-    let { newPosition } = props
+    let mutablePos = new THREE.Vector3(position.x, position.y, position.z)
+      .clone()
+      .sub(this.element!.centerOffset)
 
-    let mutablePos = new Vector3(newPosition.x, newPosition.y, newPosition.z)
-
-    if (this.engine.netBinding && mutablePos) {
+    if (props.net && mutablePos) {
       mutablePos.x = +(mutablePos.x / 10).toFixed(1) * 10
       mutablePos.z = +(mutablePos.z / 10).toFixed(1) * 10
     }
 
-    this.element?.object?.update({
-      position: mutablePos,
-      meshIntersectionPosition: this.element.centerOffset
-    })
+    this.mesh.position.copy(mutablePos)
+    this.mesh.reRender2D()
+  }
 
-    this.element?.object?.reRender2D()
+  reset() {
+    this.element = null
   }
 }
 

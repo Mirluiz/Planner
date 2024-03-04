@@ -10,7 +10,6 @@ class Scene {
   controller: App['sceneController']
   model: App['sceneController']['model']
 
-  drag: Drag
   intersection: Intersection
   focus: Focus
 
@@ -19,6 +18,8 @@ class Scene {
 
   engine: THREEScene | null = null
 
+  activeElement: Mesh | null = null
+
   constructor(props: { canvas: HTMLElement; controller: SceneController }) {
     this.model = props.controller.model
     this.controller = props.controller
@@ -26,7 +27,6 @@ class Scene {
 
     this.initListeners()
 
-    this.drag = new Drag(this.engine)
     this.intersection = new Intersection(this.engine)
     this.focus = new Focus()
   }
@@ -55,24 +55,27 @@ class Scene {
       if (this.mousePressed) {
         this.mouseDragged = true
 
-        if (this.intersection.priorityObject && !this.drag.element) {
-          let dragObject = this.intersection.getInfo()
+        if (this.intersection.priorityObject && !this.activeElement) {
+          let { priorityObject } = this.intersection
 
-          if (dragObject) {
-            this.drag.start({
-              centerOffset: dragObject.centerOffset,
-              initialData: dragObject.initialData,
-              object: dragObject.object,
-              position: dragObject.position
-            })
-          }
+          this.activeElement = priorityObject.object
+
+          this.activeElement.drag({
+            position: new Vector3(
+              this.engine.groundInters.x,
+              this.engine.groundInters.y,
+              this.engine.groundInters.z
+            )
+          })
+        } else {
+          this.activeElement?.drag({
+            position: new Vector3(
+              this.engine.groundInters.x,
+              this.engine.groundInters.y,
+              this.engine.groundInters.z
+            )
+          })
         }
-      }
-
-      if (this.mousePressed) {
-        this.drag.update({
-          newPosition: this.engine.groundInters
-        })
       }
     })
 
@@ -82,7 +85,12 @@ class Scene {
       this.mousePressed = false
       this.mouseDragged = false
 
-      this.drag.end()
+      let { priorityObject } = this.intersection
+      if (priorityObject) {
+        priorityObject.object.dragEnd()
+      }
+
+      this.activeElement = null
     })
 
     this.engine?.htmlElement?.addEventListener('keydown', (event) => {

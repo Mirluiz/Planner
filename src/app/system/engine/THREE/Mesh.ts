@@ -4,15 +4,21 @@ import { BufferGeometry } from 'three/src/core/BufferGeometry'
 import { Material } from 'three/src/materials/Material'
 import { MeshBasicMaterial } from 'three/src/materials/MeshBasicMaterial'
 import { Helpers } from '../../utils'
+import { Drag } from '../../scene'
 
 interface Mesh {
   uuid: string
   focused: boolean
   hovered: boolean
 
+  dragged: boolean
+
   position: THREE.Vector3
+  dimension: { width: number; height: number; depth: number }
 
   model: Object3D | null
+
+  dragManager: Drag
 
   render2D: () => THREE.Object3D | null
   reRender2D: () => void
@@ -31,6 +37,9 @@ interface Mesh {
   onHover: (pos: THREE.Vector3) => void
   onHoverEnd: () => void
 
+  drag: (props: { position: THREE.Vector3 }) => void
+  dragEnd: () => void
+
   destroy: () => void
 }
 
@@ -41,14 +50,21 @@ class BaseMesh implements Mesh {
   hovered = false
   temporary = false
 
+  dragged: boolean = false
+
   isBaseMesh = true
 
   position: THREE.Vector3 = new THREE.Vector3()
+  dimension: { width: number; height: number; depth: number } = { width: 1, height: 1, depth: 1 }
+
+  dragManager: Drag
 
   private _mesh: THREE.Object3D | null = null
 
   constructor(readonly model: Object3D | null) {
     this.uuid = Helpers.uuid()
+
+    this.dragManager = new Drag(this)
   }
 
   get mesh() {
@@ -141,6 +157,14 @@ class BaseMesh implements Mesh {
   }
 
   onHoverEnd() {
+    throw new Error('not implemented')
+  }
+
+  drag(props: { position: THREE.Vector3 }) {
+    throw new Error('not implemented')
+  }
+
+  dragEnd() {
     throw new Error('not implemented')
   }
 }

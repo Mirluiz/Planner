@@ -1,9 +1,11 @@
 import * as THREE from 'three'
 import { BaseMesh, ColorManager, Mesh, Observer, Storage } from '../system'
 import { App } from '../App'
-import { log } from 'console'
 
 class DemoBox extends BaseMesh implements Mesh, Observer {
+  edgeResize: boolean = false
+  dragMode: boolean = false
+
   leftTopEar: boolean = false
   rightTopEar: boolean = false
   leftBottomEar: boolean = false
@@ -11,6 +13,8 @@ class DemoBox extends BaseMesh implements Mesh, Observer {
 
   constructor(private app: App) {
     super(null)
+
+    this.dimension = { width: 1, height: 0.1, depth: 1 }
   }
 
   trigger() {
@@ -75,12 +79,69 @@ class DemoBox extends BaseMesh implements Mesh, Observer {
     return this.reRender2D()
   }
 
+  drag(props: { position: THREE.Vector3 }): void {
+    if (this.dragMode || this.edgeResize) {
+      if (this.edgeResize) {
+      } else {
+        this.dragManager.update({
+          net: Boolean(this.app.sceneController.view?.engine?.netBinding),
+          position: props.position
+        })
+      }
+    } else {
+      if (this.isEdge(props.position)) {
+        this.edgeResize = true
+      } else {
+        this.dragMode = true
+        this.dragManager.update({
+          net: Boolean(this.app.sceneController.view?.engine?.netBinding),
+          position: props.position
+        })
+      }
+    }
+  }
+
+  dragEnd() {
+    this.dragManager.reset()
+    this.edgeResize = false
+    this.dragMode = false
+  }
+
   onHover(pos: THREE.Vector3): void {
     this.hovered = true
+
+    if (this.isEdge(pos) && !this.dragMode) {
+      document.body.style.cursor = 'ew-resize'
+    } else {
+      document.body.style.cursor = 'default'
+    }
   }
 
   onHoverEnd(): void {
     this.hovered = false
+    document.body.style.cursor = 'default'
+  }
+
+  private isEdge(pos: THREE.Vector3): boolean {
+    let ret = false
+    let { depth, height, width } = this.dimension
+
+    let rightTop = new THREE.Vector3(this.position.x + width / 2, 0, this.position.z + depth / 2),
+      rightBottom = new THREE.Vector3(this.position.x + width / 2, 0, this.position.z - depth / 2),
+      leftBottom = new THREE.Vector3(this.position.x - width / 2, 0, this.position.z - depth / 2),
+      leftTop = new THREE.Vector3(this.position.x - width / 2, 0, this.position.z + depth / 2)
+
+    if (pos) {
+      ret = [rightBottom, leftBottom, leftTop, rightTop].some((vec) => {
+        return Math.abs(vec.x - pos.x) < 0.1 || Math.abs(vec.z - pos.z) < 0.1
+      })
+    }
+
+    return ret
+  }
+
+  private edgeDirection() {
+    // return
   }
 }
 
