@@ -43,7 +43,11 @@ class DemoBox extends BaseMesh implements Mesh, Observer {
   reRender2D() {
     if (this.mesh instanceof THREE.Mesh) {
       this.mesh.geometry.dispose()
-      this.mesh.geometry = new THREE.BoxGeometry(1, 0.1, 1)
+      this.mesh.geometry = new THREE.BoxGeometry(
+        this.dimension.width,
+        this.dimension.height,
+        this.dimension.depth
+      )
       this.mesh.geometry.needsUpdate = true
       this.mesh.position.copy(this.position)
       this.mesh.material.dispose()
@@ -82,6 +86,8 @@ class DemoBox extends BaseMesh implements Mesh, Observer {
   drag(props: { position: THREE.Vector3 }): void {
     if (this.dragMode || this.edgeResize) {
       if (this.edgeResize) {
+        this.dimension.width += 0.01
+        this.position.x += 0.01 / 2
       } else {
         this.dragManager.update({
           net: Boolean(this.app.sceneController.view?.engine?.netBinding),
@@ -91,6 +97,9 @@ class DemoBox extends BaseMesh implements Mesh, Observer {
     } else {
       if (this.isEdge(props.position)) {
         this.edgeResize = true
+
+        this.dimension.width += 0.01
+        this.position.x += 0.01 / 2
       } else {
         this.dragMode = true
         this.dragManager.update({
@@ -99,6 +108,8 @@ class DemoBox extends BaseMesh implements Mesh, Observer {
         })
       }
     }
+
+    this.reRender2D()
   }
 
   dragEnd() {

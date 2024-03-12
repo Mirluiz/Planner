@@ -41,7 +41,6 @@ class Drag {
     }
 
     this.mesh.position.copy(mutablePos)
-    this.mesh.reRender2D()
   }
 
   reset() {
