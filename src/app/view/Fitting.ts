@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Fitting as FittingModel } from "../model";
-import { Observer, BaseMesh, Mesh } from "./../system";
+import { Observer, BaseMesh, Mesh } from "../../system";
 
 class Fitting extends BaseMesh implements Mesh, Observer {
   constructor(readonly model: FittingModel) {

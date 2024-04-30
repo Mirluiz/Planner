@@ -1,11 +1,11 @@
 import * as THREE from 'three'
 import { Wall as WallModel } from '../../model'
-import { BaseMesh, ColorManager, Mesh, Observer, Storage } from '../../system'
+import { BaseMesh, ColorManager, Mesh, Observer, Storage } from '../../../system'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry'
 import { Vector3 } from 'three'
 import { App } from '../../App'
 import { WallEndHelper } from './WallEndHelper'
-import { WallEnd } from '../../model/Wall/WallEnd'
+import { WallEnd } from '../../model'
 
 class Wall extends BaseMesh implements Mesh, Observer {
   wallEndHelper: WallEndHelper

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Door as DoorModel } from "../model/Door";
+import { Door as DoorModel } from "../model";
 import {
   BaseMesh,
   Mesh,
@@ -7,11 +7,11 @@ import {
   Helpers,
   Math2D,
   ColorManager,
-} from "./../system";
+} from "../../system";
 import { App } from "../App";
 import { Wall as WallModel, Wall } from "../model";
 import { Group, Vector3 } from "three";
-import { GlbManager } from "../system/engine/THREE/GlbManager";
+import { GlbManager } from "../../system/engine/THREE/GlbManager";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 
 class Door extends BaseMesh implements Mesh, Observer {

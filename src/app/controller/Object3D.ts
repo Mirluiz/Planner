@@ -1,6 +1,5 @@
-import { Object3D as Object3DModel, Math2D } from "../system";
-import { Scene as SceneModel } from "../model/Scene";
-import { Fitting, Pipe as PipeModel } from "../model";
+import { Fitting, Pipe as PipeModel, Scene as SceneModel } from "../model";
+import { Object3D as Object3DModel } from "../model/Object3D";
 import { Controller } from "./Controller";
 
 class Object3D implements Controller {

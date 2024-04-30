@@ -1,12 +1,12 @@
 import { Corner, Room as RoomModel } from "../model";
 import { Room as RoomView } from "../view/Room";
-import { Helpers } from "../system";
+import { Helpers } from "../../system";
 import { Vector3 } from "three";
 import { Controller } from "./Controller";
 import { Base } from "./Base";
 import { App } from "../App";
 import { Scene as SceneController } from "./Scene";
-import { Polygon } from "../system/utils/Polygon";
+import { Polygon } from "../../system/utils/Polygon";
 
 class Room extends Base implements Controller {
   model: RoomModel | null = null;
@@ -18,7 +18,7 @@ class Room extends Base implements Controller {
   ) {
     super(app, sceneController);
 
-    this.model = new RoomModel();
+    this.model = RoomModel.createDefault();
     this.view = new RoomView(this.model);
   }
 

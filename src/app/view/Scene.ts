@@ -1,10 +1,10 @@
 import * as THREE from 'three'
 import { Scene as SceneController } from './../controller/Scene'
-import { Scene as THREEScene } from './../system/engine/THREE/Scene'
+import { Scene as THREEScene } from '../../system/engine/THREE/Scene'
 import { App } from '../App'
 import { Vector3 } from 'three'
-import { BaseMesh, Mesh } from '../system/engine/THREE/Mesh'
-import { Drag, Intersection, Focus } from '../system'
+import { BaseMesh, Mesh } from '../../system/engine/THREE/Mesh'
+import { Drag, Intersection, Focus } from '../../system'
 
 class Scene {
   controller: App['sceneController']

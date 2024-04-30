@@ -1,5 +1,5 @@
-import { Object3DSchema } from "../app/system";
 import { App } from "../app/App";
+import { Object3DSchema } from "../app/model/Object3D";
 
 export type DBData = {
   objects: Object3DSchema[];

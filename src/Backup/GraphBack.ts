@@ -1,4 +1,4 @@
-import { Math2D } from "../app/system/utils/Math2D";
+import { Math2D } from "../system/utils/Math2D";
 
 type Vertex = { val: string; pos: { x: number; y: number } };
 

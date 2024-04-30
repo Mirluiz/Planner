@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { Wall as WallModel } from '../../model'
-import { WallEnd as WallEndModel } from '../../model/Wall/WallEnd'
-import { BaseMesh, ColorManager, Mesh, Observer } from '../../system'
+import { WallEnd as WallEndModel } from '../../model'
+import { BaseMesh, ColorManager, Mesh, Observer } from '../../../system'
 import { Vector3 } from 'three'
 import { App } from '../../App'
 

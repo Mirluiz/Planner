@@ -1,4 +1,4 @@
-import { Object3D } from "../system";
+import { Object3D } from "../model/Object3D";
 
 interface Controller {
   model?: Object3D | null;

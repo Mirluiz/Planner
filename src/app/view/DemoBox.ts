@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { BaseMesh, ColorManager, Mesh, Observer, Storage } from '../system'
+import { BaseMesh, ColorManager, Mesh, Observer, Storage } from '../../system'
 import { App } from '../App'
 
 class DemoBox extends BaseMesh implements Mesh, Observer {

@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Grid, ListItem, Typography } from "@mui/material";
 import { useSceneContext } from "../../System/PiperContext";
 import { Corner, Pipe, Wall } from "../../../app/model";
-import { Entity } from "../../../app/system";
-import { Lang } from "../../../app/system/utils/Lang";
+import { Entity } from "../../../system";
+import { Lang } from "../../../system/utils/Lang";
 
 const Object3D = () => {
   const { app } = useSceneContext();

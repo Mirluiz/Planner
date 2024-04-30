@@ -1,9 +1,6 @@
-import { Corner } from '../app/model'
+import { Corner, Wall as WallModel, WallEnd } from '../app/model'
 import { App } from '../app/App'
-import { Helpers, Object3DProps } from '../app/system'
-import { Wall as WallModel } from '../app/model/Wall/Wall'
 import * as THREE from 'three'
-import { WallEnd } from '../app/model/Wall/WallEnd'
 
 class Wall {
   readonly app: App

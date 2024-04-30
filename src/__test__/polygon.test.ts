@@ -1,8 +1,8 @@
 import { describe, test } from "@jest/globals";
-import { Graph, Vertex } from "../app/system/utils/Graph";
-import { Polygon } from "../app/system/utils/Polygon/Polygon";
+import { Graph, Vertex } from "../system/utils/Graph";
+import { Polygon } from "../system/utils/Polygon/Polygon";
 import { Vector3 } from "three";
-import { ConcavePolygon } from "../app/system/utils/Polygon";
+import { ConcavePolygon } from "../system/utils/Polygon";
 
 describe("Polygon", () => {
   /**

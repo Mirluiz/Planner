@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
-import { Wall } from '../../app/model/Wall/Wall'
+import { Wall, WallEnd } from '../../app/model'
 import { App } from '../../app/App'
-import { WallEnd } from '../../app/model/Wall/WallEnd'
 
 describe('Door controller processes', () => {
   function createWall(

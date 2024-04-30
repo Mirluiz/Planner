@@ -1,4 +1,4 @@
-import { Entity } from "../../system";
+import { Entity } from "../../../system";
 import { Controller } from "../Controller";
 import {
   Corner as CornerModel,

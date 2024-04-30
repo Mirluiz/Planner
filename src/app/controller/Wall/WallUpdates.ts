@@ -1,6 +1,6 @@
 import { Vector3 } from "three";
 import { Door, Wall as WallModel, Corner as CornerModel } from "../../model";
-import { Math2D } from "../../system";
+import { Math2D } from "../../../system";
 import { GeometryCalculation } from "./GeometryCalculation";
 import { Scene as SceneController } from "../../controller/Scene";
 

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Corner as CornerModel } from "../model";
-import { BaseMesh, Mesh, Observer, ColorManager } from "./../system";
+import { BaseMesh, Mesh, Observer, ColorManager } from "../../system";
 import { App } from "../App";
 
 class Corner extends BaseMesh implements Mesh, Observer {

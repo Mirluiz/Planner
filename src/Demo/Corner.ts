@@ -1,6 +1,6 @@
 import { Corner as CornerModel } from "../app/model";
 import { App } from "../app/App";
-import { Helpers, Object3DProps } from "../app/system";
+import { Helpers } from "../system";
 import { Room } from "../app/model/Room";
 
 class Corner {

@@ -1,6 +1,6 @@
-import { Math2D } from '../../system'
+import { Math2D } from '../../../system'
 import { Controller } from '../Controller'
-import { Door as DoorModel, Wall as WallModel, Wall } from '../../model'
+import { Door as DoorModel, Wall as WallModel, Wall, Door } from '../../model'
 import { Door as DoorView } from '../../view/Door'
 import { Vector3 } from 'three'
 import { Base } from '../Base'
@@ -175,7 +175,7 @@ class WallElement extends Base implements Controller {
   }
 
   createGhost() {
-    let newDoor = new DoorModel()
+    let newDoor = Door.createDefault() 
 
     this.ghostView = new DoorView(newDoor, this.app)
     this.ghostModel = newDoor

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Grid, Typography } from "@mui/material";
 import { useSceneContext } from "../../System/PiperContext";
 import { Room as RoomModel, Wall } from "../../../app/model";
-import { Lang } from "../../../app/system/utils/Lang";
+import { Lang } from "../../../system/utils/Lang";
 
 const Room = () => {
   const { app } = useSceneContext();

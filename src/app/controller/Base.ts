@@ -1,8 +1,8 @@
-import { EventSystem, Object3D, Mesh } from "../system";
+import { EventSystem, Mesh } from "../../system";
 import { Scene as SceneController } from "../controller/Scene";
 import { App } from "../App";
 import { Controller } from "./Controller";
-import { Scene as SceneModel } from "./../model/Scene";
+import { Object3D } from "../model/Object3D";
 
 class Base implements Controller {
   event: EventSystem = new EventSystem();

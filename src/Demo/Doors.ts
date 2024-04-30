@@ -1,9 +1,9 @@
 import { Corner } from "../app/model";
 import { App } from "../app/App";
-import { Helpers, Object3DProps } from "../app/system";
 import { Door as DoorModel } from "../app/model";
 import * as THREE from "three";
-import { WallEnd } from "../app/model/Wall/WallEnd";
+import { WallEnd } from "../app/model";
+import { Helpers } from "../system";
 
 class Door {
   readonly app: App;

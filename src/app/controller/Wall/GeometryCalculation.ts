@@ -1,7 +1,6 @@
 import { Vector3 } from "three";
-import { Corner, Wall as WallModel } from "../../model";
-import { Math2D } from "../../system";
-import { WallEnd } from "../../model/Wall/WallEnd";
+import { Corner, WallEnd, Wall as WallModel } from "../../model";
+import { Math2D } from "../../../system";
 
 class GeometryCalculation {
   static getClosestCorner(vector: Vector3, corners: Corner[]) {

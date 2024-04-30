@@ -1,5 +1,5 @@
-import { Scene as SceneModel } from "../model/Scene";
-import { EventSystem } from "../system";
+import { Scene as SceneModel } from "../model";
+import { EventSystem } from "../../system";
 import { Scene as SceneView } from "../view/Scene";
 
 import { App } from "../App";

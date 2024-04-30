@@ -1,4 +1,4 @@
-import { Object3DSchema } from "../../app/system";
+import { Object3DSchema } from "../../app/model/Object3D";
 
 class Memento {
   private state: Array<Object3DSchema>;

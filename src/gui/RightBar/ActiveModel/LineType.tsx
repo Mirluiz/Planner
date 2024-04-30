@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Grid, ListItem, Typography } from "@mui/material";
 import { useSceneContext } from "../../System/PiperContext";
 import { Pipe, Wall } from "../../../app/model";
-import { Entity, Object3D } from "../../../app/system";
-import { Lang } from "../../../app/system/utils/Lang";
+import { Lang } from "../../../system/utils/Lang";
+import { Object3D } from "../../../app/model/Object3D";
+import { Entity } from "../../../system";
 
 const LineType = () => {
   const { app } = useSceneContext();

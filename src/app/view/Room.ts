@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { BaseMesh, Mesh, Observer, ColorManager, Storage } from "./../system";
+import { BaseMesh, Mesh, Observer, ColorManager, Storage } from "../../system";
 import { Room as RoomModel } from "../model/Room";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { Vector3 } from "three";

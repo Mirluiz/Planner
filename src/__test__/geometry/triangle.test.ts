@@ -1,9 +1,9 @@
 import { describe, test } from "@jest/globals";
-import { Math2D } from "../../app/system";
-import { Wall } from "../../app/model/Wall/Wall";
+import { Math2D } from "../../system";
+import { Wall } from "../../app/model";
 import * as THREE from "three";
 import { Vector3 } from "three";
-import { ConcavePolygon } from "../../app/system/utils/Polygon";
+import { ConcavePolygon } from "../../system/utils/Polygon";
 
 describe("Triangle algorithms", () => {
   /**

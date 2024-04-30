@@ -1,10 +1,9 @@
 import { describe, test } from "@jest/globals";
-import { Graph, Math2D } from "../../app/system";
-import { Wall } from "../../app/model/Wall/Wall";
+import { Graph, Math2D } from "../../system";
 import * as THREE from "three";
 import { App } from "../../app/App";
-import { Polygon } from "../../app/system/utils/Polygon/Polygon";
-import { ConcavePolygon, ConvexPolygon } from "../../app/system/utils/Polygon";
+import { Polygon } from "../../system/utils/Polygon/Polygon";
+import { ConcavePolygon, ConvexPolygon } from "../../system/utils/Polygon";
 
 describe("Intersections", () => {
   test("Intersection", () => {

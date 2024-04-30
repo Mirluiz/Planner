@@ -1,10 +1,9 @@
 import { Wall as WallController } from '../app/controller/Wall/Wall'
 import { Room as RoomController } from '../app/controller/Room'
-import { Object3D as Object3DController } from '../app/controller/Object3D'
 import { Scene as SceneController } from './controller/Scene'
-import { GraphManager } from './system/service/GraphManager'
+import { GraphManager } from '../system/service/GraphManager'
 import { Pipe as PipeController } from '../app/controller/Pipe'
-import { EventSystem, Database, Object3D, Storage } from './system'
+import { EventSystem, Database, Storage } from '../system'
 import { WallElement as WallElementController } from './controller'
 import { Corner as CornerController } from './controller/Wall/Corner'
 
