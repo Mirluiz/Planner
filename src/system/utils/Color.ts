@@ -19,6 +19,7 @@ export type Color = {
   light_yellow: 0xfff000;
   light_grey: 0xc6c6c6;
   grey: 0x777777;
+  white: 0xffffff;
 };
 
 class ColorManager {
@@ -44,6 +45,7 @@ class ColorManager {
     light_yellow: 0xfff000,
     light_grey: 0xc6c6c6,
     grey: 0x777777,
+    white: 0xffffff,
   };
 
   static pick(): number {
@@ -61,7 +63,7 @@ class ColorManager {
 
   static getNameByNumber(value: number) {
     let result = Object.values(this.colors).findIndex(
-      (color) => color === value
+      (color) => color === value,
     );
     let key = Object.keys(this.colors)[result];
 

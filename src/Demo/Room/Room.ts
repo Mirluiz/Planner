@@ -243,10 +243,9 @@ class Room {
   }
 
   run() {
-    // this.runAll();
     let wallController = this.app.wallController;
     let roomController = this.app.roomController;
-    let { corners } = this.examples[3];
+    let { corners } = this.examples[4];
 
     corners.map((cornerData, index) => {
       if (!cornerData) {

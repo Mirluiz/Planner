@@ -1,60 +1,63 @@
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { LocalStorage, SnapHighlight, Math2D } from '../../../system'
-import { Scene as SceneController } from '../../../app/controller/Scene'
-import { Vector3 } from 'three'
-import { Renderer } from './Renderer'
-import Stats from 'three/examples/jsm/libs/stats.module'
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment'
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { LocalStorage, SnapHighlight, Math2D } from "../../../system";
+import { Scene as SceneController } from "../../../app/controller/Scene";
+import { Vector3 } from "three";
+import { Renderer } from "./Renderer";
+import Stats from "three/examples/jsm/libs/stats.module";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment";
 
 class Scene {
-  controller: SceneController
+  controller: SceneController;
 
-  stats: Stats
+  stats: Stats;
 
-  camera: THREE.OrthographicCamera | THREE.PerspectiveCamera
-  scene: THREE.Scene
-  renderer: THREE.WebGLRenderer
-  axis: THREE.AxesHelper
-  controls: OrbitControls
-  intersected: boolean = false
-  pointer: THREE.Vector3
+  camera: THREE.OrthographicCamera | THREE.PerspectiveCamera;
+  scene: THREE.Scene;
+  renderer: THREE.WebGLRenderer;
+  axis: THREE.AxesHelper;
+  controls: OrbitControls;
+  intersected: boolean = false;
+  pointer: THREE.Vector3;
 
-  netBinding: boolean = false
-  netStep: number = 10
+  netBinding: boolean = true;
+  netStep: number = 10;
 
-  ground: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 }
-  groundInters: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 }
-  mouseDownPosition: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 }
+  ground: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
+  groundInters: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
+  mouseDownPosition: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
 
-  raycaster: THREE.Raycaster
-  htmlElement: HTMLElement | null
-  cameraMode: '2D' | '3D'
+  raycaster: THREE.Raycaster;
+  htmlElement: HTMLElement | null;
+  cameraMode: "2D" | "3D";
 
-  localStorage: LocalStorage
+  localStorage: LocalStorage;
 
-  snapHighLight: SnapHighlight | null = null
-  intersects: THREE.Intersection[] = []
+  snapHighLight: SnapHighlight | null = null;
+  intersects: THREE.Intersection[] = [];
 
   constructor(props: { canvas: HTMLElement; controller: SceneController }) {
-    const { canvas, controller } = props
-    this.controller = controller
+    const { canvas, controller } = props;
+    this.controller = controller;
 
-    this.localStorage = new LocalStorage()
+    this.localStorage = new LocalStorage();
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true })
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
 
-    this.renderer.setClearColor(0xffffff)
+    this.renderer.setClearColor(0xffffff);
 
-    this.axis = new THREE.AxesHelper(400)
+    this.axis = new THREE.AxesHelper(400);
 
-    this.raycaster = new THREE.Raycaster()
-    this.pointer = new THREE.Vector3()
+    this.raycaster = new THREE.Raycaster();
+    this.pointer = new THREE.Vector3();
 
-    this.htmlElement = canvas
+    this.htmlElement = canvas;
 
-    this.renderer.setSize(this.htmlElement.clientWidth, this.htmlElement.clientHeight)
-    this.htmlElement.appendChild(this.renderer.domElement)
+    this.renderer.setSize(
+      this.htmlElement.clientWidth,
+      this.htmlElement.clientHeight,
+    );
+    this.htmlElement.appendChild(this.renderer.domElement);
 
     this.camera = new THREE.OrthographicCamera(
       this.htmlElement.clientWidth / -2, // left
@@ -62,67 +65,63 @@ class Scene {
       this.htmlElement.clientHeight / 2, // top
       this.htmlElement.clientHeight / -2, // bottom
       1,
-      1000
-    )
+      1000,
+    );
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
-    this.scene = new THREE.Scene()
+    this.scene = new THREE.Scene();
 
-    const axis = new THREE.AxesHelper(20)
-
-    // this.scene.add(axis);
+    const axis = new THREE.AxesHelper(20);
 
     if (this.netBinding) {
-      const netSize = 50
-      const helper = new THREE.GridHelper(netSize, netSize)
-      this.scene.add(helper)
+      const netSize = 50;
+      const helper = new THREE.GridHelper(netSize, netSize);
+      this.scene.add(helper);
     }
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3)
-    this.scene.add(ambientLight)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
+    this.scene.add(ambientLight);
 
-    const hLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1)
-    hLight.position.set(1, 2, 0)
-    // this.scene.add(hLight);
+    const hLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
+    hLight.position.set(1, 2, 0);
 
-    this.cameraMode = this.localStorage.camera?.mode ?? '3D'
-    // this.cameraMode = "2D";
+    this.cameraMode = this.localStorage.camera?.mode ?? "3D";
 
-    this.initCamera()
-    this.setCamera(this.cameraMode)
+    this.initCamera();
+    this.setCamera(this.cameraMode);
 
-    this.renderer.domElement.setAttribute('tabindex', '0')
-    this.renderer.domElement.focus()
+    this.renderer.domElement.setAttribute("tabindex", "0");
+    this.renderer.domElement.focus();
 
-    this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setPixelRatio(window.devicePixelRatio);
 
-    this.renderer.useLegacyLights = false
-    this.renderer.shadowMap.type = THREE.PCFShadowMap
+    this.renderer.useLegacyLights = false;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
 
-    this.renderer.outputColorSpace = THREE.SRGBColorSpace
-    this.renderer.toneMapping = THREE.NoToneMapping
-    this.renderer.toneMappingExposure = 1
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.NoToneMapping;
+    this.renderer.toneMappingExposure = 1;
 
-    this.renderer.outputEncoding = THREE.sRGBEncoding
+    this.renderer.outputEncoding = THREE.sRGBEncoding;
 
-    this.initEvents()
-    this.subscribeEvents()
+    this.initEvents();
+    this.subscribeEvents();
 
-    this.stats = new Stats()
+    this.stats = new Stats();
   }
 
   onPointerMove(event: MouseEvent) {
-    if (!this.htmlElement) return
+    if (!this.htmlElement) return;
 
     if (this.pointer) {
-      this.pointer.x = (event.offsetX / this.htmlElement.clientWidth) * 2 - 1
-      this.pointer.y = -(event.offsetY / this.htmlElement.clientHeight) * 2 + 1
+      this.pointer.x = (event.offsetX / this.htmlElement.clientWidth) * 2 - 1;
+      this.pointer.y = -(event.offsetY / this.htmlElement.clientHeight) * 2 + 1;
     } else {
       this.pointer = new Vector3(
         (event.offsetX / this.htmlElement.clientWidth) * 2 - 1,
-        -(event.offsetY / this.htmlElement.clientHeight) * 2 + 1
-      )
+        -(event.offsetY / this.htmlElement.clientHeight) * 2 + 1,
+      );
     }
   }
 
@@ -131,115 +130,116 @@ class Scene {
       this?.controls?.target.set(
         this.localStorage.camera.target.x,
         this.localStorage.camera.target.y,
-        this.localStorage.camera.target.z
-      )
+        this.localStorage.camera.target.z,
+      );
 
       this.camera?.position.set(
         this.localStorage.camera.pos.x,
         this.localStorage.camera.pos.y,
-        this.localStorage.camera.pos.z
-      )
+        this.localStorage.camera.pos.z,
+      );
 
-      this.camera.zoom = this.localStorage.camera.zoom
-      this.cameraMode = this.localStorage.camera.mode
+      this.camera.zoom = this.localStorage.camera.zoom;
+      this.cameraMode = this.localStorage.camera.mode;
     }
   }
 
   private initEvents() {
-    this.controls.addEventListener('change', () => {
-      this.updateCameraData()
-    })
+    this.controls.addEventListener("change", () => {
+      this.updateCameraData();
+    });
 
-    this.htmlElement?.addEventListener('mousemove', () => {})
+    this.htmlElement?.addEventListener("mousemove", () => {});
 
-    this.htmlElement?.addEventListener('mousedown', () => {
+    this.htmlElement?.addEventListener("mousedown", () => {
       const planeIntersect = Math2D.NetAlgorithms.planeIntersection(
         new Vector3(0, 0, 0),
-        this.raycaster.ray.clone()
-      ).clone()
+        this.raycaster.ray.clone(),
+      ).clone();
 
       this.ground = {
         x: planeIntersect.x,
         y: 0,
-        z: planeIntersect.z
-      }
+        z: planeIntersect.z,
+      };
 
-      this.mouseDownPosition.x = this.ground.x
-      this.mouseDownPosition.y = this.ground.y
-      this.mouseDownPosition.z = this.ground.z
-    })
+      this.mouseDownPosition.x = this.ground.x;
+      this.mouseDownPosition.y = this.ground.y;
+      this.mouseDownPosition.z = this.ground.z;
+    });
   }
 
   private subscribeEvents() {
-    this.controller.event.subscribe('scene_update', () => {
-      if (!this.scene) return
+    this.controller.event.subscribe("scene_update", () => {
+      if (!this.scene) return;
 
       const runDelete = (children: Array<THREE.Object3D>) => {
         for (let i = 0; i < children.length; i++) {
-          let child = children[i]
+          let child = children[i];
 
           if (child.children) {
-            runDelete(child.children)
+            runDelete(child.children);
           }
 
           if (child.userData.object && !child.userData.system) {
             if (child instanceof THREE.Mesh) {
-              child?.geometry?.dispose()
-              child?.material?.dispose()
-              child?.material?.map?.dispose()
+              child?.geometry?.dispose();
+              child?.material?.dispose();
+              child?.material?.map?.dispose();
             }
 
-            child?.removeFromParent()
-            i--
+            child?.removeFromParent();
+            i--;
           }
         }
-      }
+      };
 
-      runDelete(this.scene.children)
+      runDelete(this.scene.children);
 
       this.controller.model?.objects.map((object) => {
-        let renderModel = Renderer.threeJS(object, this.controller.app)
+        let renderModel = Renderer.threeJS(object, this.controller.app);
 
-        if (this.cameraMode === '2D') {
-          let mesh = renderModel?.render2D()
-          if (mesh) this.scene.add(mesh)
+        if (this.cameraMode === "2D") {
+          let mesh = renderModel?.render2D();
+          if (mesh) this.scene.add(mesh);
         } else {
-          let mesh = renderModel?.render3D()
-          if (mesh) this.scene.add(mesh)
+          let mesh = renderModel?.render3D();
+          if (mesh) this.scene.add(mesh);
         }
-      })
-    })
+      });
+    });
   }
 
-  setCamera(mode: '2D' | '3D') {
-    if (!this.htmlElement) return
+  setCamera(mode: "2D" | "3D") {
+    if (!this.htmlElement) return;
 
-    this.cameraMode = mode
-    let pos = { ...this.camera.position }
-    let zoom = this.localStorage.camera?.zoom ?? 1
+    this.cameraMode = mode;
+    let pos = { ...this.camera.position };
+    let zoom = this.localStorage.camera?.zoom ?? 1;
 
-    this.controls.reset()
+    this.controls.reset();
 
     switch (this.cameraMode) {
-      case '3D':
+      case "3D":
         this.camera = new THREE.PerspectiveCamera(
           30,
           this.htmlElement.clientWidth / this.htmlElement.clientHeight,
           0.1,
-          100
-        )
+          100,
+        );
 
-        this.camera.position.set(pos.x, 10, pos.z)
+        this.camera.position.set(pos.x, 10, pos.z);
 
         if (this.controls) {
-          this.controls.minPolarAngle = 0
-          this.controls.maxPolarAngle = Math.PI
+          this.controls.minPolarAngle = 0;
+          this.controls.maxPolarAngle = Math.PI;
         }
-        break
-      case '2D':
-        let aspect = this.htmlElement.clientWidth / this.htmlElement.clientHeight
-        let frustumSize = 5
-        let far = 100
+        break;
+      case "2D":
+        let aspect =
+          this.htmlElement.clientWidth / this.htmlElement.clientHeight;
+        let frustumSize = 5;
+        let far = 100;
 
         this.camera = new THREE.OrthographicCamera(
           (frustumSize * aspect) / -2,
@@ -247,64 +247,67 @@ class Scene {
           frustumSize / 2,
           frustumSize / -2,
           0.1,
-          far
-        )
+          far,
+        );
 
-        this.camera.position.set(0, far / 2, 0)
+        this.camera.position.set(0, far / 2, 0);
     }
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-    this.controls.target.set(pos.x, 0, pos.z)
-    this.controls.update()
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.target.set(pos.x, 0, pos.z);
+    this.controls.update();
 
-    this.camera.position.setX(pos.x)
-    this.camera.position.setZ(pos.z)
+    this.camera.position.setX(pos.x);
+    this.camera.position.setZ(pos.z);
 
-    this.camera.zoom = zoom
+    this.camera.zoom = zoom;
 
-    this.controls.minDistance = 0.1
-    this.controls.maxDistance = 100
+    this.controls.minDistance = 0.1;
+    this.controls.maxDistance = 100;
 
-    if (this.cameraMode === '2D') {
-      this.controls.enableRotate = false
-      this.controls.enableZoom = true
-      this.controls.enablePan = true
+    if (this.cameraMode === "2D") {
+      this.controls.enableRotate = false;
+      this.controls.enableZoom = true;
+      this.controls.enablePan = true;
     }
 
-    this.camera.updateMatrix()
-    this.controls.update()
+    this.camera.updateMatrix();
+    this.controls.update();
   }
 
   animate() {
-    requestAnimationFrame(this.animate.bind(this))
+    requestAnimationFrame(this.animate.bind(this));
 
-    this.raycaster.setFromCamera(new THREE.Vector2(this.pointer?.x, this.pointer?.y), this.camera)
+    this.raycaster.setFromCamera(
+      new THREE.Vector2(this.pointer?.x, this.pointer?.y),
+      this.camera,
+    );
 
-    this.renderer.render(this.scene, this.camera)
-    this.stats.update()
+    this.renderer.render(this.scene, this.camera);
+    this.stats.update();
 
     const planeIntersect = Math2D.NetAlgorithms.planeIntersection(
       new Vector3(0, 0, 0),
-      this.raycaster.ray.clone()
-    ).clone()
+      this.raycaster.ray.clone(),
+    ).clone();
 
     this.ground = {
       x: planeIntersect.x,
       y: 0,
-      z: planeIntersect.z
-    }
+      z: planeIntersect.z,
+    };
 
     if (this.netBinding) {
-      this.groundInters.x = +(this.ground.x / 10).toFixed(1) * 10
-      this.groundInters.z = +(this.ground.z / 10).toFixed(1) * 10
+      this.groundInters.x = +(this.ground.x / 10).toFixed(1) * 10;
+      this.groundInters.z = +(this.ground.z / 10).toFixed(1) * 10;
     } else {
-      this.groundInters.x = this.ground.x
-      this.groundInters.z = this.ground.z
+      this.groundInters.x = this.ground.x;
+      this.groundInters.z = this.ground.z;
     }
     // console.log("this.raycaster.ray", this.raycaster.ray.origin);
-    this.intersects = this.raycaster.intersectObjects(this.scene.children)
+    this.intersects = this.raycaster.intersectObjects(this.scene.children);
 
-    this.snapHighLight?.run()
+    this.snapHighLight?.run();
   }
 
   private updateCameraData() {
@@ -312,35 +315,35 @@ class Scene {
       pos: {
         x: this.camera?.position?.x ?? 0,
         y: this.camera?.position?.y ?? 0,
-        z: this.camera?.position?.z ?? 0
+        z: this.camera?.position?.z ?? 0,
       },
       target: {
         x: this.controls?.target.x ?? 0,
         y: this.controls?.target.y ?? 0,
-        z: this.controls?.target.z ?? 0
+        z: this.controls?.target.z ?? 0,
       },
       zoom: this.camera.zoom,
-      mode: this.cameraMode
-    }
+      mode: this.cameraMode,
+    };
   }
 
   updateGrid(nB: boolean) {
-    this.netBinding = nB
+    this.netBinding = nB;
 
     if (this.netBinding) {
-      const netSize = 50
-      const helper = new THREE.GridHelper(netSize, netSize)
-      this.scene.add(helper)
+      const netSize = 50;
+      const helper = new THREE.GridHelper(netSize, netSize);
+      this.scene.add(helper);
     } else {
       this.scene.children.map((child) => {
         if (child instanceof THREE.GridHelper) {
-          child.dispose()
-          child.material.dispose()
-          child.removeFromParent()
+          child.dispose();
+          child.material.dispose();
+          child.removeFromParent();
         }
-      })
+      });
     }
   }
 }
 
-export { Scene }
+export { Scene };

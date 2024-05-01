@@ -70,7 +70,7 @@ interface Object3D {
     height: number;
     depth: number;
   };
-  type: Entity | null
+  type: Entity | null;
 
   toJson: () => Schema;
   addObserver: (observer: Observer) => void;
@@ -85,7 +85,7 @@ class Basic3D implements Object3D {
   dimension;
   rotation;
   position;
-  type: Entity | null = null
+  type: Entity | null = null;
   observers: Observer[] = [];
 
   constructor(props: Object3DProps) {
@@ -95,7 +95,7 @@ class Basic3D implements Object3D {
     this.position = props.position ?? { x: 0, y: 0, z: 0 };
   }
 
-  toJson () {
+  toJson() {
     return {
       uuid: this.uuid,
       dimension: this.dimension,
@@ -119,12 +119,11 @@ class Basic3D implements Object3D {
     for (const observer of this.observers) {
       observer.destroy();
     }
-  
   }
-  
-  clone (): Object3D {
+
+  clone(): Object3D {
     throw new Error("not implemented");
-    return this
+    return this;
   }
 }
 
